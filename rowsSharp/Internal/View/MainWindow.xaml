@@ -1,0 +1,321 @@
+﻿<Window x:Class="rowsSharp.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodel="clr-namespace:rowsSharp.ViewModel"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance Type=viewmodel:RowsVM}"
+        mc:Ignorable="d"
+        Height="600" Width="1400"
+        FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="16">
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="CTRL+S" Command="{Binding Edit.SaveCommand}"/>
+        <KeyBinding Gesture="CTRL+Z" Command="{Binding History.UndoKeyCommand}"/>
+        <KeyBinding Gesture="CTRL+Y" Command="{Binding History.RedoKeyCommand}"/>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding Filter.FocusCommand}"/>
+    </Window.InputBindings>
+    
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Edit.IsDirtyEditor}" Value="True">
+                    <Setter Property="Title" Value="RowsSharp  -  Unsaved Changes"/>
+                </DataTrigger>
+            </Style.Triggers>
+            <Setter Property="Title" Value="RowsSharp"/>
+        </Style>
+    </Window.Style>
+
+    <Window.Resources>
+        <!-- Styles -->
+        <Style TargetType="Thumb">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Cursor" Value="SizeWE"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="Caption" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#696969"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Window.Resources>
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Closing">
+            <b:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+
+    <Grid Margin="16,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="26"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="{Binding Config.PreviewWidth}"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Toolbar (top) -->
+        <Grid Grid.ColumnSpan="2" Margin="-16,-8,-16,8" Background="#EEEEEE">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="72"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Expander Grid.ColumnSpan="2" Margin="24,14,0,0" IsExpanded="{Binding Edit.IsEditing}">
+                <Grid Height="84" Margin="0,16,15,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
+                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}"  IsChecked="{Binding Config.InputAlias}"/>
+                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Edit.OutputAliasCommand}" IsChecked="{Binding Config.OutputAlias}"/>
+
+                    <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center"
+                              IsChecked="{Binding Config.ReadWrite}">
+                        <CheckBox.Style>
+                            <Style TargetType="CheckBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.OutputAlias}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.IsTemplate}" IsEnabled="{Binding Config.ReadWrite}"/>
+
+                    <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
+                        <Button Content="Undo" Command="{Binding History.UndoCommand}" Margin="0,0,4,0"/>
+                        <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
+                    </UniformGrid>
+
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content=" Insert Selected Count" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.ReadWrite}" Margin="4,0"/>
+                    <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" IsEnabled="{Binding Config.ReadWrite}"/>
+                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding ElementName=Insert, Path=IsChecked}" StaysOpen="False">
+                        <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
+                            <StackPanel.Resources>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RecordsView.Count}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Config.InsertSelectedCount}" Value="False">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="Height" Value="30"/>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Button Command="{Binding Edit.InsertTopCommand}"   Content="Insert Top"/>
+                            <Button Command="{Binding Edit.InsertAboveCommand}" Content="Insert Above"/>
+                            <Button Command="{Binding Edit.InsertBelowCommand}" Content="Insert Below"/>
+                            <Button Command="{Binding Edit.InsertLastCommand}"  Content="Insert Last"/>
+                        </StackPanel>
+                    </Popup>
+                    <Button Grid.Row="2" Grid.Column="4" Content="Remove" Command="{Binding Edit.RemoveCommand}" Margin="4,0"/>
+                    <Button Grid.Row="2" Grid.Column="5" Content="Save" Command="{Binding Edit.SaveCommand}" Margin="4,0"/>
+
+                    <TextBlock Grid.Column="7" Text="SELECTION" Style="{StaticResource Caption}"/>
+                    <Button Grid.Column="7" Grid.Row="1" Content="Copy Row" Margin="0,-2,0,2" Command="{Binding Preview.CopyStringCommand}"/>
+                    <Button Grid.Column="7" Grid.Row="2" Content="Copy Image" Command="{Binding Preview.CopyImageCommand}"/>
+                </Grid>
+            </Expander>
+
+            <DockPanel Grid.Column="1" Margin="8,8,16,8" Height="36" VerticalAlignment="Top">
+                <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
+                <Grid Margin="0,0,8,0">
+                    <TextBlock Foreground="#696969" Background="White" Height="24" Padding="7,3">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Filter.FilterText}" Value="">
+                                        <Setter Property="Text" Value="Enter filter terms"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBox Text="{Binding Filter.FilterText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24" Padding="4,0" Background="Transparent">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Filter.HasFocus}" Value="True">
+                                        <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding Filter.FilterCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </Grid>
+            </DockPanel>
+        </Grid>
+
+        <ProgressBar Grid.ColumnSpan="2" Margin="-18,4" Height="4" IsIndeterminate="{Binding Filter.IsFiltering}" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
+     
+        <!-- Empty Grid messages (left) -->
+        <TextBlock Grid.Row="1" VerticalAlignment="Center" TextAlignment="Center" LineHeight="20">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Text" Value="Filtering&#x0a;Please await pending results"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RecordsView.IsEmpty}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=Status, Path=Text}" Value="Ready">
+                            <Setter Property="Text" Value="No results&#x0a;Please try a different filter term or add new rows"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <!-- DataGrid (left) -->
+        <DataGrid Name="Grid" ItemsSource="{Binding RecordsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
+                  AutoGeneratingColumn="Grid_AutoGeneratingColumn"
+                  Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
+                  RowHeaderWidth="0" MinRowHeight="25" 
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  EnableColumnVirtualization="True" EnableRowVirtualization="True">
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="BeginningEdit">
+                    <b:InvokeCommandAction Command="{Binding Edit.BeginEditCommand}"/>
+                </b:EventTrigger>
+                <b:EventTrigger EventName="CurrentCellChanged">
+                    <b:InvokeCommandAction Command="{Binding Edit.CommitEditCommand}" CommandParameter="{Binding ElementName=Grid}"/>
+                </b:EventTrigger>
+                <b:EventTrigger EventName="CellEditEnding">
+                    <b:InvokeCommandAction Command="{Binding Edit.EndEditCommand}" PassEventArgsToCommand="True"/>
+                </b:EventTrigger>
+                <b:EventTrigger EventName="SelectionChanged">
+                    <b:InvokeCommandAction Command="{Binding Edit.UpdateSelectedCommand}" CommandParameter="{Binding ElementName=Grid, Path=SelectedItems}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+            <DataGrid.Resources>
+                <Style TargetType="DataGrid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Config.ReadWrite}" Value="True">
+                            <Setter Property="IsReadOnly" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </Style>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F5F5F5"/>
+                        </Trigger>
+                    </Style.Triggers>
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#CCE8FF"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#E5F3FF"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#000000"/>
+                    </Style.Resources>
+                </Style>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="MinWidth" Value="128"/>
+                    <Setter Property="Height" Value="32"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Foreground" Value="#696969"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridColumnHeader">
+                                <Grid>
+                                    <Border Name="BRIN" CornerRadius="1" Padding="4,4,4,2" BorderThickness="0">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <Path Name="SortArrow" Stroke="#696969" Data="M0,0 L4,4 L8,0" Visibility="Collapsed"
+                                          HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5"/>
+                                    <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left"/>
+                                    <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="SortDirection" Value="Ascending">
+                                        <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="SortArrow" Property="RenderTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleY="-1"/>
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="SortDirection" Value="Descending">
+                                        <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="BRIN" Property="Border.Background" Value="#E5F3FF"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="BRIN" Property="Border.Background" Value="#CCE8FF"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
+
+        <!-- Preview image (right) -->
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="No preview available" Style="{StaticResource Caption}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Image Grid.Row="1" Grid.Column="1" Source="{Binding Preview.PreviewSource}"/>
+        <GridSplitter Grid.Row="1" Grid.Column="1" Width="8" Background="Transparent" HorizontalAlignment="Left"/>
+
+        <!-- Status bar (bottom) -->
+        <TextBlock Grid.Row="2" VerticalAlignment="Bottom" Style="{StaticResource Caption}">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} of {1} selected">
+                    <Binding ElementName="Grid" Path="SelectedItems.Count"/>
+                    <Binding ElementName="Grid" Path="Items.Count"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Name="Status" HorizontalAlignment="Right">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Filter.IsFiltering}" Value="True">
+                            <Setter Property="Text" Value="Filtering"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Edit.IsEditing}" Value="True">
+                            <Setter Property="Text" Value="Editing"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Text" Value="Ready"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+    </Grid>
+</Window>

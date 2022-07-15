@@ -1,0 +1,61 @@
+{
+  "Width": {
+    "Train": 196,
+    "Start": 96,
+    "End": 96,
+    "Top Speed": 196
+  },
+
+  "Template": {
+    "Train": "<D>",
+    "Start": "<d>",
+    "End": "<T>",
+    "Top Speed": "<t>",
+    "JNR": "<#>",
+    "JR Central": "<!#>"
+  },
+
+  "Alias": {
+    "JNR": {
+      "0": "No",
+      "1": "Yes"
+    },
+
+    "JR Central": {
+      "0": "No",
+      "1": "Yes"
+    },
+
+    "JR West": {
+      "0": "No",
+      "1": "Yes"
+    },
+
+    "JR Kyushu": {
+      "0": "No",
+      "1": "Yes"
+    }
+  },
+
+  "Color": {
+    "JNR": {
+      "1": "#B7E1CD",
+      "Yes": "#B7E1CD"
+    },
+
+    "JR Central": {
+      "1": "#E1B7CD",
+      "Yes": "#E1B7CD"
+    },
+
+    "JR West": {
+      "1": "#CDB7E1",
+      "Yes": "#CDB7E1"
+    },
+
+    "JR Kyushu": {
+      "1": "#B7E1CD",
+      "Yes": "#B7E1CD"
+    }
+  }
+}

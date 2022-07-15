@@ -1,0 +1,15 @@
+﻿{
+  "CsvPath": "$baseDir/CSVData/data.csv",
+  "PreviewPath": "$baseDir/CSVData/<Train>.png",
+  "InsertCount": 10,
+  "InsertSelectedCount": true,
+  "InputAlias": true,
+  "OutputAlias": false,
+  "ReadWrite": true,
+  "IsTemplate": true,
+  "HasHeader": true,
+  "FrozenColumn": 1,
+  "PreviewWidth": "*",
+  "FontFamily": "Courier New,Roboto Mono",
+  "CopyRowFormat": "<ID>: <Illustrator>"
+}
