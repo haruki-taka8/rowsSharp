@@ -1,0 +1,30 @@
+name: .NET
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build -c Release --no-restore
+      
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: rowsSharp
+        path: /rowsSharp/bin/Release/net6.0-windows/
