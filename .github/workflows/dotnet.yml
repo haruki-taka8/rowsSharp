@@ -15,9 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: |
-          5.0.x
-          6.0.x
+        dotnet-version: 6.0.x
         include-prerelease: true
         
     - name: Restore dependencies
@@ -30,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: rowsSharp
-        path: /rowsSharp/bin/Release/*
+        path: /rowsSharp/rowsSharp/rowsSharp/bin/Release/*
