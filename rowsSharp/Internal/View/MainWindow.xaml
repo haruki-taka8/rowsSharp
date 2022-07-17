@@ -118,7 +118,7 @@
 
                     <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content=" Insert Selected Count" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.ReadWrite}" Margin="4,0"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" IsEnabled="{Binding Config.ReadWrite}"/>
-                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding ElementName=Insert, Path=IsChecked}" StaysOpen="False">
+                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
                             <StackPanel.Resources>
                                 <Style TargetType="Button">
@@ -187,13 +187,13 @@
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Setter Property="Visibility" Value="Collapsed"/>
-                    <Setter Property="Text" Value="Filtering&#x0a;Please await pending results"/>
+                    <Setter Property="Text" Value="No results&#x0a;Please try a different filter term or add new rows"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RecordsView.IsEmpty}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=Status, Path=Text}" Value="Ready">
-                            <Setter Property="Text" Value="No results&#x0a;Please try a different filter term or add new rows"/>
+                        <DataTrigger Binding="{Binding Filter.IsFiltering}" Value="True">
+                            <Setter Property="Text" Value="Filtering&#x0a;Please await pending results"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -302,7 +302,7 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Name="Status" HorizontalAlignment="Right">
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Ready">
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Style.Triggers>
@@ -313,7 +313,6 @@
                             <Setter Property="Text" Value="Editing"/>
                         </DataTrigger>
                     </Style.Triggers>
-                    <Setter Property="Text" Value="Ready"/>
                 </Style>
             </TextBlock.Style>
         </TextBlock>

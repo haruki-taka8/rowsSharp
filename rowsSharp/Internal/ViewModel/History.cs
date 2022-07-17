@@ -41,7 +41,7 @@ namespace rowsSharp.ViewModel
 
         private ICommand? undoCommand;
         public ICommand UndoCommand => undoCommand ??= new CommandHandler(
-            () => Redo(),
+            () => Undo(),
             () => viewModel.Config.ReadWrite && undoStack.Any()
         );
 
@@ -77,8 +77,8 @@ namespace rowsSharp.ViewModel
                 return;
             }
 
-            if (isUndo && action == OperationEnum.Remove ||
-                !isUndo && action == OperationEnum.Insert    
+            if ((isUndo && action == OperationEnum.Remove) ||
+               (!isUndo && action == OperationEnum.Insert)    
             )
             {
                 DispatcherInvoke(() => viewModel.Csv.Records.Insert(last.At, last.OldRow));
@@ -115,7 +115,7 @@ namespace rowsSharp.ViewModel
                     OldRow = viewModel.Csv.Records[last.At]
                 }
             );
-            CommonOperation(true, last);
+            CommonOperation(false, last);
         }
     }
 }

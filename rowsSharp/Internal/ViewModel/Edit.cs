@@ -91,14 +91,14 @@ namespace rowsSharp.ViewModel
         private DelegateCommand<object>? commitEditCommand;
         public DelegateCommand<object> CommitEditCommand => commitEditCommand ??=
             new DelegateCommand<object>(
-                (s) => { ((DataGrid)s).CommitEdit(); },
-                (s) => true
+                (s) => ((DataGrid)s).CommitEdit(),
+                (s) => viewModel.Config.ReadWrite
             );
 
         private DelegateCommand<System.Collections.IList>? updateSelectedCommand;
         public DelegateCommand<System.Collections.IList> UpdateSelectedCommand => updateSelectedCommand ??=
             new DelegateCommand<System.Collections.IList>(
-                (s) => { SelectedItems = s.Cast<CsvRecord>().ToList(); },
+                (s) => SelectedItems = s.Cast<CsvRecord>().ToList(),
                 (s) => true
             );
 
@@ -117,8 +117,9 @@ namespace rowsSharp.ViewModel
 
         private bool IsAnyRowSelected()
         {
-            if (viewModel.RecordsView is null) { return false; }
-            return viewModel.Config.ReadWrite && SelectedIndex != -1;
+            return viewModel.RecordsView is not null &&
+                viewModel.Config.ReadWrite &&
+                SelectedIndex != -1;
         }
 
         private ICommand? insertTopCommand;
@@ -149,9 +150,9 @@ namespace rowsSharp.ViewModel
                 () => viewModel.Config.ReadWrite
             );
 
-        private DelegateCommand<object>? removeCommand;
-        public DelegateCommand<object> RemoveCommand => removeCommand ??= new(
-            (s) =>
+        private ICommand? removeCommand;
+        public ICommand RemoveCommand => removeCommand ??= new CommandHandler(
+            () =>
             {
                 viewModel.Logger.Info("Removing rows (x{Count})", SelectedItems.Count);
 
@@ -172,7 +173,7 @@ namespace rowsSharp.ViewModel
                 viewModel.History.RedoStack.Clear();
                 IsDirtyEditor = true;
             },
-            (s) => viewModel.Config.ReadWrite
+            () => viewModel.Config.ReadWrite
         );
 
         private DelegateCommand<DataGridCellEditEndingEventArgs>? endEditCommand;
