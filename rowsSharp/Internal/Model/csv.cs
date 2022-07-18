@@ -81,18 +81,7 @@ namespace rowsSharp.Model
 
     public class Csv
     {
-        private List<string> headers = new();
-        public List<string> Headers
-        {
-            get { return headers; }
-            set { headers = value; }
-        }
-
-        private ObservableCollection<CsvRecord> records = new();
-        public ObservableCollection<CsvRecord> Records
-        {
-            get { return records; }
-            set { records = value; }
-        }
+        public List<string> Headers = new();
+        public ObservableCollection<CsvRecord> Records = new();
     }
 }
