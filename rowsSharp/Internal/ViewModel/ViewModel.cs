@@ -127,7 +127,7 @@ namespace rowsSharp.ViewModel
             (e) =>
             {
                 Logger.Info("Trigger exit");
-                MessageBoxResult dialog = MessageBoxResult.Yes;
+                MessageBoxResult dialog = MessageBoxResult.No;
                 if (Edit.IsDirtyEditor)
                 {
                     Logger.Info("Changes unsaved, asking for confirmation before exiting.");
