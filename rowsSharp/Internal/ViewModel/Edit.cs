@@ -6,7 +6,6 @@ using rowsSharp.Model;
 using System.Reflection;
 using System.Windows.Controls;
 using System.IO;
-using System.Windows;
 
 namespace rowsSharp.ViewModel
 {
@@ -166,7 +165,7 @@ namespace rowsSharp.ViewModel
                             At = viewModel.Csv.Records.IndexOf(item)
                         }
                     );
-                    viewModel.Logger.Fatal(viewModel.Csv.Records.IndexOf(item));
+
                     viewModel.Csv.Records.Remove(item);
                 }
 
@@ -247,10 +246,7 @@ namespace rowsSharp.ViewModel
                             Replace("<!#>", (count-i).ToString())
                     );
                 }
-                Application.Current.MainWindow.Dispatcher.Invoke(() =>
-                {
-                    viewModel.Csv.Records.Insert(at + i, thisRow);
-                });
+                viewModel.Csv.Records.Insert(at + i, thisRow);
                 viewModel.History.UndoStack.Push(
                     new Operation()
                     {
