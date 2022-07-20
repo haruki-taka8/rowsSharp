@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace rowsSharp.Model
+﻿namespace rowsSharp.Model
 {
     public enum OperationEnum
     {
