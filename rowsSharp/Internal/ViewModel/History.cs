@@ -91,31 +91,34 @@ namespace rowsSharp.ViewModel
         private void Undo()
         {
             Operation last = UndoStack.Pop();
-            viewModel.Logger.Info("Undo {Action} @ {At}", last.OperationEnum, last.At);
-            RedoStack.Push(
-                new Operation()
-                {
-                    OperationEnum = last.OperationEnum,
-                    At = last.At,
-                    OldRow = viewModel.Csv.Records[last.At]
-                }
-            );
+            viewModel.Logger.Info("Undo {Action} @ {At}, {Parity}", last.OperationEnum, last.At, last.Parity);
+            Operation operation = Operation.DeepCopy(last);
+            operation.OldRow = last.OperationEnum == OperationEnum.Inline ?
+                viewModel.Csv.Records[last.At] :
+                last.OldRow;
+            RedoStack.Push(operation);
+
             CommonOperation(true, last);
+
+            // Group insert/remove edits
+            UndoStack.TryPeek(out Operation? next);
+            if (next is not null && last.Parity == next.Parity) { Undo(); }
         }
 
         private void Redo()
         {
             Operation last = RedoStack.Pop();
-            viewModel.Logger.Info("Redo {Action} @ {At}", last.OperationEnum, last.At);
-            UndoStack.Push(
-                new Operation()
-                {
-                    OperationEnum = last.OperationEnum,
-                    At = last.At,
-                    OldRow = viewModel.Csv.Records[last.At]
-                }
-            );
+            viewModel.Logger.Info("Redo {Action} @ {At}, {Parity}", last.OperationEnum, last.At, last.Parity);
+            Operation operation = Operation.DeepCopy(last);
+            operation.OldRow = last.OperationEnum == OperationEnum.Inline ?
+                viewModel.Csv.Records[last.At] :
+                last.OldRow;
+            UndoStack.Push(operation);
+
             CommonOperation(false, last);
+
+            RedoStack.TryPeek(out Operation? next);
+            if (next is not null && last.Parity == next.Parity) { Redo(); }
         }
     }
 }

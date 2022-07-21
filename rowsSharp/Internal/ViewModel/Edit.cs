@@ -70,6 +70,8 @@ namespace rowsSharp.ViewModel
             }
         }
 
+        private bool parity;
+
         private readonly RowsVM viewModel;
         public EditVM(RowsVM inViewModel)
         {
@@ -153,7 +155,7 @@ namespace rowsSharp.ViewModel
         public ICommand RemoveCommand => removeCommand ??= new CommandHandler(
             () =>
             {
-                viewModel.Logger.Info("Removing rows (x{Count})", SelectedItems.Count);
+                viewModel.Logger.Info("Removing rows (x{Count}), {Parity}", SelectedItems.Count, parity);
 
                 foreach (var item in SelectedItems)
                 {
@@ -162,15 +164,16 @@ namespace rowsSharp.ViewModel
                         {
                             OperationEnum = OperationEnum.Remove,
                             OldRow = item,
-                            At = viewModel.Csv.Records.IndexOf(item)
+                            At = viewModel.Csv.Records.IndexOf(item),
+                            Parity = parity
                         }
                     );
-
                     viewModel.Csv.Records.Remove(item);
                 }
 
                 viewModel.History.RedoStack.Clear();
                 IsDirtyEditor = true;
+                parity = !parity;
             },
             () => viewModel.Config.ReadWrite
         );
@@ -192,11 +195,13 @@ namespace rowsSharp.ViewModel
                     {
                         OperationEnum = OperationEnum.Inline,
                         OldRow = viewModel.Csv.DeepCopy((CsvRecord)e.Row.Item),
-                        At = viewModel.Csv.Records.IndexOf((CsvRecord)e.Row.Item)
+                        At = viewModel.Csv.Records.IndexOf((CsvRecord)e.Row.Item),
+                        Parity = parity
                     }
                 );
                 viewModel.History.RedoStack.Clear();
                 IsDirtyEditor = true;
+                parity = !parity;
             },
             (e) => viewModel.Config.ReadWrite
         );
@@ -243,7 +248,7 @@ namespace rowsSharp.ViewModel
                     propertyInfo.SetValue(thisRow,
                         propertyInfo.GetValue(thisRow).ToString().
                             Replace("<#>", i.ToString()).
-                            Replace("<!#>", (count-i).ToString())
+                            Replace("<!#>", (count - i - 1).ToString())
                     );
                 }
                 viewModel.Csv.Records.Insert(at + i, thisRow);
@@ -252,13 +257,15 @@ namespace rowsSharp.ViewModel
                     {
                         OperationEnum = OperationEnum.Insert,
                         OldRow = thisRow,
-                        At = at
+                        At = at,
+                        Parity = parity
                     }
                 );
             }
 
             viewModel.History.RedoStack.Clear();
             IsDirtyEditor = true;
+            parity = !parity;
         }
 
         private ICommand? saveCommand;
