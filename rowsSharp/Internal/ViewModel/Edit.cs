@@ -278,7 +278,7 @@ namespace rowsSharp.ViewModel
 
                  string fullHeader = string.Join(
                      ",",
-                     viewModel.Csv.Headers.Select(m => "\"" + m + "\"")
+                     viewModel.Csv.Headers.Select(m => "\"" + m.Replace("\"", "\"\"") + "\"")
                  );
                  writer.WriteLine(fullHeader);
 

@@ -36,15 +36,10 @@ namespace rowsSharp.ViewModel
 
             output = string.Join(
                 ",",
-                records.Select(m => "\"" + m + "\"")
+                records.Select(m => "\"" + m.Replace("\"", "\"\"") + "\"")
             );
 
             return output;
-        }
-
-        public string ColumnToInternalName(string ColumnName)
-        {
-            return "Column" + Headers.IndexOf(ColumnName);
         }
 
         public CsvVM(RowsVM viewModel, string inputPath)

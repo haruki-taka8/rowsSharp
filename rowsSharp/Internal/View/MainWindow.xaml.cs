@@ -1,8 +1,5 @@
-﻿using rowsSharp.Model;
-using rowsSharp.ViewModel;
+﻿using rowsSharp.ViewModel;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,17 +25,21 @@ namespace rowsSharp.View
         // Sorry, no MVVM
         private void Grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            if (((DataGrid)sender).Columns.Count >= viewModel.Csv.Headers.Count)
+            int columnIndex = ((DataGrid)sender).Columns.Count;
+            if (columnIndex >= viewModel.Csv.Headers.Count)
             {
                 e.Cancel = true;
                 return;
             }
 
-            string internalColumnName = e.Column.Header.ToString()!;
-            int columnIndex = ((DataGrid)sender).Columns.Count;
             string columnName = viewModel.Csv.Headers[columnIndex];
             e.Column.Header = columnName;
-            e.Column.CellStyle = new();
+
+            // Multiline
+            Style style = new(typeof(TextBox));
+            style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
+            style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+            ((DataGridTextColumn)e.Column).EditingElementStyle = style;
 
             // Column width
             if (viewModel.Config.Style.Width.ContainsKey(columnName))
@@ -47,25 +48,25 @@ namespace rowsSharp.View
             }
 
             // Conditional formatting
-            if (viewModel.Config.Style.Color.ContainsKey(columnName))
-            {
-                foreach (KeyValuePair<string, string> colorPair in viewModel.Config.Style.Color[columnName])
-                {
-                    DataTrigger trigger = new()
-                    {
-                        Binding = new Binding(internalColumnName),
-                        Value = colorPair.Key,
-                    };
+            if (!viewModel.Config.Style.Color.ContainsKey(columnName)) { return; }
+            e.Column.CellStyle = new();
 
-                    trigger.Setters.Add(
-                        new Setter()
-                        {
-                            Property = BackgroundProperty,
-                            Value = new BrushConverter().ConvertFromString(colorPair.Value)
-                        }
-                    );
-                    e.Column.CellStyle.Triggers.Add(trigger);
-                }
+            foreach (KeyValuePair<string, string> colorPair in viewModel.Config.Style.Color[columnName])
+            {
+                DataTrigger trigger = new()
+                {
+                    Binding = new Binding("Column" + (columnIndex-1)),
+                    Value = colorPair.Key
+                };
+
+                trigger.Setters.Add(
+                    new Setter()
+                    {
+                        Property = BackgroundProperty,
+                        Value = new BrushConverter().ConvertFromString(colorPair.Value)
+                    }
+                );
+                e.Column.CellStyle.Triggers.Add(trigger);
             }
         }
     }
