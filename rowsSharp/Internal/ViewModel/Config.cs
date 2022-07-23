@@ -3,16 +3,21 @@ using rowsSharp.Model;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace rowsSharp.ViewModel
 {
-    public class ConfigVM : Config
+    public class ConfigVM : Config, INotifyPropertyChanged
     {
-        private ICommand? setReadWriteCommand;
-        public ICommand SetReadWriteCommand
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
         {
-            get { return setReadWriteCommand ??= new CommandHandler(() => SetReadWrite(), () => true); }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private ICommand? setReadWriteCommand;
+        public ICommand SetReadWriteCommand => setReadWriteCommand ??=
+            new CommandHandler(() => SetReadWrite(), () => true);
 
         private bool originalReadWrite;
 
@@ -27,6 +32,8 @@ namespace rowsSharp.ViewModel
             {
                 ReadWrite = originalReadWrite;
             }
+            OnPropertyChanged(nameof(OutputAlias));
+            OnPropertyChanged(nameof(ReadWrite));
         }
 
         private readonly RowsVM viewModel;

@@ -149,7 +149,7 @@
             </Expander>
 
             <DockPanel Grid.Column="1" Margin="8,8,16,8" Height="36" VerticalAlignment="Top">
-                <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
+                <Button Content="{Binding Config.ReadWrite}" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
                 <Grid Margin="0,0,8,0">
                     <TextBlock Foreground="#696969" Background="White" Height="24" Padding="7,3">
                         <TextBlock.Style>
@@ -179,21 +179,16 @@
                 </Grid>
             </DockPanel>
         </Grid>
-
-        <ProgressBar Grid.ColumnSpan="2" Margin="-18,4" Height="4" IsIndeterminate="{Binding Filter.IsFiltering}" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
-     
+        
         <!-- Empty Grid messages (left) -->
-        <TextBlock Grid.Row="1" VerticalAlignment="Center" TextAlignment="Center" LineHeight="20">
+        <TextBlock Grid.Row="1" VerticalAlignment="Center" TextAlignment="Center" LineHeight="20"
+                   Text="No results&#x0a;Please try a different filter term or add new rows">
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Setter Property="Visibility" Value="Collapsed"/>
-                    <Setter Property="Text" Value="No results&#x0a;Please try a different filter term or add new rows"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RecordsView.IsEmpty}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Filter.IsFiltering}" Value="True">
-                            <Setter Property="Text" Value="Filtering&#x0a;Please await pending results"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -306,9 +301,6 @@
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Filter.IsFiltering}" Value="True">
-                            <Setter Property="Text" Value="Filtering"/>
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding Edit.IsEditing}" Value="True">
                             <Setter Property="Text" Value="Editing"/>
                         </DataTrigger>

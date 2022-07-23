@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Collections.ObjectModel;
-using System.Windows;
+using System.Windows.Data;
 
 namespace rowsSharp.ViewModel
 {
@@ -24,17 +24,6 @@ namespace rowsSharp.ViewModel
             {
                 hasFocus = value;
                 OnPropertyChanged(nameof(HasFocus));
-            }
-        }
-
-        private bool isFiltering;
-        public bool IsFiltering
-        {
-            get { return isFiltering; }
-            set
-            {
-                isFiltering = value;
-                OnPropertyChanged(nameof(IsFiltering));
             }
         }
 
@@ -58,13 +47,11 @@ namespace rowsSharp.ViewModel
         private ICommand? filterCommand;
         public ICommand FilterCommand => filterCommand ??= new CommandHandler(
             () => Filter(),
-            () => !isFiltering
+            () => true
         );
 
         private void Filter()
         {
-            Application.Current.Dispatcher.Invoke(() => IsFiltering = true);
-
             viewModel.Logger.Info("Filtering CSV, ({filter}, IOAlias: {IAlias}, {OAlias})",
                 filterText,
                 viewModel.Config.InputAlias,
@@ -131,27 +118,19 @@ namespace rowsSharp.ViewModel
                 }
             }
 
-            if (viewModel.Csv.Records is null)
-            {
-                viewModel.Logger.Warn("Empty filtering source");
-                return;
-            }
-
             // Filtering
             ObservableCollection<CsvRecord> originalList = viewModel.Csv.Records;
+            viewModel.RecordsView = CollectionViewSource.GetDefaultView(originalList);
             viewModel.RecordsView.Filter = RecordsViewFilter;
 
             // Output alias
             if (viewModel.Config.OutputAlias)
             {
                 ObservableCollection<CsvRecord> tempRecords = new();
-                foreach (CsvRecord record in originalList)
+                foreach (CsvRecord record in viewModel.RecordsView)
                 {
-                    tempRecords.Add(viewModel.Csv.DeepCopy(record));
-                }
-
-                foreach (var record in tempRecords)
-                {
+                    // tempRecords.Add(viewModel.Csv.DeepCopy(record));
+                    CsvRecord thisRecord = viewModel.Csv.DeepCopy(record);
                     for (int i = 0; i < viewModel.Csv.Headers.Count - 1; i++)
                     {
                         string originalColumnName = viewModel.Csv.Headers[i];
@@ -161,17 +140,20 @@ namespace rowsSharp.ViewModel
                         {
                             foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
                             {
-                                PropertyInfo propertyInfo = record.GetType().GetProperty("Column" + i)!;
+                                PropertyInfo propertyInfo = thisRecord.GetType().GetProperty("Column" + i)!;
                                 if (propertyInfo is null) { continue; }
                                 propertyInfo.SetValue(
-                                    record,
-                                    propertyInfo.GetValue(record).ToString().Replace(aliasKeyValue.Key, aliasKeyValue.Value)
+                                    thisRecord,
+                                    propertyInfo.GetValue(thisRecord).ToString().Replace(aliasKeyValue.Key, aliasKeyValue.Value)
                                 );
                             }
                         }
                     }
+                    tempRecords.Add(thisRecord);
                 }
+                viewModel.RecordsView = CollectionViewSource.GetDefaultView(tempRecords);
             }
+
 
             bool RecordsViewFilter(object obj)
             {
@@ -192,7 +174,6 @@ namespace rowsSharp.ViewModel
 
             viewModel.Preview.PreviewSource = new();
             viewModel.Logger.Debug("Filtering CSV completed");
-            isFiltering = IsFiltering = false;
             viewModel.Edit.SelectedIndex = -1;
         }
     }
