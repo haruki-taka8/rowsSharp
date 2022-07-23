@@ -20,18 +20,13 @@ namespace rowsSharp.ViewModel
             new CommandHandler(() => SetReadWrite(), () => true);
 
         private bool originalReadWrite;
-
         private void SetReadWrite()
         {
-            if (OutputAlias)
-            {
-                originalReadWrite = ReadWrite;
-                ReadWrite = false;
-            }
-            else
-            {
-                ReadWrite = originalReadWrite;
-            }
+            // Make ReadWrite FALSE when OutputAlias is TRUE
+            // Revert originalReadWrite when OutputAlias is FALSE
+            if (OutputAlias) { originalReadWrite = ReadWrite; }
+            ReadWrite = !OutputAlias && originalReadWrite;
+
             OnPropertyChanged(nameof(OutputAlias));
             OnPropertyChanged(nameof(ReadWrite));
         }
@@ -54,22 +49,24 @@ namespace rowsSharp.ViewModel
 
             viewModel.Logger.Info("Loading base configurations");
             string jsonString = File.ReadAllText(InputPath);
-            Config configJson = JsonSerializer.Deserialize<Config>(jsonString);
-            if (configJson is null) { throw new NullReferenceException(); }
+            var jsonConfig = JsonSerializer.Deserialize<Config>(jsonString);
 
-            CsvPath             = configJson.CsvPath;
-            PreviewPath         = configJson.PreviewPath;
-            InsertCount         = configJson.InsertCount;
-            InsertSelectedCount = configJson.InsertSelectedCount;
-            InputAlias          = configJson.InputAlias;
-            OutputAlias         = configJson.OutputAlias;
-            ReadWrite           = configJson.ReadWrite;
-            IsTemplate          = configJson.IsTemplate;
-            HasHeader           = configJson.HasHeader;
-            FrozenColumn        = configJson.FrozenColumn;
-            PreviewWidth        = configJson.PreviewWidth;
-            FontFamily          = configJson.FontFamily;
-            CopyRowFormat       = configJson.CopyRowFormat;
+            if (jsonConfig is null) { throw new InvalidDataException(); }
+            Config config = jsonConfig;
+
+            CsvPath             = config.CsvPath;
+            PreviewPath         = config.PreviewPath;
+            InsertCount         = config.InsertCount;
+            InsertSelectedCount = config.InsertSelectedCount;
+            InputAlias          = config.InputAlias;
+            OutputAlias         = config.OutputAlias;
+            ReadWrite           = config.ReadWrite;
+            IsTemplate          = config.IsTemplate;
+            HasHeader           = config.HasHeader;
+            FrozenColumn        = config.FrozenColumn;
+            PreviewWidth        = config.PreviewWidth;
+            FontFamily          = config.FontFamily;
+            CopyRowFormat       = config.CopyRowFormat;
 
             string baseDir = Environment.CurrentDirectory + "./Userdata/";
             CsvPath = CsvPath.Replace("$baseDir", baseDir);
@@ -82,13 +79,11 @@ namespace rowsSharp.ViewModel
                 viewModel.Logger.Info("Loading styling configurations");
                 jsonString = File.ReadAllText(StylePath);
                 var styleJson = JsonSerializer.Deserialize<StyleConfig>(jsonString);
-
-                Style = styleJson is null ? new StyleConfig() : styleJson;
+                if (styleJson is not null) { Style = styleJson; }
                 return;
             }
 
             viewModel.Logger.Info("No styling configurations found, proceeding with defaults");
-            Style = new StyleConfig();
         }
     }
 }

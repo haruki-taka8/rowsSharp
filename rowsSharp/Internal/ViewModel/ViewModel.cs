@@ -19,34 +19,14 @@ namespace rowsSharp.ViewModel
 
     public class RowsVM : ViewModelBase
     {
-        public Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private ConfigVM config;
-        public ConfigVM Config
-        {
-            get { return config; }
-            set
-            {
-                config = value;
-                OnPropertyChanged(nameof(Config));
-            }
-        }
-
-        private CsvVM csv;
-        public CsvVM Csv
-        {
-            get { return csv; }
-            set
-            {
-                csv = value; 
-                OnPropertyChanged(nameof(Csv));
-            }
-        }
+        public Logger Logger { get; } = LogManager.GetCurrentClassLogger();
+        public ConfigVM Config { get; set; }
+        public CsvVM Csv { get; set; }
 
         private ICollectionView recordsView;
         public ICollectionView RecordsView
         {
-            get { return recordsView; }
+            get => recordsView;
             set
             {
                 recordsView = value;
@@ -54,70 +34,31 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private FilterVM filter;
-        public FilterVM Filter
-        {
-            get { return filter; }
-            set
-            {
-                filter = value;
-                OnPropertyChanged(nameof(Filter));
-            }
-        }
-
-        private PreviewVM preview;
-        public PreviewVM Preview
-        {
-            get { return preview; }
-            set
-            {
-                preview = value;
-                OnPropertyChanged(nameof(Preview));
-            }
-        }
-
-        private HistoryVM history;
-        public HistoryVM History
-        {
-            get { return history; }
-            set
-            {
-                history = value;
-                OnPropertyChanged(nameof(History));
-            }
-        }
-
-        private EditVM edit;
-        public EditVM Edit
-        {
-            get { return edit; }
-            set
-            {
-                edit = value;
-                OnPropertyChanged(nameof(Edit));
-            }
-        }
+        public FilterVM Filter { get; set; }
+        public PreviewVM Preview { get; set; }
+        public HistoryVM History { get; set; }
+        public EditVM Edit { get; set; }
 
         public RowsVM()
         {
             Logger.Debug("Begin VM construction");
-            config  = new(this);
-            csv     = new(this, config.CsvPath);
-            recordsView = CollectionViewSource.GetDefaultView(csv.Records);
-            filter  = new(this);
-            preview = new(this);
-            history = new(this);
-            edit    = new(this);
+            Config  = new(this);
+            Csv     = new(this, Config.CsvPath);
+            recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
+            Filter  = new(this);
+            Preview = new(this);
+            History = new(this);
+            Edit    = new(this);
             Logger.Debug("End VM construction");
 
             // Open the file creation dialog
-            if (csv.Records.Any()) { return; }
+            if (Csv.Records.Any()) { return; }
             new NewFileWindow(this).ShowDialog();
-            csv = new(this, config.CsvPath);
-            recordsView = CollectionViewSource.GetDefaultView(csv.Records);
+            Csv = new(this, Config.CsvPath);
+            recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
 
-            if (csv.Records.Any()) { return; }
-            FileNotFoundException notFoundException = new(config.CsvPath);
+            if (Csv.Records.Any()) { return; }
+            FileNotFoundException notFoundException = new(Config.CsvPath);
             Logger.Fatal(notFoundException, "CSV file still not found. Bailing out.");
             throw notFoundException;
         }

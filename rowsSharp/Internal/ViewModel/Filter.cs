@@ -19,7 +19,7 @@ namespace rowsSharp.ViewModel
         private bool hasFocus;
         public bool HasFocus
         {
-            get { return hasFocus; }
+            get => hasFocus;
             set
             {
                 hasFocus = value;
@@ -30,7 +30,7 @@ namespace rowsSharp.ViewModel
         private string filterText = string.Empty;
         public string FilterText
         {
-            get { return filterText; }
+            get => filterText;
             set
             {
                 filterText = value;
@@ -80,7 +80,6 @@ namespace rowsSharp.ViewModel
                         return;
                     }
 
-                    keyvalue[0] = "Column" + columnIndex;
                     keyvalue[1] = keyvalue[1].Trim().Trim('"');
 
                     // Input Alias
@@ -95,6 +94,8 @@ namespace rowsSharp.ViewModel
                             }
                         }
                     }
+
+                    keyvalue[0] = "Column" + columnIndex;
                 }
 
                 // Check if regex is valid
