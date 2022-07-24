@@ -94,21 +94,10 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
                     <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}"  IsChecked="{Binding Config.InputAlias}"/>
-                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Edit.OutputAliasCommand}" IsChecked="{Binding Config.OutputAlias}"/>
+                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.OutputAlias}"/>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center"
-                              IsChecked="{Binding Config.ReadWrite}">
-                        <CheckBox.Style>
-                            <Style TargetType="CheckBox">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Config.OutputAlias}" Value="True">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.ReadWrite}" Command="{Binding Config.ReadWriteCommand}"/>
                     <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.IsTemplate}" IsEnabled="{Binding Config.ReadWrite}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
@@ -200,8 +189,7 @@
                   FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
                   AutoGeneratingColumn="Grid_AutoGeneratingColumn"
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
-                  RowHeaderWidth="0" MinRowHeight="25" 
-                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  MinRowHeight="25" CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="0"
                   EnableColumnVirtualization="True" EnableRowVirtualization="True">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="BeginningEdit">
@@ -217,6 +205,9 @@
                     <b:InvokeCommandAction Command="{Binding Edit.UpdateSelectedCommand}" CommandParameter="{Binding ElementName=Grid, Path=SelectedItems}"/>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding Edit.RemoveCommand}"/>
+            </DataGrid.InputBindings>
             <DataGrid.Resources>
                 <Style TargetType="DataGrid">
                     <Style.Triggers>

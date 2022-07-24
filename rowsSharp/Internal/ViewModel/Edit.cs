@@ -97,17 +97,6 @@ namespace rowsSharp.ViewModel
                 (s) => true
             );
 
-        private ICommand? outputAliasCommand;
-        public ICommand OutputAliasCommand => outputAliasCommand ??=
-            new CommandHandler(
-                () =>
-                {
-                    viewModel.Config.SetReadWriteCommand.Execute(this);
-                    viewModel.Filter.FilterCommand.Execute(this);
-                },
-                () => true
-            );
-
         private bool CanInsertTopOrBottom()
         {
             return viewModel.Config.ReadWrite &&

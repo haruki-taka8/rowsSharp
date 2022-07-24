@@ -15,8 +15,15 @@ namespace rowsSharp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private ICommand? setReadWriteCommand;
-        public ICommand SetReadWriteCommand => setReadWriteCommand ??=
+        private ICommand? readWriteCommand;
+        public ICommand ReadWriteCommand => readWriteCommand ??=
+            new CommandHandler(
+                () => OnPropertyChanged(nameof(ReadWrite)),
+                () => !OutputAlias
+            );
+
+        private ICommand? outputAliasCommand;
+        public ICommand OutputAliasCommand => outputAliasCommand ??=
             new CommandHandler(() => SetReadWrite(), () => true);
 
         private bool originalReadWrite;
@@ -29,11 +36,12 @@ namespace rowsSharp.ViewModel
 
             OnPropertyChanged(nameof(OutputAlias));
             OnPropertyChanged(nameof(ReadWrite));
+            viewModel.Filter.FilterCommand.Execute(this);
         }
 
         private ICommand? insertSelectedCommand;
         public ICommand InsertSelectedCommand => insertSelectedCommand ??=
-            new CommandHandler(() => OnPropertyChanged(nameof(InsertSelectedCount)), () => true);
+            new CommandHandler(() => OnPropertyChanged(nameof(InsertSelectedCount)), () => ReadWrite);
 
         private readonly RowsVM viewModel;
         private const string InputPath = "./Userdata/Configurations/Configuration.json";
