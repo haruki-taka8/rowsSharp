@@ -11,10 +11,16 @@ namespace rowsSharp.ViewModel
 {
     public class EditVM : ViewModelBase
     {
+        private readonly RowsVM viewModel;
+        public EditVM(RowsVM inViewModel)
+        {
+            viewModel = inViewModel;
+        }
+
         private bool isDirtyEditor;
         public bool IsDirtyEditor
         {
-            get { return isDirtyEditor; }
+            get => isDirtyEditor;
             set
             {
                 isDirtyEditor = value;
@@ -25,7 +31,7 @@ namespace rowsSharp.ViewModel
         private bool isEditing;
         public bool IsEditing
         {
-            get { return isEditing; }
+            get => isEditing;
             set
             {
                 isEditing = value;
@@ -36,7 +42,7 @@ namespace rowsSharp.ViewModel
         private bool isInsertExpanded;
         public bool IsInsertExpanded
         {
-            get { return isInsertExpanded; }
+            get => isInsertExpanded;
             set
             {
                 isInsertExpanded = value;
@@ -44,10 +50,10 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private List<CsvRecord> selectedItems;
+        private List<CsvRecord> selectedItems = new();
         public List<CsvRecord> SelectedItems
         {
-            get { return selectedItems; }
+            get => selectedItems;
             set
             {
                 List<CsvRecord> old = selectedItems;
@@ -59,27 +65,15 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private int selectedIndex;
+        private int selectedIndex = -1;
         public int SelectedIndex
         {
-            get { return selectedIndex; }
+            get => selectedIndex;
             set
             {
                 selectedIndex = value;
                 OnPropertyChanged(nameof(SelectedIndex));
             }
-        }
-
-        private bool parity;
-
-        private readonly RowsVM viewModel;
-        public EditVM(RowsVM inViewModel)
-        {
-            viewModel = inViewModel;
-            isInsertExpanded = false;
-            isDirtyEditor = false;
-            selectedItems = new List<CsvRecord>();
-            selectedIndex = -1;
         }
 
         private ICommand? beginEditCommand;
@@ -106,76 +100,75 @@ namespace rowsSharp.ViewModel
         private ICommand? outputAliasCommand;
         public ICommand OutputAliasCommand => outputAliasCommand ??=
             new CommandHandler(
-                () => ToggleReadWrite(),
+                () =>
+                {
+                    viewModel.Config.SetReadWriteCommand.Execute(this);
+                    viewModel.Filter.FilterCommand.Execute(this);
+                },
                 () => true
             );
 
-        private void ToggleReadWrite()
+        private bool CanInsertTopOrBottom()
         {
-            viewModel.Config.SetReadWriteCommand.Execute(this);
-            viewModel.Filter.FilterCommand.Execute(this);
+            return viewModel.Config.ReadWrite &&
+                (
+                    (viewModel.Config.InsertSelectedCount && SelectedItems.Any()) ||
+                    (viewModel.Config.InsertSelectedCount == false)
+                );
         }
 
         private bool IsAnyRowSelected()
         {
-            return viewModel.RecordsView is not null &&
-                viewModel.Config.ReadWrite &&
+            return viewModel.Config.ReadWrite &&
+                !viewModel.RecordsView.IsEmpty &&
                 SelectedIndex != -1;
         }
 
         private ICommand? insertTopCommand;
         public ICommand InsertTopCommand => insertTopCommand ??=
             new CommandHandler(
-                () => Insert(0, 0),
-                () => viewModel.Config.ReadWrite
+                () => Insert(0),
+                () => CanInsertTopOrBottom()
             );
 
         private ICommand? insertAboveCommand;
         public ICommand InsertAboveCommand => insertAboveCommand ??=
             new CommandHandler(
-                () => Insert(SelectedIndex, 0),
+                () => Insert(SelectedIndex),
                 () => IsAnyRowSelected()
             );
 
         private ICommand? insertBelowCommand;
         public ICommand InsertBelowCommand => insertBelowCommand ??=
             new CommandHandler(
-                () => Insert(SelectedIndex, SelectedItems.Count),
+                () => Insert(SelectedIndex + SelectedItems.Count),
                 () => IsAnyRowSelected()
             );
 
         private ICommand? insertLastCommand;
         public ICommand InsertLastCommand => insertLastCommand ??= 
             new CommandHandler(
-                () => Insert(viewModel.Csv.Records.Count - 1, 1),
-                () => viewModel.Config.ReadWrite
+                () => Insert(viewModel.Csv.Records.Count),
+                () => CanInsertTopOrBottom()
             );
 
         private ICommand? removeCommand;
         public ICommand RemoveCommand => removeCommand ??= new CommandHandler(
             () =>
             {
-                viewModel.Logger.Info("Removing rows (x{Count}), {Parity}", SelectedItems.Count, parity);
-
+                viewModel.Logger.Info("Removing rows (x{Count})", SelectedItems.Count);
                 foreach (var item in SelectedItems)
                 {
-                    viewModel.History.UndoStack.Push(
-                        new Operation()
-                        {
-                            OperationEnum = OperationEnum.Remove,
-                            OldRow = item,
-                            At = viewModel.Csv.Records.IndexOf(item),
-                            Parity = parity
-                        }
+                    viewModel.History.AddOperation(
+                        OperationEnum.Remove,
+                        viewModel.Csv.Records.IndexOf(item),
+                        item
                     );
                     viewModel.Csv.Records.Remove(item);
                 }
-
-                viewModel.History.RedoStack.Clear();
-                IsDirtyEditor = true;
-                parity = !parity;
+                viewModel.History.CommitOperation();
             },
-            () => viewModel.Config.ReadWrite
+            () => viewModel.Config.ReadWrite && !viewModel.RecordsView.IsEmpty
         );
 
         private DelegateCommand<DataGridCellEditEndingEventArgs>? endEditCommand;
@@ -190,25 +183,18 @@ namespace rowsSharp.ViewModel
                     ToString()!;
 
                 if (((TextBox)e.EditingElement).Text == oldString) { return; }
-                viewModel.History.UndoStack.Push(
-                    new Operation()
-                    {
-                        OperationEnum = OperationEnum.Inline,
-                        OldRow = viewModel.Csv.DeepCopy((CsvRecord)e.Row.Item),
-                        At = viewModel.Csv.Records.IndexOf((CsvRecord)e.Row.Item),
-                        Parity = parity
-                    }
+                viewModel.History.AddOperation(
+                    OperationEnum.Inline,
+                    viewModel.Csv.Records.IndexOf((CsvRecord)e.Row.Item),
+                    viewModel.Csv.DeepCopy((CsvRecord)e.Row.Item)
                 );
-                viewModel.History.RedoStack.Clear();
-                IsDirtyEditor = true;
-                parity = !parity;
+                viewModel.History.CommitOperation();
             },
             (e) => viewModel.Config.ReadWrite
         );
 
-        public void Insert (int at, int offset)
+        public void Insert(int at)
         {
-            at += offset;
             int count = viewModel.Config.InsertSelectedCount
                 ? selectedItems.Count
                 : viewModel.Config.InsertCount;
@@ -220,7 +206,7 @@ namespace rowsSharp.ViewModel
             CsvRecord templatedRow = new();
 
             // Templating. Expand static <[DdTt]> fields beforehand.
-            if(viewModel.Config.IsTemplate)
+            if (viewModel.Config.IsTemplate)
             {
                 foreach (KeyValuePair<string,string> keyValuePair in viewModel.Config.Style.Template)
                 {
@@ -252,20 +238,10 @@ namespace rowsSharp.ViewModel
                     );
                 }
                 viewModel.Csv.Records.Insert(at + i, thisRow);
-                viewModel.History.UndoStack.Push(
-                    new Operation()
-                    {
-                        OperationEnum = OperationEnum.Insert,
-                        OldRow = thisRow,
-                        At = at,
-                        Parity = parity
-                    }
-                );
+                viewModel.History.AddOperation(OperationEnum.Insert, at, thisRow);
             }
-
-            viewModel.History.RedoStack.Clear();
-            IsDirtyEditor = true;
-            parity = !parity;
+            viewModel.History.CommitOperation();
+            viewModel.Edit.SelectedIndex = at;
         }
 
         private ICommand? saveCommand;

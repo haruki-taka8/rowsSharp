@@ -9,10 +9,16 @@ namespace rowsSharp.ViewModel
 {
     public class HistoryVM : ViewModelBase
     {
-        private Stack<Operation> undoStack;
+        private readonly RowsVM viewModel;
+        internal HistoryVM(RowsVM inViewModel)
+        {
+            viewModel = inViewModel;
+        }
+
+        private Stack<Operation> undoStack = new();
         public Stack<Operation> UndoStack
         {
-            get { return undoStack; }
+            get => undoStack;
             set
             {
                 undoStack = value;
@@ -20,23 +26,15 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private Stack<Operation> redoStack;
+        private Stack<Operation> redoStack = new();
         public Stack<Operation> RedoStack
         {
-            get { return redoStack; }
+            get => redoStack;
             set
             {
                 redoStack = value;
                 OnPropertyChanged(nameof(RedoStack));
             }
-        }
-
-        private readonly RowsVM viewModel;
-        internal HistoryVM(RowsVM inViewModel)
-        {
-            undoStack = new();
-            redoStack = new();
-            viewModel = inViewModel;
         }
 
         private ICommand? undoCommand;
@@ -51,17 +49,26 @@ namespace rowsSharp.ViewModel
             () => viewModel.Config.ReadWrite && redoStack.Any()
         );
 
-        private ICommand? undoKeyCommand;
-        public ICommand UndoKeyCommand => undoKeyCommand ??= new CommandHandler(
-            () => Undo(),
-            () => UndoCommand.CanExecute(this) && viewModel.Edit.IsEditing
-        );
+        private bool parity;
+        public void AddOperation(OperationEnum operationEnum, int at, CsvRecord oldRow)
+        {
+            UndoStack.Push(
+                new Operation()
+                {
+                    OperationEnum = operationEnum,
+                    At = at,
+                    OldRow = oldRow,
+                    Parity = parity
+                }
+            );
+        }
 
-        private ICommand? redoKeyCommand;
-        public ICommand RedoKeyCommand => redoKeyCommand ??= new CommandHandler(
-            () => Redo(),
-            () => RedoCommand.CanExecute(this) && viewModel.Edit.IsEditing
-        );
+        public void CommitOperation()
+        {
+            viewModel.History.RedoStack.Clear();
+            viewModel.Edit.IsDirtyEditor = true;
+            parity = !parity;
+        }
 
         private static void DispatcherInvoke(Action action)
         {
@@ -92,12 +99,12 @@ namespace rowsSharp.ViewModel
         {
             Operation last = UndoStack.Pop();
             viewModel.Logger.Info("Undo {Action} @ {At}, {Parity}", last.OperationEnum, last.At, last.Parity);
+
             Operation operation = Operation.DeepCopy(last);
             operation.OldRow = last.OperationEnum == OperationEnum.Inline ?
                 viewModel.Csv.Records[last.At] :
                 last.OldRow;
             RedoStack.Push(operation);
-
             CommonOperation(true, last);
 
             // Group insert/remove edits
@@ -109,12 +116,12 @@ namespace rowsSharp.ViewModel
         {
             Operation last = RedoStack.Pop();
             viewModel.Logger.Info("Redo {Action} @ {At}, {Parity}", last.OperationEnum, last.At, last.Parity);
+
             Operation operation = Operation.DeepCopy(last);
             operation.OldRow = last.OperationEnum == OperationEnum.Inline ?
                 viewModel.Csv.Records[last.At] :
                 last.OldRow;
             UndoStack.Push(operation);
-
             CommonOperation(false, last);
 
             RedoStack.TryPeek(out Operation? next);

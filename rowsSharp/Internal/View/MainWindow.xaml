@@ -12,11 +12,11 @@
 
     <Window.InputBindings>
         <KeyBinding Gesture="CTRL+S" Command="{Binding Edit.SaveCommand}"/>
-        <KeyBinding Gesture="CTRL+Z" Command="{Binding History.UndoKeyCommand}"/>
-        <KeyBinding Gesture="CTRL+Y" Command="{Binding History.RedoKeyCommand}"/>
+        <KeyBinding Gesture="CTRL+Z" Command="{Binding History.UndoCommand}"/>
+        <KeyBinding Gesture="CTRL+Y" Command="{Binding History.RedoCommand}"/>
         <KeyBinding Gesture="CTRL+F" Command="{Binding Filter.FocusCommand}"/>
     </Window.InputBindings>
-    
+
     <Window.Style>
         <Style TargetType="Window">
             <Style.Triggers>
@@ -116,7 +116,7 @@
                         <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content=" Insert Selected Count" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.ReadWrite}" Margin="4,0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content=" Insert Selected Count" IsChecked="{Binding Config.InsertSelectedCount}" Command="{Binding Config.InsertSelectedCommand}" Margin="4,0"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" IsEnabled="{Binding Config.ReadWrite}"/>
                     <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
@@ -149,7 +149,7 @@
             </Expander>
 
             <DockPanel Grid.Column="1" Margin="8,8,16,8" Height="36" VerticalAlignment="Top">
-                <Button Content="{Binding Config.ReadWrite}" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
+                <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
                 <Grid Margin="0,0,8,0">
                     <TextBlock Foreground="#696969" Background="White" Height="24" Padding="7,3">
                         <TextBlock.Style>
@@ -179,7 +179,7 @@
                 </Grid>
             </DockPanel>
         </Grid>
-        
+
         <!-- Empty Grid messages (left) -->
         <TextBlock Grid.Row="1" VerticalAlignment="Center" TextAlignment="Center" LineHeight="20"
                    Text="No results&#x0a;Please try a different filter term or add new rows">

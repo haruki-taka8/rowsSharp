@@ -31,6 +31,10 @@ namespace rowsSharp.ViewModel
             OnPropertyChanged(nameof(ReadWrite));
         }
 
+        private ICommand? insertSelectedCommand;
+        public ICommand InsertSelectedCommand => insertSelectedCommand ??=
+            new CommandHandler(() => OnPropertyChanged(nameof(InsertSelectedCount)), () => true);
+
         private readonly RowsVM viewModel;
         private const string InputPath = "./Userdata/Configurations/Configuration.json";
         private const string StylePath = "./Userdata/Configurations/Style.json";

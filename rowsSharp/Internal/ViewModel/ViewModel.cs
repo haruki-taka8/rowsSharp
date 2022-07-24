@@ -85,8 +85,7 @@ namespace rowsSharp.ViewModel
                     e.Cancel = true;
                     return;
                 }
-
-                if (dialog == MessageBoxResult.Yes)
+                else if (dialog == MessageBoxResult.Yes)
                 {
                     Edit.SaveCommand.Execute(this);
                 }
