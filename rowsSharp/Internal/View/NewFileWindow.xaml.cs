@@ -1,14 +1,14 @@
-﻿using System.Windows;
+﻿using rowsSharp.Model;
 using rowsSharp.ViewModel;
+using System.Windows;
 
 namespace rowsSharp.View
 {
     public partial class NewFileWindow : Window
     {
-        public NewFileWindow(RowsVM inViewModel)
+        public NewFileWindow(Config config)
         {
-            NewFileWindowVM viewModel = new(inViewModel);
-            DataContext = viewModel;
+            DataContext = new NewFileWindowVM(config);
             InitializeComponent();
         }
 

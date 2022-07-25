@@ -1,17 +1,19 @@
-﻿using System.IO;
-using System.Windows.Input;
+﻿using rowsSharp.Model;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace rowsSharp.ViewModel
 {
     public class NewFileWindowVM : ViewModelBase
     {
-        public RowsVM RowsVM { get; set; }
+        public Config Config { get; }
+        public NewFileWindowVM(Config config) => Config = config;
 
         private string headers = string.Empty;
         public string Headers
         {
-            get { return headers; }
+            get => headers;
             set
             {
                 headers = value;
@@ -19,30 +21,18 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        public ICommand CreateCommand => new CommandHandler(
+        private ICommand? createCommand;
+        public ICommand CreateCommand => createCommand ??= new CommandHandler(
             () =>
             {
-                RowsVM.Logger.Info(Headers);
                 string[] toWrite =
                 {
                     Headers,
-                    "Placeholder 1",
-                    "Placeholder 2"
+                    "Placeholder 1"
                 };
-                File.WriteAllLines(RowsVM.Config.CsvPath, toWrite);
+                File.WriteAllLines(Config.CsvPath, toWrite);
             },
-            () =>
-            {
-                return
-                    !string.IsNullOrWhiteSpace(Headers) &&
-                    !Regex.IsMatch(Headers, @"^,*$");
-            }
+            () => !Regex.IsMatch(Headers, @"^[,\s]*$")
         );
-
-        public NewFileWindowVM(RowsVM rowsVM)
-        {
-            RowsVM = rowsVM;
-            Headers = string.Empty;
-        }
     }
 }

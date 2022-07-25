@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using NLog;
+using rowsSharp.View;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using NLog;
-using rowsSharp.View;
 
 namespace rowsSharp.ViewModel
 {
@@ -42,18 +42,18 @@ namespace rowsSharp.ViewModel
         public RowsVM()
         {
             Logger.Debug("Begin VM construction");
-            Config  = new(this);
-            Csv     = new(this, Config.CsvPath);
+            Config      = new(this);
+            Csv         = new(this, Config.CsvPath);
             recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
-            Filter  = new(this);
-            Preview = new(this);
-            History = new(this);
-            Edit    = new(this);
+            Filter      = new(this);
+            Preview     = new(this);
+            History     = new(this);
+            Edit        = new(this);
             Logger.Debug("End VM construction");
 
             // Open the file creation dialog
             if (Csv.Records.Any()) { return; }
-            new NewFileWindow(this).ShowDialog();
+            new NewFileWindow(Config).ShowDialog();
             Csv = new(this, Config.CsvPath);
             recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
 

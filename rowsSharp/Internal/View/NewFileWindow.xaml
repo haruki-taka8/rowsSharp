@@ -6,8 +6,8 @@
         xmlns:viewmodel="clr-namespace:rowsSharp.ViewModel"
         d:DataContext="{d:DesignInstance Type=viewmodel:NewFileWindowVM}"
         mc:Ignorable="d"
-        Title="RowsSharp - New File" Height="600" Width="1400"
-        FontFamily="{Binding RowsVM.Config.FontFamily, FallbackValue='Courier New'}" FontSize="16">
+        Title="RowsSharp" Height="600" Width="1400"
+        FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="16">
     
     <Window.Resources>
         <Style x:Key="Caption" TargetType="TextBlock">
@@ -18,17 +18,17 @@
 
     <StackPanel Margin="32" Grid.RowSpan="3" Grid.ColumnSpan="2" Background="White" HorizontalAlignment="Stretch">
         <TextBlock Text="Create a New File" FontWeight="Bold" Margin="0"/>
-        <TextBlock Text="Rows is unable to read the specified CSV file." Style="{StaticResource Caption}" Margin="0,32,0,0"/>
+        <TextBlock Text="RowsSharp is unable to read the specified CSV file." Style="{StaticResource Caption}" Margin="0,32,0,0"/>
         <TextBlock Text="Please use this wizard to create a new file." Style="{StaticResource Caption}" Margin="0,0,0,64"/>
 
         <TextBlock Text="Filename"/>
-        <TextBox Text="{Binding RowsVM.Config.CsvPath}" IsEnabled="False" Margin="0,4,0,32" Height="24" Width="768" HorizontalAlignment="Left" VerticalContentAlignment="Center"/>
+        <TextBox Text="{Binding Config.CsvPath}" IsEnabled="False" Margin="0,4,0,32" Height="24" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"/>
 
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Columns"/>
             <TextBlock Text="Use commas to separate fields" Style="{StaticResource Caption}" Margin="32,0,0,0" VerticalAlignment="Bottom"/>
         </StackPanel>
-        <TextBox Text="{Binding Headers, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,64" Height="24" Width="768" HorizontalAlignment="Left" VerticalContentAlignment="Center"/>
+        <TextBox Text="{Binding Headers, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,64" Height="24" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"/>
 
         <Button Command="{Binding CreateCommand}" Click="Button_Click" Content="Create" Height="24" Width="768" HorizontalAlignment="Left"/>
     </StackPanel>

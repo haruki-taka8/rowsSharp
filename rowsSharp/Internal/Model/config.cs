@@ -22,8 +22,8 @@ namespace rowsSharp.Model
         public bool IsTemplate { get; set; }
         public bool HasHeader { get; set; }
         public int FrozenColumn { get; set; }
-        public string PreviewWidth { get; set; } = "*";
-        public string FontFamily { get; set; } = "Courier New";
+        public string PreviewWidth { get; set; } = string.Empty;
+        public string FontFamily { get; set; } = string.Empty;
         public string CopyRowFormat { get; set; } = string.Empty;
         public StyleConfig Style { get; set; } = new();
     }
