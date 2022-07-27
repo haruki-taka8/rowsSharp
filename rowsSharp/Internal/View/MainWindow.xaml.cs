@@ -55,7 +55,7 @@ namespace rowsSharp.View
             {
                 DataTrigger trigger = new()
                 {
-                    Binding = new Binding("Column" + (columnIndex-1)),
+                    Binding = new Binding("Column" + columnIndex),
                     Value = colorPair.Key
                 };
 
