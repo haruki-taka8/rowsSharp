@@ -1,7 +1,6 @@
 ﻿using rowsSharp.Model;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
 
 namespace rowsSharp.ViewModel
 {
@@ -21,8 +20,8 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private ICommand? createCommand;
-        public ICommand CreateCommand => createCommand ??= new CommandHandler(
+        private DelegateCommand? createCommand;
+        public DelegateCommand CreateCommand => createCommand ??= new(
             () =>
             {
                 string[] toWrite =

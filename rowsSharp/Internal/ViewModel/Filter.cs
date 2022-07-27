@@ -1,9 +1,8 @@
-﻿using System.Windows.Input;
-using rowsSharp.Model;
-using System.Text.RegularExpressions;
+﻿using rowsSharp.Model;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
-using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 
 namespace rowsSharp.ViewModel
@@ -11,10 +10,7 @@ namespace rowsSharp.ViewModel
     public class FilterVM : ViewModelBase
     {
         private readonly RowsVM viewModel;
-        public FilterVM(RowsVM inViewModel)
-        {
-            viewModel = inViewModel;
-        }
+        public FilterVM(RowsVM inViewModel) => viewModel = inViewModel;
 
         private bool hasFocus;
         public bool HasFocus
@@ -38,17 +34,114 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private ICommand? focusCommand;
-        public ICommand FocusCommand => focusCommand ??= new CommandHandler(
-            () => { HasFocus = false; HasFocus = true; },  // Force update view
-            () => true
+        private DelegateCommand? focusCommand;
+        public DelegateCommand FocusCommand => focusCommand ??= new(
+            () => { HasFocus = false; HasFocus = true; }  // Force update view
         );
 
-        private ICommand? filterCommand;
-        public ICommand FilterCommand => filterCommand ??= new CommandHandler(
-            () => Filter(),
-            () => true
+        private DelegateCommand? filterCommand;
+        public DelegateCommand FilterCommand => filterCommand ??= new(
+            () => Filter()
         );
+
+        private List<KeyValuePair<string, string>> criteria = new();
+
+        private static List<KeyValuePair<string, string>> ParseInput(
+            string inFilterText,
+            List<string> inHeaders,
+            Dictionary<string, Dictionary<string, string>>? inAlias
+        )
+        {
+            List<KeyValuePair<string, string>> output = new();
+
+            string[] splittedFilterText = Regex.Split(inFilterText, "\\s+(?=(?:\"[^\"]*\"|[^\"])*$)");
+            foreach (string criterion in splittedFilterText)
+            {
+                string[] keyvalue = Regex.Split(criterion, ":(?=(?:\"[^\"]*\"|[^\"])*$)");
+                string header = keyvalue[0].Trim().Trim('"');
+                string value = string.Empty;
+
+                // Handle Header:Value
+                if (keyvalue.Length == 2)
+                {
+                    if (!inHeaders.Contains(header)) { throw new InvalidFilterCriteriaException($"Invalid column {header}"); }
+
+                    value = keyvalue[1].Trim().Trim('"');
+
+                    if (inAlias is not null &&
+                        inAlias.TryGetValue(header, out Dictionary<string, string>? thisAlias))
+                    {
+                        foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
+                        {
+                            value = value.Replace(aliasKeyValue.Value, aliasKeyValue.Key);
+                        }
+                    }
+
+                    // Convert user-provided header to internal ColumnX notation
+                    header = inHeaders.IndexOf(header).ToString();
+                }
+
+                // Validate regular expression
+                string regexToTest = value == string.Empty ? header : value;
+                try
+                {
+                    Regex.IsMatch("", regexToTest);
+                }
+                catch
+                {
+                    throw new InvalidFilterCriteriaException($"Invalid regex {regexToTest}");
+                }
+                output.Add(new(header, value));
+            }
+            return output;
+        }
+
+        private static ICollectionView OutputAlias(
+            ICollectionView input,
+            CsvVM inCsvVM,
+            Dictionary<string, Dictionary<string, string>> inAlias
+        )
+        {
+            List<CsvRecord> tempRecords = new();
+            foreach (CsvRecord record in input)
+            {
+                CsvRecord thisRecord = inCsvVM.DeepCopy(record);
+                for (int i = 0; i < inCsvVM.Headers.Count - 1; i++)
+                {
+                    inAlias.TryGetValue(inCsvVM.Headers[i], out Dictionary<string, string>? thisAlias);
+                    if (thisAlias is null) { continue; }
+
+                    foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
+                    {
+                        CsvVM.SetField(
+                            thisRecord,
+                            i,
+                            CsvVM.GetField(thisRecord, i).Replace(aliasKeyValue.Key, aliasKeyValue.Value)
+                        );
+                    }
+                }
+                tempRecords.Add(thisRecord);
+            }
+            return CollectionViewSource.GetDefaultView(tempRecords);
+        }
+
+        private bool RecordsViewFilter(object obj)
+        {
+            CsvRecord row = (CsvRecord)obj;
+            foreach (KeyValuePair<string, string> criterion in criteria)
+            {
+                if (string.IsNullOrWhiteSpace(criterion.Value))
+                {
+                    if (Regex.IsMatch(viewModel.Csv.ConcatenateFields(row), criterion.Key, RegexOptions.IgnoreCase)) { continue; }
+                    return false;
+                }
+
+                string field = CsvVM.GetField(row, int.Parse(criterion.Key));
+                if (Regex.IsMatch(field, criterion.Value, RegexOptions.IgnoreCase)) { continue; }
+                return false;
+            }
+            return true;
+        }
 
         private void Filter()
         {
@@ -59,118 +152,29 @@ namespace rowsSharp.ViewModel
             );
 
             // Parse input
-            List<KeyValuePair<string, string>> criteria = new();
-            string[]? filterTextSplitted = Regex.Split(filterText, " (?=(?:\"[^\"]*\"|[^\"])*$)");
-
-            foreach (string entry in filterTextSplitted)
+            try
             {
-                if (string.IsNullOrWhiteSpace(filterTextSplitted[0])) { continue; }
-
-                string[] keyvalue = Regex.Split(entry, ":(?=(?:\"[^\"]*\"|[^\"])*$)");
-                keyvalue[0] = keyvalue[0].Trim().Trim('"');
-
-                // Convert column name into ColumnX, where 0 <= [int] X <= Column.Count-1
-                if (keyvalue.Length == 2)
-                {
-                    int columnIndex = viewModel.Csv.Headers.IndexOf(keyvalue[0]);
-                    if (columnIndex == -1)
-                    {
-                        viewModel.Logger.Warn("Invalid column {column}", keyvalue[0]);
-                        viewModel.RecordsView.Filter = (object obj) => false;
-                        return;
-                    }
-
-                    keyvalue[1] = keyvalue[1].Trim().Trim('"');
-
-                    // Input Alias
-                    if (viewModel.Config.InputAlias)
-                    {
-                        var thisAlias = new Dictionary<string,string>();
-                        if (viewModel.Config.Style.Alias.TryGetValue(keyvalue[0], out thisAlias))
-                        {
-                            foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
-                            {
-                                keyvalue[1] = keyvalue[1].Replace(aliasKeyValue.Value, aliasKeyValue.Key);
-                            }
-                        }
-                    }
-
-                    keyvalue[0] = "Column" + columnIndex;
-                }
-
-                // Check if regex is valid
-                try
-                {
-                    Regex.IsMatch("", keyvalue[^1]);
-                    criteria.Add(new KeyValuePair<string, string>(
-                        keyvalue[0],
-                        keyvalue.Length == 2 ? keyvalue[1] : string.Empty
-                    ));
-                }
-                catch
-                {
-                    viewModel.Logger.Warn(
-                        "Invalid regex at {header}, {value}.",
-                        keyvalue[0],
-                        keyvalue.Length == 2 ? keyvalue[1] : string.Empty
-                    );
-                    viewModel.RecordsView.Filter = (object obj) => false;
-                    return;
-                }
+                criteria = ParseInput(
+                        filterText,
+                        viewModel.Csv.Headers,
+                        viewModel.Config.InputAlias ? viewModel.Config.Style.Alias : null
+                );
+            }
+            catch (InvalidFilterCriteriaException ex)
+            {
+                viewModel.Logger.Warn(ex.Message);
+                viewModel.RecordsView.Filter = (object obj) => false;
+                return;
             }
 
             // Filtering
-            ObservableCollection<CsvRecord> originalList = viewModel.Csv.Records;
-            viewModel.RecordsView = CollectionViewSource.GetDefaultView(originalList);
+            viewModel.RecordsView = CollectionViewSource.GetDefaultView(viewModel.Csv.Records);
             viewModel.RecordsView.Filter = RecordsViewFilter;
 
             // Output alias
             if (viewModel.Config.OutputAlias)
             {
-                ObservableCollection<CsvRecord> tempRecords = new();
-                foreach (CsvRecord record in viewModel.RecordsView)
-                {
-                    // tempRecords.Add(viewModel.Csv.DeepCopy(record));
-                    CsvRecord thisRecord = viewModel.Csv.DeepCopy(record);
-                    for (int i = 0; i < viewModel.Csv.Headers.Count - 1; i++)
-                    {
-                        string originalColumnName = viewModel.Csv.Headers[i];
-
-                        Dictionary<string, string>? thisAlias = new();
-                        if (viewModel.Config.Style.Alias.TryGetValue(originalColumnName, out thisAlias))
-                        {
-                            foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
-                            {
-                                PropertyInfo propertyInfo = thisRecord.GetType().GetProperty("Column" + i)!;
-                                if (propertyInfo is null) { continue; }
-                                propertyInfo.SetValue(
-                                    thisRecord,
-                                    propertyInfo.GetValue(thisRecord).ToString().Replace(aliasKeyValue.Key, aliasKeyValue.Value)
-                                );
-                            }
-                        }
-                    }
-                    tempRecords.Add(thisRecord);
-                }
-                viewModel.RecordsView = CollectionViewSource.GetDefaultView(tempRecords);
-            }
-
-
-            bool RecordsViewFilter(object obj)
-            {
-                CsvRecord row = (CsvRecord)obj;
-                foreach (KeyValuePair<string, string> keyValuePair in criteria)
-                {
-                    if (string.IsNullOrWhiteSpace(keyValuePair.Value))
-                    {
-                        if (!Regex.IsMatch(viewModel.Csv.ConcatenateFields(row), keyValuePair.Key, RegexOptions.IgnoreCase)) { return false; }
-                        continue;
-                    }
-
-                    string field = row.GetType().GetProperty(keyValuePair.Key).GetValue(row).ToString()!;
-                    if (!Regex.IsMatch(field, keyValuePair.Value, RegexOptions.IgnoreCase)) { return false; }
-                }
-                return true;
+                viewModel.RecordsView = OutputAlias(viewModel.RecordsView, viewModel.Csv, viewModel.Config.Style.Alias);
             }
 
             viewModel.Preview.PreviewSource = new();

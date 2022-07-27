@@ -3,50 +3,25 @@ using System.Windows.Input;
 
 namespace rowsSharp.ViewModel
 {
-    /// <summary>
-    ///                [Command Handler](https://stackoverflow.com/a/12423962)
-    /// by             [yo chauhan](https://stackoverflow.com/users/1217882/yo-chauhan)
-    /// licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-    /// </summary>
-
-    public class CommandHandler : ICommand
+    public class DelegateCommand : ICommand
     {
-        private readonly Action _action;
         private readonly Func<bool> _canExecute;
+        private readonly Action _execute;
 
-        /// <summary>
-        /// Creates instance of the command handler
-        /// </summary>
-        /// <param name="action">Action to be executed by the command</param>
-        /// <param name="canExecute">A bolean property to containing current permissions to execute the command</param>
-        public CommandHandler(Action action, Func<bool> canExecute)
+        public DelegateCommand(Action execute) : this(execute, () => true) { }
+        public DelegateCommand(Action execute, Func<bool> canExecute)
         {
-            _action = action;
+            _execute = execute;
             _canExecute = canExecute;
         }
 
-        /// <summary>
-        /// Wires CanExecuteChanged event 
-        /// </summary>
+        public bool CanExecute(object? parameter) => _canExecute.Invoke();
+        public void Execute(object? parameter) => _execute();
+
         public event EventHandler? CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        /// <summary>
-        /// Forces checking if execute is allowed
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public bool CanExecute(object? parameter)
-        {
-            return _canExecute.Invoke();
-        }
-
-        public void Execute(object? parameter)
-        {
-            _action();
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 
@@ -55,33 +30,28 @@ namespace rowsSharp.ViewModel
         private readonly Predicate<T> _canExecute;
         private readonly Action<T> _execute;
 
-        public DelegateCommand(Action<T> execute) : this(execute, null) {}
+        public DelegateCommand(Action<T> execute) : this(execute, (T obj) => true) { }
 
-        public DelegateCommand (Action<T> execute, Predicate<T> canExecute)
+        public DelegateCommand(Action<T> execute, Predicate<T> canExecute)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object? parameter)
-        {
-            if (_canExecute is null) { return true; }
-            if (parameter is null) { return false; }
-
-            return _canExecute((T)parameter);
-        }
+        public bool CanExecute(object? parameter) =>
+            _canExecute is not null
+            && parameter is not null
+            && _canExecute((T)parameter);
 
         public void Execute(object? parameter)
         {
-            if (parameter is null) { return; }
-            _execute((T)parameter);
+            if (parameter is not null) { _execute((T)parameter); }
         }
 
         public event EventHandler? CanExecuteChanged;
         public void RaiseCanExecuteChanged()
         {
-            if (CanExecuteChanged is null) { return; }
-            CanExecuteChanged(this, EventArgs.Empty);
+            if (CanExecuteChanged is not null) { CanExecuteChanged(this, EventArgs.Empty); }
         }
     }
 }

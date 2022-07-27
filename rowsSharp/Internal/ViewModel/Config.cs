@@ -1,9 +1,8 @@
-﻿using System;
-using rowsSharp.Model;
+﻿using rowsSharp.Model;
+using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using System.Windows.Input;
-using System.ComponentModel;
 
 namespace rowsSharp.ViewModel
 {
@@ -15,16 +14,16 @@ namespace rowsSharp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private ICommand? readWriteCommand;
-        public ICommand ReadWriteCommand => readWriteCommand ??=
-            new CommandHandler(
-                () => OnPropertyChanged(nameof(ReadWrite)),
+        private DelegateCommand? readWriteCommand;
+        public DelegateCommand ReadWriteCommand => readWriteCommand ??=
+            new(
+                () => { }, // Do nothing
                 () => !OutputAlias
             );
 
-        private ICommand? outputAliasCommand;
-        public ICommand OutputAliasCommand => outputAliasCommand ??=
-            new CommandHandler(() => SetReadWrite(), () => true);
+        private DelegateCommand? outputAliasCommand;
+        public DelegateCommand OutputAliasCommand => outputAliasCommand ??=
+            new(() => SetReadWrite());
 
         private bool originalReadWrite;
         private void SetReadWrite()
@@ -34,14 +33,16 @@ namespace rowsSharp.ViewModel
             if (OutputAlias) { originalReadWrite = ReadWrite; }
             ReadWrite = !OutputAlias && originalReadWrite;
 
-            OnPropertyChanged(nameof(OutputAlias));
             OnPropertyChanged(nameof(ReadWrite));
             viewModel.Filter.FilterCommand.Execute(this);
         }
 
-        private ICommand? insertSelectedCommand;
-        public ICommand InsertSelectedCommand => insertSelectedCommand ??=
-            new CommandHandler(() => OnPropertyChanged(nameof(InsertSelectedCount)), () => ReadWrite);
+        private DelegateCommand? insertSelectedCommand;
+        public DelegateCommand InsertSelectedCommand => insertSelectedCommand ??=
+            new(
+                () => { }, // Do nothing
+                () => ReadWrite
+            );
 
         private readonly RowsVM viewModel;
         private const string InputPath = "./Userdata/Configurations/Configuration.json";

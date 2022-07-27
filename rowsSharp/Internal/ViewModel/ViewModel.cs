@@ -89,8 +89,7 @@ namespace rowsSharp.ViewModel
                 {
                     Edit.SaveCommand.Execute(this);
                 }
-            },
-            (e) => true
+            }
         );
     }
 }

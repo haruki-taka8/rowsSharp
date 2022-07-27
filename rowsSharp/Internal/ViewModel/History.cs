@@ -1,8 +1,7 @@
-﻿using System.Windows.Input;
-using System.Collections.Generic;
-using rowsSharp.Model;
-using System.Linq;
+﻿using rowsSharp.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace rowsSharp.ViewModel
@@ -37,14 +36,14 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        private ICommand? undoCommand;
-        public ICommand UndoCommand => undoCommand ??= new CommandHandler(
+        private DelegateCommand? undoCommand;
+        public DelegateCommand UndoCommand => undoCommand ??= new(
             () => Undo(),
             () => viewModel.Config.ReadWrite && undoStack.Any()
         );
 
-        private ICommand? redoCommand;
-        public ICommand RedoCommand => redoCommand ??= new CommandHandler(
+        private DelegateCommand? redoCommand;
+        public DelegateCommand RedoCommand => redoCommand ??= new(
             () => Redo(),
             () => viewModel.Config.ReadWrite && redoStack.Any()
         );
