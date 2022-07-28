@@ -105,7 +105,8 @@
                         <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content=" Insert Selected Count" IsChecked="{Binding Config.InsertSelectedCount}" Command="{Binding Config.InsertSelectedCommand}" Margin="4,0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" Command="{Binding Config.InsertSelectedCommand}" Margin="4,0"
+                                      Content="{Binding Edit.SelectedItems.Count}" ContentStringFormat="Insert selected rows (×{0})"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" IsEnabled="{Binding Config.ReadWrite}"/>
                     <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
@@ -122,10 +123,10 @@
                                     <Setter Property="Height" Value="30"/>
                                 </Style>
                             </StackPanel.Resources>
-                            <Button Command="{Binding Edit.InsertTopCommand}"   Content="Insert Top"/>
-                            <Button Command="{Binding Edit.InsertAboveCommand}" Content="Insert Above"/>
-                            <Button Command="{Binding Edit.InsertBelowCommand}" Content="Insert Below"/>
-                            <Button Command="{Binding Edit.InsertLastCommand}"  Content="Insert Last"/>
+                            <Button Command="{Binding Edit.InsertTopCommand}"   Content="At Top"/>
+                            <Button Command="{Binding Edit.InsertAboveCommand}" Content="Above"/>
+                            <Button Command="{Binding Edit.InsertBelowCommand}" Content="Below"/>
+                            <Button Command="{Binding Edit.InsertLastCommand}"  Content="At Bottom"/>
                         </StackPanel>
                     </Popup>
                     <Button Grid.Row="2" Grid.Column="4" Content="Remove" Command="{Binding Edit.RemoveCommand}" Margin="4,0"/>
@@ -202,7 +203,7 @@
                     <b:InvokeCommandAction Command="{Binding Edit.EndEditCommand}" PassEventArgsToCommand="True"/>
                 </b:EventTrigger>
                 <b:EventTrigger EventName="SelectionChanged">
-                    <b:InvokeCommandAction Command="{Binding Edit.UpdateSelectedCommand}" CommandParameter="{Binding ElementName=Grid, Path=SelectedItems}"/>
+                    <b:InvokeCommandAction Command="{Binding Edit.UpdateSelectedCommand}" CommandParameter="{Binding ElementName=Grid}"/>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
             <DataGrid.InputBindings>
