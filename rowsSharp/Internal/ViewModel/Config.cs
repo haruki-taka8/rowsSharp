@@ -17,7 +17,7 @@ namespace rowsSharp.ViewModel
         private DelegateCommand? readWriteCommand;
         public DelegateCommand ReadWriteCommand => readWriteCommand ??=
             new(
-                () => { }, // Do nothing
+                () => OnPropertyChanged(nameof(ReadWrite)),
                 () => !OutputAlias
             );
 

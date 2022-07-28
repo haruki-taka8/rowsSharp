@@ -81,6 +81,7 @@ namespace rowsSharp.Model
 
     public class Csv
     {
+        public const int MaxColumns = 32;
         public List<string> Headers = new();
         public ObservableCollection<CsvRecord> Records = new();
     }

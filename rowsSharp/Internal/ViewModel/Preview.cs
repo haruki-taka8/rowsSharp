@@ -1,27 +1,22 @@
-﻿using System;
+﻿using rowsSharp.Model;
+using System;
 using System.IO;
-using System.Windows.Media.Imaging;
-using System.Text.RegularExpressions;
-using rowsSharp.Model;
-using System.Windows.Input;
-using System.Windows;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace rowsSharp.ViewModel
 {
     public class PreviewVM : ViewModelBase
     {
         private readonly RowsVM viewModel;
-
-        public PreviewVM(RowsVM inViewModel)
-        {
-            viewModel = inViewModel;
-        }
+        public PreviewVM(RowsVM inViewModel) => viewModel = inViewModel;
 
         private BitmapImage previewSource = new();
         public BitmapImage PreviewSource
         {
-            get { return previewSource; }
+            get => previewSource;
             set
             {
                 previewSource = value;
@@ -40,29 +35,27 @@ namespace rowsSharp.ViewModel
                 if (columnIndex == -1) { return string.Empty; }
 
                 string replaceFrom = string.Format("<{0}>", match.Value);
-                string replaceTo = activeRow.GetType().GetProperty("Column" + columnIndex).GetValue(activeRow, null).ToString()!;
+                string replaceTo = CsvVM.GetField(activeRow, columnIndex);
                 
                 inString = inString.Replace(replaceFrom, replaceTo);
             }
             return inString; 
         }
 
-        private ICommand? updatePreviewCommand;
-        public ICommand UpdatePreviewCommand
-        {
-            get { return updatePreviewCommand ??= new CommandHandler(() => UpdatePreview(), () => true); }
-        }
+        private DelegateCommand? updatePreviewCommand;
+        public DelegateCommand UpdatePreviewCommand => updatePreviewCommand ??= new(
+            () => UpdatePreview()
+        );
 
         private void UpdatePreview()
         {
-            string path = viewModel.Config.PreviewPath;
             if (!viewModel.Edit.SelectedItems.Any()) { return; }
 
+            string path = viewModel.Config.PreviewPath;
             path = ExpandColumnNotation(path, viewModel.Edit.SelectedItems[0]);
 
             if (!File.Exists(path)) {
                 viewModel.Logger.Warn("Failed to set preview image due to non-existent file @ {path}", path);
-                previewSource = new();
                 PreviewSource = new();
                 return;
             }
@@ -79,11 +72,11 @@ namespace rowsSharp.ViewModel
             PreviewSource = previewSource;
         }
 
-        private ICommand? _copyImageCommand;
-        public ICommand CopyImageCommand
-        {
-            get { return _copyImageCommand ??= new CommandHandler(() => CopyImage(), () => previewSource.UriSource != null); }
-        }
+        private DelegateCommand? copyImageCommand;
+        public DelegateCommand CopyImageCommand => copyImageCommand ??= new(
+            () => CopyImage(),
+            () => previewSource.UriSource is not null
+        );
 
         private void CopyImage()
         {
@@ -91,16 +84,11 @@ namespace rowsSharp.ViewModel
             Clipboard.SetImage(previewSource);
         }
 
-        private ICommand? _copyStringCommand;
-        public ICommand CopyStringCommand
-        {
-            get {
-                return _copyStringCommand ??= new CommandHandler(
-                    () => CopyString(),
-                    () => (viewModel.Edit.SelectedIndex != -1) && !string.IsNullOrWhiteSpace(viewModel.Config.CopyRowFormat)
-                );
-            }
-        }
+        private DelegateCommand? copyStringCommand;
+        public DelegateCommand CopyStringCommand => copyStringCommand ??= new(
+            () => CopyString(),
+            () => (viewModel.Edit.SelectedIndex != -1) && !string.IsNullOrWhiteSpace(viewModel.Config.CopyRowFormat)
+        );
 
         private void CopyString()
         {

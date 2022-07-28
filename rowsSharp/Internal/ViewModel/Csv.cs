@@ -1,45 +1,60 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using rowsSharp.Model;
-using CsvHelper;
-using System.IO;
-using System.Globalization;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
-using System.Reflection;
+using rowsSharp.Model;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 
 namespace rowsSharp.ViewModel
 {
     public class CsvVM : Csv
     {
-        public CsvRecord DeepCopy(CsvRecord Record)
-            {
-                CsvRecord output = new();
-                for (int i = 0; i < Headers.Count; i++)
-                {
-                    PropertyInfo propertyInfo = Record.GetType().GetProperty("Column" + i)!;
-                    if (propertyInfo is not null)
-                    {
-                        propertyInfo.SetValue(output, propertyInfo.GetValue(Record).ToString());
-                    }
-                }
-                return output;
-            }
-
-        public string ConcatenateFields(CsvRecord Record)
+        public static string GetField(CsvRecord record, int column)
         {
-            string output = string.Empty;
-            List<string> records = new();
+            if (column < 0 || column > MaxColumns - 1) { return string.Empty; }
+
+            // We're absolutely sure that
+            // record is not null && "Column" + column is a valid field
+            #pragma warning disable CS8602, CS8603, IDE0055
+            return record.GetType()
+                         .GetProperty("Column" + column)
+                         .GetValue(record).ToString();
+            #pragma warning restore CS8602, CS8603, IDE0055
+        }
+
+        public static void SetField(CsvRecord record, int column, string value)
+        {
+            if (column < 0 || column > MaxColumns - 1) { return; }
+            #pragma warning disable CS8602, IDE0055
+            record.GetType()
+                  .GetProperty("Column" + column)
+                  .SetValue(record, value);
+            #pragma warning restore CS8602, IDE0055
+        }
+
+        public CsvRecord DeepCopy(CsvRecord record)
+        {
+            CsvRecord output = new();
             for (int i = 0; i < Headers.Count; i++)
             {
-                records.Add(Record.GetType().GetProperty("Column" + i).GetValue(Record).ToString()!);
+                SetField(output, i, GetField(record, i));
+            }
+            return output;
+        }
+
+        public string ConcatenateFields(CsvRecord record)
+        {
+            List<string> fields = new();
+            for (int i = 0; i < Headers.Count; i++)
+            {
+                fields.Add(GetField(record, i));
             }
 
-            output = string.Join(
+            return string.Join(
                 ",",
-                records.Select(m => "\"" + m.Replace("\"", "\"\"") + "\"")
+                fields.Select(m => "\"" + m.Replace("\"", "\"\"") + "\"")
             );
-
-            return output;
         }
 
         public CsvVM(RowsVM viewModel, string inputPath)
@@ -67,7 +82,7 @@ namespace rowsSharp.ViewModel
             {
                 Headers = csv.Context.Reader.HeaderRecord.ToList();
                 return;
-            } 
+            }
 
             if (!Records.Any())
             {
@@ -79,7 +94,7 @@ namespace rowsSharp.ViewModel
             Headers = new();
             for (int i = 0; i < 31; i++)
             {
-                if (Records[0].GetType().GetProperty("Column" + i).GetValue(Records[0]).ToString() == string.Empty) { break; }
+                if (GetField(Records[0], i) == string.Empty) { break; }
                 Headers.Add("Column" + i);
             }
         }
