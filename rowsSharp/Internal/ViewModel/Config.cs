@@ -33,16 +33,10 @@ namespace rowsSharp.ViewModel
             if (OutputAlias) { originalReadWrite = ReadWrite; }
             ReadWrite = !OutputAlias && originalReadWrite;
 
+            OnPropertyChanged(nameof(OutputAlias));
             OnPropertyChanged(nameof(ReadWrite));
             viewModel.Filter.FilterCommand.Execute(this);
         }
-
-        private DelegateCommand? insertSelectedCommand;
-        public DelegateCommand InsertSelectedCommand => insertSelectedCommand ??=
-            new(
-                () => { }, // Do nothing
-                () => ReadWrite
-            );
 
         private readonly RowsVM viewModel;
         private const string InputPath = "./Userdata/Configurations/Configuration.json";

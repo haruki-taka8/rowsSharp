@@ -99,6 +99,15 @@ namespace rowsSharp.ViewModel
             !viewModel.RecordsView.IsEmpty &&
             SelectedIndex != -1;
 
+        private DelegateCommand? canInsertCommand;
+        public DelegateCommand CanInsertCommand => canInsertCommand ??=
+            new(
+                () => { }, // do nothing
+                () => viewModel.Config.ReadWrite &&
+                    (viewModel.Config.InsertSelectedCount && SelectedItems.Count > 0) ||
+                    (!viewModel.Config.InsertSelectedCount)
+            );
+
         private DelegateCommand? insertTopCommand;
         public DelegateCommand InsertTopCommand => insertTopCommand ??= new(
             () => Insert(0),

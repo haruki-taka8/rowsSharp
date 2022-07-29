@@ -30,6 +30,9 @@
 
     <Window.Resources>
         <!-- Styles -->
+        <Style TargetType="ToolTip">
+            <Setter Property="FontFamily" Value="{Binding Config.FontFamily, FallbackValue='Courier New'}"/>
+        </Style>
         <Style TargetType="Thumb">
             <Setter Property="Width" Value="8"/>
             <Setter Property="Cursor" Value="SizeWE"/>
@@ -97,7 +100,18 @@
                     <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.OutputAlias}"/>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.ReadWrite}" Command="{Binding Config.ReadWriteCommand}"/>
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.ReadWrite}" Command="{Binding Config.ReadWriteCommand}"
+                              ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
+                        <CheckBox.Style>
+                            <Style TargetType="CheckBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.OutputAlias}" Value="True">
+                                        <Setter Property="ToolTip" Value="Editing is not possible while using Output Alias."/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
                     <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.IsTemplate}" IsEnabled="{Binding Config.ReadWrite}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
@@ -105,9 +119,20 @@
                         <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" Command="{Binding Config.InsertSelectedCommand}" Margin="4,0"
-                                      Content="{Binding Edit.SelectedItems.Count}" ContentStringFormat="Insert selected rows (×{0})"/>
-                    <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" IsEnabled="{Binding Config.ReadWrite}"/>
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.ReadWrite}" Margin="4,0"
+                                      Content="{Binding Edit.SelectedItems.Count}" ContentStringFormat=" Insert selected rows (×{0})"/>
+                    <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" Command="{Binding Edit.CanInsertCommand}"
+                                  ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="ToolTip" Value="Insertion is not possible when Insert Selected Rows is enabled, but no rows are selected."/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
                     <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
                             <StackPanel.Resources>
@@ -146,7 +171,7 @@
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Filter.FilterText}" Value="">
-                                        <Setter Property="Text" Value="Enter filter terms"/>
+                                        <Setter Property="Text" Value="Enter filter criteria"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -276,8 +301,16 @@
         </DataGrid>
 
         <!-- Preview image (right) -->
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="No preview available" Style="{StaticResource Caption}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <Image Grid.Row="1" Grid.Column="1" Source="{Binding Preview.PreviewSource}"/>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="No preview available" Style="{StaticResource Caption}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Image Source="{Binding Preview.PreviewSource}" ToolTip="Click to copy image" ToolTipService.InitialShowDelay="500">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseUp">
+                        <b:InvokeCommandAction Command="{Binding Preview.CopyImageCommand}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </Image>
+        </Grid>
         <GridSplitter Grid.Row="1" Grid.Column="1" Width="8" Background="Transparent" HorizontalAlignment="Left"/>
 
         <!-- Status bar (bottom) -->
