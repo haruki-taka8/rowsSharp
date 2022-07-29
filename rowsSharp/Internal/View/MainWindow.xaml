@@ -233,6 +233,7 @@
             </b:Interaction.Triggers>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding Edit.RemoveCommand}"/>
+                <KeyBinding Gesture="CTRL+C" Command="{Binding Preview.CopyStringCommand}"/>
             </DataGrid.InputBindings>
             <DataGrid.Resources>
                 <Style TargetType="DataGrid">
