@@ -21,6 +21,7 @@ namespace rowsSharp.Model
         public bool ReadWrite { get; set; }
         public bool IsTemplate { get; set; }
         public bool HasHeader { get; set; }
+        public bool UseRegexFilter { get; set; }
         public int FrozenColumn { get; set; }
         public string PreviewWidth { get; set; } = string.Empty;
         public string FontFamily { get; set; } = string.Empty;

@@ -70,6 +70,7 @@ namespace rowsSharp.ViewModel
             ReadWrite           = config.ReadWrite;
             IsTemplate          = config.IsTemplate;
             HasHeader           = config.HasHeader;
+            UseRegexFilter      = config.UseRegexFilter;
             FrozenColumn        = config.FrozenColumn;
             PreviewWidth        = config.PreviewWidth;
             FontFamily          = config.FontFamily;

@@ -10,7 +10,11 @@ namespace rowsSharp.ViewModel
     public class FilterVM : ViewModelBase
     {
         private readonly RowsVM viewModel;
-        public FilterVM(RowsVM inViewModel) => viewModel = inViewModel;
+        public FilterVM(RowsVM inViewModel)
+        {
+            viewModel = inViewModel;
+            useRegex = viewModel.Config.UseRegexFilter;
+        }
 
         private bool hasFocus;
         public bool HasFocus
@@ -45,11 +49,13 @@ namespace rowsSharp.ViewModel
         );
 
         private List<KeyValuePair<string, string>> criteria = new();
+        private bool useRegex;
 
         private static List<KeyValuePair<string, string>> ParseInput(
             string inFilterText,
             List<string> inHeaders,
-            Dictionary<string, Dictionary<string, string>>? inAlias
+            Dictionary<string, Dictionary<string, string>>? inAlias,
+            bool inUseRegexFilter
         )
         {
             List<KeyValuePair<string, string>> output = new();
@@ -82,14 +88,17 @@ namespace rowsSharp.ViewModel
                 }
 
                 // Validate regular expression
-                string regexToTest = value == string.Empty ? header : value;
-                try
+                if (inUseRegexFilter)
                 {
-                    Regex.IsMatch("", regexToTest);
-                }
-                catch
-                {
-                    throw new InvalidFilterCriteriaException($"Invalid regex {regexToTest}");
+                    string regexToTest = value == string.Empty ? header : value;
+                    try
+                    {
+                        Regex.IsMatch("", regexToTest);
+                    }
+                    catch
+                    {
+                        throw new InvalidFilterCriteriaException($"Invalid regex {regexToTest}");
+                    }
                 }
                 output.Add(new(header, value));
             }
@@ -132,12 +141,19 @@ namespace rowsSharp.ViewModel
             {
                 if (string.IsNullOrWhiteSpace(criterion.Value))
                 {
-                    if (Regex.IsMatch(viewModel.Csv.ConcatenateFields(row), criterion.Key, RegexOptions.IgnoreCase)) { continue; }
+                    string concatField = viewModel.Csv.ConcatenateFields(row);
+                    if (
+                        (useRegex && Regex.IsMatch(concatField, criterion.Key, RegexOptions.IgnoreCase)) ||
+                        (!useRegex && concatField.ToLower().Contains(criterion.Key.ToLower()))
+                    ) { continue; }
                     return false;
                 }
 
                 string field = CsvVM.GetField(row, int.Parse(criterion.Key));
-                if (Regex.IsMatch(field, criterion.Value, RegexOptions.IgnoreCase)) { continue; }
+                if (
+                    (useRegex && Regex.IsMatch(field, criterion.Value, RegexOptions.IgnoreCase)) ||
+                    (!useRegex && field.ToLower().Contains(criterion.Value.ToLower()))
+                ) { continue; }
                 return false;
             }
             return true;
@@ -157,7 +173,8 @@ namespace rowsSharp.ViewModel
                 criteria = ParseInput(
                         filterText,
                         viewModel.Csv.Headers,
-                        viewModel.Config.InputAlias ? viewModel.Config.Style.Alias : null
+                        viewModel.Config.InputAlias ? viewModel.Config.Style.Alias : null,
+                        useRegex
                 );
             }
             catch (InvalidFilterCriteriaException ex)

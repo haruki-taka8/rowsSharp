@@ -8,8 +8,9 @@
   "ReadWrite": true,
   "IsTemplate": true,
   "HasHeader": true,
+  "UseRegexFilter": false,
   "FrozenColumn": 1,
   "PreviewWidth": "*",
   "FontFamily": "Courier New,Roboto Mono",
-  "CopyRowFormat": "<ID>: <Illustrator>"
+  "CopyRowFormat": "<Train>: <Top Speed> km/h"
 }
