@@ -1,10 +1,10 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using rowsSharp.Model;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace rowsSharp.ViewModel
 {
@@ -45,20 +45,22 @@ namespace rowsSharp.ViewModel
 
         public string ConcatenateFields(CsvRecord record)
         {
-            List<string> fields = new();
+            string output = string.Empty;
             for (int i = 0; i < Headers.Count; i++)
             {
-                fields.Add(GetField(record, i));
+                output += '"' + GetField(record, i).Replace("\"", "\"\"") + "\",";
             }
-
-            return string.Join(
-                ",",
-                fields.Select(m => "\"" + m.Replace("\"", "\"\"") + "\"")
-            );
+            return output.TrimEnd(',');
         }
 
         public CsvVM(RowsVM viewModel, string inputPath)
         {
+            if (!File.Exists(inputPath))
+            {
+                viewModel.Logger.Warn("CSV file not found. Starting creation wizard.");
+                return;
+            }
+
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 MissingFieldFound = null,
@@ -66,33 +68,25 @@ namespace rowsSharp.ViewModel
                 HasHeaderRecord = viewModel.Config.HasHeader
             };
 
-            if (!File.Exists(inputPath))
-            {
-                viewModel.Logger.Warn("CSV file not found. Starting creation wizard.");
-                return;
-            }
-
             viewModel.Logger.Info("Loading CSV file @ {inputPath}", inputPath);
-            using var reader = new StreamReader(inputPath);
-            using var csv = new CsvReader(reader, config);
+            using StreamReader reader = new(inputPath);
+            using CsvReader csv = new(reader, config);
             csv.Context.RegisterClassMap<CsvRecordMap>();
+
             Records = new(csv.GetRecords<CsvRecord>());
+            Headers = csv.Context.Reader.HeaderRecord is null
+                ? new()
+                : csv.Context.Reader.HeaderRecord.ToList();
 
-            if (viewModel.Config.HasHeader)
-            {
-                Headers = csv.Context.Reader.HeaderRecord.ToList();
-                return;
-            }
-
+            if (Headers.Any()) { return; }
             if (!Records.Any())
             {
-                Records = new();
-                viewModel.Logger.Warn("CSV file not found (HasHeader is FALSE). Starting creation wizard.");
+                viewModel.Logger.Warn("CSV file empty. Starting creation wizard.");
                 return;
             }
 
-            Headers = new();
-            for (int i = 0; i < 31; i++)
+            // Default headers
+            for (int i = 0; i < MaxColumns - 1; i++)
             {
                 if (GetField(Records[0], i) == string.Empty) { break; }
                 Headers.Add("Column" + i);
