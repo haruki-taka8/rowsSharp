@@ -78,24 +78,24 @@ namespace rowsSharp.ViewModel
         public DelegateCommand BeginEditCommand => beginEditCommand ??=
             new(
                 () => viewModel.Edit.IsEditing = true,
-                () => viewModel.Config.ReadWrite
+                () => viewModel.Config.CanEdit
             );
 
         private DelegateCommand<object>? commitEditCommand;
         public DelegateCommand<object> CommitEditCommand => commitEditCommand ??=
             new(
                 (s) => ((DataGrid)s).CommitEdit(),
-                (s) => viewModel.Config.ReadWrite
+                (s) => viewModel.Config.CanEdit
             );
         private bool CanInsertTopOrBottom() => 
-            viewModel.Config.ReadWrite &&
+            viewModel.Config.CanEdit &&
             (
                 (viewModel.Config.InsertSelectedCount && SelectedItems.Any()) ||
                 (viewModel.Config.InsertSelectedCount == false)
             );
 
         private bool IsAnyRowSelected() => 
-            viewModel.Config.ReadWrite &&
+            viewModel.Config.CanEdit &&
             !viewModel.RecordsView.IsEmpty &&
             SelectedIndex != -1;
 
@@ -103,7 +103,7 @@ namespace rowsSharp.ViewModel
         public DelegateCommand CanInsertCommand => canInsertCommand ??=
             new(
                 () => { }, // do nothing
-                () => viewModel.Config.ReadWrite &&
+                () => viewModel.Config.CanEdit &&
                     (viewModel.Config.InsertSelectedCount && SelectedItems.Count > 0) ||
                     (!viewModel.Config.InsertSelectedCount)
             );
@@ -158,7 +158,7 @@ namespace rowsSharp.ViewModel
                 }
                 viewModel.History.CommitOperation();
             },
-            () => viewModel.Config.ReadWrite && viewModel.Edit.SelectedIndex != -1
+            () => viewModel.Config.CanEdit && viewModel.Edit.SelectedIndex != -1
         );
 
         private DelegateCommand<DataGridCellEditEndingEventArgs>? endEditCommand;
@@ -182,7 +182,7 @@ namespace rowsSharp.ViewModel
                 viewModel.Logger.Debug(viewModel.Csv.ConcatenateFields(viewModel.Csv.DeepCopy((CsvRecord)e.Row.Item)));
                 viewModel.History.CommitOperation();
             },
-            (e) => viewModel.Config.ReadWrite
+            (e) => viewModel.Config.CanEdit
         );
 
         public void Insert(int at)
@@ -191,14 +191,14 @@ namespace rowsSharp.ViewModel
                 ? selectedItems.Count
                 : viewModel.Config.InsertCount;
 
-            viewModel.Logger.Info("Inserting CSV (@{At} x{Count}, Template: {Template})", at, count, viewModel.Config.IsTemplate);
+            viewModel.Logger.Info("Inserting CSV (@{At} x{Count}, Template: {Template})", at, count, viewModel.Config.UseInsertTemplate);
             IsInsertExpanded = false;
 
             DateTime now = DateTime.Now;
             CsvRecord templatedRow = new();
 
             // Templating. Expand static <[DdTt]> fields beforehand.
-            if (viewModel.Config.IsTemplate)
+            if (viewModel.Config.UseInsertTemplate)
             {
                 foreach (KeyValuePair<string,string> keyValuePair in viewModel.Config.Style.Template)
                 {
@@ -259,7 +259,7 @@ namespace rowsSharp.ViewModel
             
                 IsDirtyEditor = false;
             },
-            () => viewModel.Config.ReadWrite && isDirtyEditor
+            () => viewModel.Config.CanEdit && isDirtyEditor
         );
     }    
 }

@@ -20,8 +20,8 @@ namespace rowsSharp.ViewModel
     public class RowsVM : ViewModelBase
     {
         public Logger Logger { get; } = LogManager.GetCurrentClassLogger();
-        public ConfigVM Config { get; set; }
-        public CsvVM Csv { get; set; }
+        public ConfigVM Config { get; init; }
+        public CsvVM Csv { get; init; }
 
         private ICollectionView recordsView;
         public ICollectionView RecordsView
@@ -34,10 +34,10 @@ namespace rowsSharp.ViewModel
             }
         }
 
-        public FilterVM Filter { get; set; }
-        public PreviewVM Preview { get; set; }
-        public HistoryVM History { get; set; }
-        public EditVM Edit { get; set; }
+        public FilterVM Filter { get; init; }
+        public PreviewVM Preview { get; init; }
+        public HistoryVM History { get; init; }
+        public EditVM Edit { get; init; }
 
         public RowsVM()
         {

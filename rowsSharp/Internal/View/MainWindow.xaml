@@ -7,8 +7,8 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=viewmodel:RowsVM}"
         mc:Ignorable="d"
-        Height="600" Width="1400"
-        FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="16">
+        Width="{Binding Config.StartupWidth, FallbackValue=1400}" Height="{Binding Config.StartupHeight, FallbackValue=600}"
+        FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, FallbackValue=16}">
 
     <Window.InputBindings>
         <KeyBinding Gesture="CTRL+S" Command="{Binding Edit.SaveCommand}"/>
@@ -32,6 +32,11 @@
         <!-- Styles -->
         <Style TargetType="ToolTip">
             <Setter Property="FontFamily" Value="{Binding Config.FontFamily, FallbackValue='Courier New'}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Config.UseToolTip}" Value="False">
+                    <Setter Property="Template" Value="{x:Null}"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="Thumb">
             <Setter Property="Width" Value="8"/>
@@ -44,14 +49,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style TargetType="CheckBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-
         <Style x:Key="Caption" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#696969"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="{Binding Config.SecondaryFontSize, FallbackValue=14}"/>
         </Style>
     </Window.Resources>
 
@@ -96,30 +99,30 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}"  IsChecked="{Binding Config.InputAlias}"/>
-                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.OutputAlias}"/>
+                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}"  IsChecked="{Binding Config.UseInputAlias}"/>
+                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.UseOutputAlias}"/>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.ReadWrite}" Command="{Binding Config.ReadWriteCommand}"
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}" Command="{Binding Config.CanEditCommand}"
                               ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Config.OutputAlias}" Value="True">
+                                    <DataTrigger Binding="{Binding Config.UseOutputAlias}" Value="True">
                                         <Setter Property="ToolTip" Value="Editing is not possible while using Output Alias."/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
-                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.IsTemplate}" IsEnabled="{Binding Config.ReadWrite}"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate}" IsEnabled="{Binding Config.CanEdit}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
                         <Button Content="Undo" Command="{Binding History.UndoCommand}" Margin="0,0,4,0"/>
                         <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.ReadWrite}" Margin="4,0"
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.CanEdit}" Margin="4,0"
                                       Content="{Binding Edit.SelectedItems.Count}" ContentStringFormat=" Insert selected rows (×{0})"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" Command="{Binding Edit.CanInsertCommand}"
                                   ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">
@@ -215,7 +218,7 @@
                   FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
                   AutoGeneratingColumn="Grid_AutoGeneratingColumn"
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
-                  MinRowHeight="25" CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
+                  MinRowHeight="{Binding Config.MinRowHeight}" CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
                   EnableColumnVirtualization="True" EnableRowVirtualization="True">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="BeginningEdit">
@@ -243,7 +246,7 @@
             <DataGrid.Resources>
                 <Style TargetType="DataGrid">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Config.ReadWrite}" Value="True">
+                        <DataTrigger Binding="{Binding Config.CanEdit}" Value="True">
                             <Setter Property="IsReadOnly" Value="False"/>
                         </DataTrigger>
                     </Style.Triggers>

@@ -49,7 +49,7 @@ namespace rowsSharp.ViewModel
         );
 
         private List<KeyValuePair<string, string>> criteria = new();
-        private bool useRegex;
+        private readonly bool useRegex;
 
         private static List<KeyValuePair<string, string>> ParseInput(
             string inFilterText,
@@ -163,8 +163,8 @@ namespace rowsSharp.ViewModel
         {
             viewModel.Logger.Info("Filtering CSV, ({filter}, IOAlias: {IAlias}, {OAlias})",
                 filterText,
-                viewModel.Config.InputAlias,
-                viewModel.Config.OutputAlias
+                viewModel.Config.UseInputAlias,
+                viewModel.Config.UseOutputAlias
             );
 
             // Parse input
@@ -173,7 +173,7 @@ namespace rowsSharp.ViewModel
                 criteria = ParseInput(
                         filterText,
                         viewModel.Csv.Headers,
-                        viewModel.Config.InputAlias ? viewModel.Config.Style.Alias : null,
+                        viewModel.Config.UseInputAlias ? viewModel.Config.Style.Alias : null,
                         useRegex
                 );
             }
@@ -189,7 +189,7 @@ namespace rowsSharp.ViewModel
             viewModel.RecordsView.Filter = RecordsViewFilter;
 
             // Output alias
-            if (viewModel.Config.OutputAlias)
+            if (viewModel.Config.UseOutputAlias)
             {
                 viewModel.RecordsView = OutputAlias(viewModel.RecordsView, viewModel.Csv, viewModel.Config.Style.Alias);
             }

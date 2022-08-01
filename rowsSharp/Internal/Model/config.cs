@@ -4,28 +4,36 @@ namespace rowsSharp.Model
 {
     public class StyleConfig
     {
-        public Dictionary<string, int> Width { get; set; } = new();
-        public Dictionary<string, string> Template { get; set; } = new();
-        public Dictionary<string, Dictionary<string, string>> Alias { get; set; } = new();
-        public Dictionary<string, Dictionary<string, string>> Color { get; set; } = new();
+        public Dictionary<string, int> Width { get; init; } = new();
+        public Dictionary<string, string> Template { get; init; } = new();
+        public Dictionary<string, Dictionary<string, string>> Alias { get; init; } = new();
+        public Dictionary<string, Dictionary<string, string>> Color { get; init; } = new();
     }
 
     public class Config
     {
-        public string CsvPath { get; set; } = string.Empty;
-        public string PreviewPath { get; set; } = string.Empty;
-        public int InsertCount { get; set; }
+        public string CsvPath { get; init; } = "$baseDir/CSVData/data.csv";
+        public bool HasHeader { get; init; } = true;
+        public string StylePath { get; init; } = string.Empty;
+        public string PreviewPath { get; init; } = string.Empty;
+        public string CopyRowFormat { get; init; } = string.Empty;
+        public bool UseInputAlias { get; set; }
+        public bool UseOutputAlias { get; set; }
+        public bool UseRegexFilter { get; init; }
+        public bool UseToolTip { get; init; } = true;
+        public bool CanEdit { get; set; } = true;
+        public bool AllowMultiline { get; set; } = true;
         public bool InsertSelectedCount { get; set; }
-        public bool InputAlias { get; set; }
-        public bool OutputAlias { get; set; }
-        public bool ReadWrite { get; set; }
-        public bool IsTemplate { get; set; }
-        public bool HasHeader { get; set; }
-        public bool UseRegexFilter { get; set; }
-        public int FrozenColumn { get; set; }
-        public string PreviewWidth { get; set; } = string.Empty;
-        public string FontFamily { get; set; } = string.Empty;
-        public string CopyRowFormat { get; set; } = string.Empty;
-        public StyleConfig Style { get; set; } = new();
+        public int InsertCount { get; init; }
+        public bool UseInsertTemplate { get; set; } = true;
+        public double StartupWidth { get; init; } = 1400;
+        public double StartupHeight { get; init; } = 600;
+        public int FrozenColumn { get; init; }
+        public int MinRowHeight { get; init; } = 25;
+        public string PreviewWidth { get; init; } = string.Empty;
+        public string FontFamily { get; init; } = "Courier New,Roboto Mono";
+        public double PrimaryFontSize { get; init; }
+        public double SecondaryFontSize { get; init; }
+        public StyleConfig Style { get; init; } = new();
     }
 }

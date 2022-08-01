@@ -39,13 +39,13 @@ namespace rowsSharp.ViewModel
         private DelegateCommand? undoCommand;
         public DelegateCommand UndoCommand => undoCommand ??= new(
             () => Undo(),
-            () => viewModel.Config.ReadWrite && undoStack.Any()
+            () => viewModel.Config.CanEdit && undoStack.Any()
         );
 
         private DelegateCommand? redoCommand;
         public DelegateCommand RedoCommand => redoCommand ??= new(
             () => Redo(),
-            () => viewModel.Config.ReadWrite && redoStack.Any()
+            () => viewModel.Config.CanEdit && redoStack.Any()
         );
 
         private bool parity;

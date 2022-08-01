@@ -36,10 +36,13 @@ namespace rowsSharp.View
             e.Column.Header = columnName;
 
             // Multiline
-            Style style = new(typeof(TextBox));
-            style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
-            style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
-            ((DataGridTextColumn)e.Column).EditingElementStyle = style;
+            if (viewModel.Config.AllowMultiline)
+            {
+                Style style = new(typeof(TextBox));
+                style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
+                style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+                ((DataGridTextColumn)e.Column).EditingElementStyle = style;
+            }
 
             // Column width
             if (viewModel.Config.Style.Width.ContainsKey(columnName))

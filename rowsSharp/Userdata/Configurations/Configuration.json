@@ -1,16 +1,28 @@
 ﻿{
   "CsvPath": "$baseDir/CSVData/data.csv",
-  "PreviewPath": "$baseDir/CSVData/<Train>.png",
-  "InsertCount": 10,
-  "InsertSelectedCount": true,
-  "InputAlias": true,
-  "OutputAlias": false,
-  "ReadWrite": true,
-  "IsTemplate": true,
   "HasHeader": true,
+
+  "StylePath": "$baseDir/Configurations/Style.json",
+  "PreviewPath": "$baseDir/CSVData/<Train>.png",
+  "CopyRowFormat": "<Train>: <Top Speed> km/h",
+
+  "UseInputAlias": true,
+  "UseOutputAlias": false,
   "UseRegexFilter": false,
+  "UseToolTip": true,
+
+  "CanEdit": true,
+  "AllowMultiline": true,
+  "InsertSelectedCount": true,
+  "InsertCount": 10,
+  "UseInsertTemplate": true,
+
+  "StartupWidth": 1400,
+  "StartupHeight": 600,
   "FrozenColumn": 1,
+  "MinRowHeight": 25,
   "PreviewWidth": "*",
   "FontFamily": "Courier New,Roboto Mono",
-  "CopyRowFormat": "<Train>: <Top Speed> km/h"
+  "PrimaryFontSize": 16,
+  "SecondaryFontSize": 14
 }
