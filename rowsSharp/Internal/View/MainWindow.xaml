@@ -99,7 +99,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}"  IsChecked="{Binding Config.UseInputAlias}"/>
+                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}" IsChecked="{Binding Config.UseInputAlias}"/>
                     <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.UseOutputAlias}"/>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
