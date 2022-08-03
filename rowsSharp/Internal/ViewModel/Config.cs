@@ -3,6 +3,8 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Markup;
 
 namespace rowsSharp.ViewModel;
 
@@ -61,21 +63,31 @@ public class ConfigVM : Config, INotifyPropertyChanged
         }
 
         string baseDir = Environment.CurrentDirectory + "./Userdata/";
-        CsvPath = CsvPath.Replace("$baseDir", baseDir);
-        StylePath = StylePath.Replace("$baseDir", baseDir);
+        CsvPath     = CsvPath.Replace("$baseDir", baseDir);
+        StylePath   = StylePath.Replace("$baseDir", baseDir);
         PreviewPath = PreviewPath.Replace("$baseDir", baseDir);
+        ThemePath   = ThemePath.Replace("$baseDir", baseDir);
         originalCanEdit = CanEdit;
 
-        // Styling
+        // Conditional Formatting
         if (!File.Exists(StylePath))
         {
-            viewModel.Logger.Info("No styling configurations found, proceeding with defaults");
+            viewModel.Logger.Info("No conditional formatting configurations found, proceeding with defaults");
             return;
         }
 
-        viewModel.Logger.Info("Loading styling configurations");
+        viewModel.Logger.Info("Loading conditional formatting configurations");
         jsonString = File.ReadAllText(StylePath);
         StyleConfig? styleJson = JsonSerializer.Deserialize<StyleConfig>(jsonString);
         if (styleJson is not null) { Style = styleJson; }
+
+        // Themeing
+        if (!File.Exists(ThemePath)) { return; }
+
+        viewModel.Logger.Info("Loading themeing configurations");
+        Application app = Application.Current;
+        StreamReader streamReader = new(ThemePath);
+        ResourceDictionary dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
+        app.Resources.MergedDictionaries.Add(dictionary);
     }
 }

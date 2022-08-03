@@ -17,6 +17,7 @@
   "InsertCount": 10,
   "UseInsertTemplate": true,
 
+  "ThemePath": "$baseDir/Configurations/Themes/Absolute.xaml",
   "StartupWidth": 1400,
   "StartupHeight": 600,
   "FrozenColumn": 1,

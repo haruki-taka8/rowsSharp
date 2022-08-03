@@ -26,6 +26,7 @@ public class Config
     public bool InsertSelectedCount { get; set; }
     public int InsertCount { get; init; }
     public bool UseInsertTemplate { get; set; } = true;
+    public string ThemePath { get; init; } = "$baseDir/Configurations/Themes/Light.xaml";
     public double StartupWidth { get; init; } = 1400;
     public double StartupHeight { get; init; } = 600;
     public int FrozenColumn { get; init; }

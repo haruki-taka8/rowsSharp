@@ -7,6 +7,7 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=viewmodel:RowsVM}"
         mc:Ignorable="d"
+        Background="{StaticResource Rows.Background}"
         Width="{Binding Config.StartupWidth, FallbackValue=1400}" Height="{Binding Config.StartupHeight, FallbackValue=600}"
         FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, FallbackValue=16}">
 
@@ -30,37 +31,35 @@
 
     <Window.Resources>
         <!-- Styles -->
-        <Style TargetType="ToolTip">
-            <Setter Property="FontFamily" Value="{Binding Config.FontFamily, FallbackValue='Courier New'}"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Config.UseToolTip}" Value="False">
-                    <Setter Property="Template" Value="{x:Null}"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Thumb">
-            <Setter Property="Width" Value="8"/>
-            <Setter Property="Cursor" Value="SizeWE"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border Background="Transparent"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-        <Style x:Key="Caption" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#696969"/>
-            <Setter Property="FontSize" Value="{Binding Config.SecondaryFontSize, FallbackValue=14}"/>
-        </Style>
+        <ResourceDictionary>            
+            <Style TargetType="ToolTip">
+                <Setter Property="FontFamily" Value="{Binding Config.FontFamily, FallbackValue='Courier New'}"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Config.UseToolTip}" Value="False">
+                        <Setter Property="Template" Value="{x:Null}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="Thumb">
+                <Setter Property="Width" Value="8"/>
+                <Setter Property="Cursor" Value="SizeWE"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border Background="Transparent"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Closing">
-            <b:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True" />
+            <b:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
 
@@ -76,7 +75,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Toolbar (top) -->
-        <Grid Grid.ColumnSpan="2" Margin="-16,-8,-16,8" Background="#EEEEEE">
+        <Grid Grid.ColumnSpan="2" Margin="-16,-8,-16,8" Background="{StaticResource Rows.Header}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="72"/>
                 <ColumnDefinition Width="*"/>
@@ -106,7 +105,7 @@
                     <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}" Command="{Binding Config.CanEditCommand}"
                               ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
                         <CheckBox.Style>
-                            <Style TargetType="CheckBox">
+                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Config.UseOutputAlias}" Value="True">
                                         <Setter Property="ToolTip" Value="Editing is not possible while using Output Alias."/>
@@ -127,7 +126,7 @@
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" Command="{Binding Edit.CanInsertCommand}"
                                   ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">
                         <ToggleButton.Style>
-                            <Style TargetType="ToggleButton">
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter Property="ToolTip" Value="Insertion is not possible when Insert Selected Rows is enabled, but no rows are selected."/>
@@ -139,7 +138,7 @@
                     <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
                             <StackPanel.Resources>
-                                <Style TargetType="Button">
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding RecordsView.Count}" Value="0">
                                             <Setter Property="IsEnabled" Value="False"/>
@@ -169,7 +168,7 @@
             <DockPanel Grid.Column="1" Margin="8,8,16,8" Height="36" VerticalAlignment="Top">
                 <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
                 <Grid Margin="0,0,8,0">
-                    <TextBlock Foreground="#696969" Background="White" Height="24" Padding="7,3">
+                    <TextBlock Height="24" Padding="7,3" Foreground="{StaticResource Rows.Caption}" Background="{StaticResource TextBox.Background}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -180,9 +179,10 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBox Text="{Binding Filter.FilterText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24" Padding="4,0" Background="Transparent">
+                    <TextBox Text="{Binding Filter.FilterText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24" Padding="4,0"
+                             Background="Transparent">
                         <TextBox.Style>
-                            <Style TargetType="TextBox">
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Filter.HasFocus}" Value="True">
                                         <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
@@ -216,10 +216,11 @@
         <!-- DataGrid (left) -->
         <DataGrid Name="Grid" ItemsSource="{Binding RecordsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
-                  AutoGeneratingColumn="Grid_AutoGeneratingColumn"
+                  AutoGeneratingColumn="Grid_AutoGeneratingColumn" Foreground="{StaticResource Rows.Text}"
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
                   MinRowHeight="{Binding Config.MinRowHeight}" CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
-                  EnableColumnVirtualization="True" EnableRowVirtualization="True">
+                  EnableColumnVirtualization="True" EnableRowVirtualization="True"
+                  HorizontalScrollBarVisibility="Visible">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="BeginningEdit">
                     <b:InvokeCommandAction Command="{Binding Edit.BeginEditCommand}"/>
@@ -244,7 +245,8 @@
                 </Style>
             </DataGrid.RowHeaderStyle>
             <DataGrid.Resources>
-                <Style TargetType="DataGrid">
+                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
+                <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Config.CanEdit}" Value="True">
                             <Setter Property="IsReadOnly" Value="False"/>
@@ -252,43 +254,25 @@
                     </Style.Triggers>
                     <Setter Property="IsReadOnly" Value="True"/>
                 </Style>
-                <Style TargetType="Button" x:Key="{ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle, TypeInTargetAssembly={x:Type DataGrid}}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}" BorderThickness="0">
-                                    <ContentPresenter/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
+                <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="Transparent"/>
                     <Style.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="Transparent"/>
-                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#CCE8FF"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#F5F5F5"/>
+                            <Setter Property="Background" Value="{StaticResource Rows.DataGrid.Hover}"/>
                         </Trigger>
                     </Style.Triggers>
                     <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#CCE8FF"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#E5F3FF"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#000000"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey }" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
                     </Style.Resources>
                 </Style>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="MinWidth" Value="128"/>
                     <Setter Property="Height" Value="32"/>
                     <Setter Property="FontSize" Value="14"/>
-                    <Setter Property="Foreground" Value="#696969"/>
+                    <Setter Property="Foreground" Value="{StaticResource Rows.Caption}"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="DataGridColumnHeader">
@@ -296,7 +280,7 @@
                                     <Border Name="BRIN" CornerRadius="1" Padding="4,4,4,2" BorderThickness="0">
                                         <ContentPresenter/>
                                     </Border>
-                                    <Path Name="SortArrow" Stroke="#696969" Data="M0,0 L4,4 L8,0" Visibility="Collapsed"
+                                    <Path Name="SortArrow" Stroke="{StaticResource Rows.Caption}" Data="M0,0 L4,4 L8,0" Visibility="Collapsed"
                                           HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5"/>
                                     <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left"/>
                                     <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right"/>
@@ -316,10 +300,10 @@
                                         <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="BRIN" Property="Border.Background" Value="#E5F3FF"/>
+                                        <Setter TargetName="BRIN" Property="Border.Background" Value="{StaticResource Rows.DataGrid.Selected.Control}"/>
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="BRIN" Property="Border.Background" Value="#CCE8FF"/>
+                                        <Setter TargetName="BRIN" Property="Border.Background" Value="{StaticResource Rows.DataGrid.Selected}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -351,7 +335,7 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Ready">
+        <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="Ready" Grid.Column="1" Margin="0,8,0,0">
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Style.Triggers>
