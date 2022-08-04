@@ -265,7 +265,7 @@
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}}"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}}"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey }" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
                     </Style.Resources>
                 </Style>
                 <Style TargetType="DataGridColumnHeader">

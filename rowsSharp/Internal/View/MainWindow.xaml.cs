@@ -19,10 +19,23 @@ public partial class MainWindow : Window
         viewModel = new RowsVM();
         DataContext = viewModel;
         InitializeComponent();
+        DefineColumnStyle();
         viewModel.Logger.Info("Okay, it's happening! Everybody stay calm!");
     }
 
     // Sorry, no MVVM
+    private Style? editingStyle;
+
+    private void DefineColumnStyle()
+    {
+        editingStyle = new(
+            typeof(TextBox),
+            (Style)Application.Current.TryFindResource(typeof(TextBox))
+        );
+        editingStyle.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
+        editingStyle.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+    }
+
     private void Grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
     {
         int columnIndex = ((DataGrid)sender).Columns.Count;
@@ -38,10 +51,7 @@ public partial class MainWindow : Window
         // Multiline
         if (viewModel.Config.AllowMultiline)
         {
-            Style style = new(typeof(TextBox));
-            style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
-            style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
-            ((DataGridTextColumn)e.Column).EditingElementStyle = style;
+            ((DataGridTextColumn)e.Column).EditingElementStyle = editingStyle;
         }
 
         // Column width
