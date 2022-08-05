@@ -26,5 +26,3 @@ C#/WPF-based CSV filtering and editing tool. Rewritten from [Rows](https://githu
 
 ## 🧪 Building
 Official binaries are built with Visual Studio 2022 and .NET 6, using the _release_ configuration.
-
-.NET 5 is the minimum requirement as of now, but might change in due course.

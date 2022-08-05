@@ -39,23 +39,23 @@
 
   "Color": {
     "JNR": {
-      "1": "#B7E1CD",
-      "Yes": "#B7E1CD"
+      "1": "#80B7E1CD",
+      "Yes": "#80B7E1CD"
     },
 
     "JR Central": {
-      "1": "#E1B7CD",
-      "Yes": "#E1B7CD"
+      "1": "#80E1B7CD",
+      "Yes": "#80E1B7CD"
     },
 
     "JR West": {
-      "1": "#CDB7E1",
-      "Yes": "#CDB7E1"
+      "1": "#80CDB7E1",
+      "Yes": "#80CDB7E1"
     },
 
     "JR Kyushu": {
-      "1": "#B7E1CD",
-      "Yes": "#B7E1CD"
+      "1": "#80B7E1CD",
+      "Yes": "#80B7E1CD"
     }
   }
 }
