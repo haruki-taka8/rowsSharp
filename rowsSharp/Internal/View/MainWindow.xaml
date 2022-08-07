@@ -139,14 +139,6 @@
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
                             <StackPanel.Resources>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RecordsView.Count}" Value="0">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Config.InsertSelectedCount}" Value="False">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
                                     <Setter Property="Height" Value="30"/>
                                 </Style>
                             </StackPanel.Resources>
@@ -216,23 +208,19 @@
         <!-- DataGrid (left) -->
         <DataGrid Name="Grid" ItemsSource="{Binding RecordsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
-                  AutoGeneratingColumn="Grid_AutoGeneratingColumn" Foreground="{StaticResource Rows.Text}"
+                  Foreground="{StaticResource Rows.Text}" MinRowHeight="{Binding Config.MinRowHeight}" 
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
-                  MinRowHeight="{Binding Config.MinRowHeight}" CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
+                  CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
                   EnableColumnVirtualization="True" EnableRowVirtualization="True"
-                  HorizontalScrollBarVisibility="Visible">
+                  AutoGeneratingColumn="Grid_AutoGeneratingColumn"
+                  CurrentCellChanged="Grid_CurrentCellChanged"
+                  SelectionChanged="Grid_SelectionChanged">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="BeginningEdit">
                     <b:InvokeCommandAction Command="{Binding Edit.BeginEditCommand}"/>
                 </b:EventTrigger>
-                <b:EventTrigger EventName="CurrentCellChanged">
-                    <b:InvokeCommandAction Command="{Binding Edit.CommitEditCommand}" CommandParameter="{Binding ElementName=Grid}"/>
-                </b:EventTrigger>
                 <b:EventTrigger EventName="CellEditEnding">
                     <b:InvokeCommandAction Command="{Binding Edit.EndEditCommand}" PassEventArgsToCommand="True"/>
-                </b:EventTrigger>
-                <b:EventTrigger EventName="SelectionChanged">
-                    <b:InvokeCommandAction Command="{Binding Edit.UpdateSelectedCommand}" CommandParameter="{Binding ElementName=Grid}"/>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
             <DataGrid.InputBindings>

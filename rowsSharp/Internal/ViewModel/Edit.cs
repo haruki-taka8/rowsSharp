@@ -54,11 +54,11 @@ public class EditVM : ViewModelBase
         get => selectedItems;
         set
         {
-            List<Record> old = selectedItems;
+            Record? firstOfOld = selectedItems.FirstOrDefault();
             selectedItems = value;
             OnPropertyChanged(nameof(SelectedItems));
 
-            if (old.Any() && value.Any() && old[0] == value[0]) { return; }
+            if (firstOfOld == value.FirstOrDefault()) { return; }
             viewModel.Preview.UpdatePreviewCommand.Execute(this);
         }
     }
@@ -76,36 +76,23 @@ public class EditVM : ViewModelBase
 
     private DelegateCommand? beginEditCommand;
     public DelegateCommand BeginEditCommand => beginEditCommand ??=
-        new(
-            () => IsEditing = true,
-            () => viewModel.Config.CanEdit
-        );
+        new(() => IsEditing = true);
 
-    private DelegateCommand<object>? commitEditCommand;
-    public DelegateCommand<object> CommitEditCommand => commitEditCommand ??=
-        new(
-            (s) => ((DataGrid)s).CommitEdit(),
-            (s) => viewModel.Config.CanEdit
-        );
-    private bool CanInsertTopOrBottom() => 
+    private bool CanInsertTopOrBottom() =>
         viewModel.Config.CanEdit &&
         (
             (viewModel.Config.InsertSelectedCount && SelectedItems.Any()) ||
-            (viewModel.Config.InsertSelectedCount == false)
+            (!viewModel.Config.InsertSelectedCount)
         );
 
-    private bool IsAnyRowSelected() => 
-        viewModel.Config.CanEdit &&
-        !viewModel.RecordsView.IsEmpty &&
-        SelectedIndex != -1;
+    private bool IsAnyRowSelected() =>
+        viewModel.Config.CanEdit && SelectedIndex != -1;
 
     private DelegateCommand? canInsertCommand;
     public DelegateCommand CanInsertCommand => canInsertCommand ??=
         new(
             () => { }, // do nothing
-            () => viewModel.Config.CanEdit &&
-                (viewModel.Config.InsertSelectedCount && SelectedItems.Count > 0) ||
-                (!viewModel.Config.InsertSelectedCount)
+            () => CanInsertTopOrBottom()
         );
 
     private DelegateCommand? insertTopCommand;
@@ -132,22 +119,12 @@ public class EditVM : ViewModelBase
         () => CanInsertTopOrBottom()
     );
 
-    private DelegateCommand<DataGrid>? updateSelectedCommand;
-    public DelegateCommand<DataGrid> UpdateSelectedCommand => updateSelectedCommand ??=
-        new(
-            (s) =>
-            {
-                SelectedItems = s.SelectedItems.Cast<Record>().ToList();
-                if (SelectedItems.Any()) { s.ScrollIntoView(SelectedItems[0]); }
-            }
-        );
-
     private DelegateCommand? removeCommand;
     public DelegateCommand RemoveCommand => removeCommand ??= new(
         () =>
         {
             viewModel.Logger.Info("Removing rows (x{Count})", SelectedItems.Count);
-            foreach (var item in SelectedItems)
+            foreach (Record item in SelectedItems)
             {
                 viewModel.History.AddOperation(
                     OperationEnum.Remove,
@@ -165,23 +142,18 @@ public class EditVM : ViewModelBase
     public DelegateCommand<DataGridCellEditEndingEventArgs> EndEditCommand => endEditCommand ??= new(
         (e) =>
         {
+            Record record = (Record)e.Row.Item;
             int columnIndex = viewModel.Csv.Headers.IndexOf(e.Column.Header.ToString()!);
-            string oldString = CsvVM.GetField(
-                (Record)e.Row.Item,
-                columnIndex
-            );
+            string oldString = CsvVM.GetField(record, columnIndex);
 
             if (((TextBox)e.EditingElement).Text == oldString) { return; }
             viewModel.History.AddOperation(
                 OperationEnum.Inline,
-                viewModel.Csv.Records.IndexOf((Record)e.Row.Item),
-                viewModel.Csv.DeepCopy((Record)e.Row.Item)
+                viewModel.Csv.Records.IndexOf(record),
+                viewModel.Csv.DeepCopy(record)
             );
-
-            viewModel.Logger.Debug(viewModel.Csv.ConcatenateFields(viewModel.Csv.DeepCopy((Record)e.Row.Item)));
             viewModel.History.CommitOperation();
-        },
-        (e) => viewModel.Config.CanEdit
+        }
     );
 
     public void Insert(int at)
@@ -241,8 +213,7 @@ public class EditVM : ViewModelBase
         () =>
         {
             viewModel.Logger.Info("Saving");
-            // Write original header manually
-            using var writer = new StreamWriter(viewModel.Config.CsvPath);
+            using StreamWriter writer = new(viewModel.Config.CsvPath);
         
             string fullHeader = string.Join(
                 ",",
