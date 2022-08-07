@@ -1,5 +1,7 @@
-﻿using rowsSharp.ViewModel;
+﻿using rowsSharp.Model;
+using rowsSharp.ViewModel;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -45,24 +47,26 @@ public partial class MainWindow : Window
             return;
         }
 
+        DataGridTextColumn column = (DataGridTextColumn)e.Column;
+
         string columnName = viewModel.Csv.Headers[columnIndex];
-        e.Column.Header = columnName;
+        column.Header = columnName;
 
         // Multiline
         if (viewModel.Config.AllowMultiline)
         {
-            ((DataGridTextColumn)e.Column).EditingElementStyle = editingStyle;
+            column.EditingElementStyle = editingStyle;
         }
 
         // Column width
         if (viewModel.Config.Style.Width.ContainsKey(columnName))
         {
-            e.Column.Width = viewModel.Config.Style.Width[columnName];
+            column.Width = viewModel.Config.Style.Width[columnName];
         }
 
         // Conditional formatting
         if (!viewModel.Config.Style.Color.ContainsKey(columnName)) { return; }
-        e.Column.CellStyle = new();
+        column.CellStyle = new();
 
         foreach (KeyValuePair<string, string> colorPair in viewModel.Config.Style.Color[columnName])
         {
@@ -79,7 +83,21 @@ public partial class MainWindow : Window
                     Value = new BrushConverter().ConvertFromString(colorPair.Value)
                 }
             );
-            e.Column.CellStyle.Triggers.Add(trigger);
+            column.CellStyle.Triggers.Add(trigger);
         }
+    }
+
+    private void Grid_CurrentCellChanged(object sender, System.EventArgs e)
+    {
+        ((DataGrid)sender).CommitEdit();
+    }
+
+    private void Grid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        DataGrid dataGrid = (DataGrid)sender;
+        List<Record> selected = dataGrid.SelectedItems.Cast<Record>().ToList();
+
+        viewModel.Edit.SelectedItems = selected;
+        if (selected.Any()) { dataGrid.ScrollIntoView(selected[0]); }
     }
 }
