@@ -26,10 +26,8 @@ public class PreviewVM : ViewModelBase
 
     private string ExpandColumnNotation (string inString, Record activeRow)
     {
-        if (activeRow is null) { return string.Empty; }
-
         MatchCollection matches = Regex.Matches(inString, @"(?<=<)(.+?)(?=>)");
-        foreach (Match match in matches)
+        foreach (Match match in matches.Cast<Match>())
         {
             int columnIndex = viewModel.Csv.Headers.IndexOf(match.Value);
             if (columnIndex == -1) { return string.Empty; }

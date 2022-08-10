@@ -54,7 +54,7 @@ public class FilterVM : ViewModelBase
     private static List<KeyValuePair<string, string>> ParseInput(
         string inFilterText,
         List<string> inHeaders,
-        Dictionary<string, Dictionary<string, string>>? inAlias,
+        Dictionary<string, Dictionary<string, string>> inAlias,
         bool inUseRegexFilter
     )
     {
@@ -74,13 +74,10 @@ public class FilterVM : ViewModelBase
 
                 value = keyvalue[1].Trim().Trim('"');
 
-                if (inAlias is not null &&
-                    inAlias.TryGetValue(header, out Dictionary<string, string>? thisAlias))
+                Dictionary<string, string> thisAlias = inAlias.GetValueOrDefault(header) ?? new();
+                foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
                 {
-                    foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
-                    {
-                        value = value.Replace(aliasKeyValue.Value, aliasKeyValue.Key);
-                    }
+                    value = value.Replace(aliasKeyValue.Value, aliasKeyValue.Key);
                 }
 
                 // Convert user-provided header to internal ColumnX notation
@@ -117,9 +114,7 @@ public class FilterVM : ViewModelBase
             Record thisRecord = inCsvVM.DeepCopy(record);
             for (int i = 0; i < inCsvVM.Headers.Count - 1; i++)
             {
-                inAlias.TryGetValue(inCsvVM.Headers[i], out Dictionary<string, string>? thisAlias);
-                if (thisAlias is null) { continue; }
-
+                Dictionary<string, string> thisAlias = inAlias.GetValueOrDefault(inCsvVM.Headers[i]) ?? new();
                 foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
                 {
                     CsvVM.SetField(
@@ -173,7 +168,7 @@ public class FilterVM : ViewModelBase
             criteria = ParseInput(
                     filterText,
                     viewModel.Csv.Headers,
-                    viewModel.Config.UseInputAlias ? viewModel.Config.Style.Alias : null,
+                    viewModel.Config.UseInputAlias ? viewModel.Config.Style.Alias : new(),
                     useRegex
             );
         }

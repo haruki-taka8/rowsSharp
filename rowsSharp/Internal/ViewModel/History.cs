@@ -108,7 +108,7 @@ public class HistoryVM : ViewModelBase
 
         // Group insert/remove edits
         UndoStack.TryPeek(out Operation? next);
-        if (next is not null && last.Parity == next.Parity) { Undo(); }
+        if (last.Parity == next?.Parity) { Undo(); }
     }
 
     private void Redo()
@@ -124,6 +124,6 @@ public class HistoryVM : ViewModelBase
         CommonOperation(false, last);
 
         RedoStack.TryPeek(out Operation? next);
-        if (next is not null && last.Parity == next.Parity) { Redo(); }
+        if (last.Parity == next?.Parity) { Redo(); }
     }
 }
