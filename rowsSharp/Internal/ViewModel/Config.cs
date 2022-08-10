@@ -39,6 +39,7 @@ public class ConfigVM : Config, INotifyPropertyChanged
         });
 
     private readonly RowsVM viewModel;
+    private readonly string baseDir = Environment.CurrentDirectory + "./Userdata/";
     private const string InputPath = "./Userdata/Configurations/Configuration.json";
 
     public ConfigVM (RowsVM inViewModel)
@@ -62,7 +63,6 @@ public class ConfigVM : Config, INotifyPropertyChanged
             configItem.SetValue(this, configItem.GetValue(config));
         }
 
-        string baseDir = Environment.CurrentDirectory + "./Userdata/";
         CsvPath     = CsvPath.Replace("$baseDir", baseDir);
         StylePath   = StylePath.Replace("$baseDir", baseDir);
         PreviewPath = PreviewPath.Replace("$baseDir", baseDir);
@@ -70,21 +70,16 @@ public class ConfigVM : Config, INotifyPropertyChanged
         originalCanEdit = CanEdit;
 
         // Conditional Formatting
-        if (!File.Exists(StylePath))
-        {
-            viewModel.Logger.Info("No conditional formatting configurations found, proceeding with defaults");
-            return;
-        }
+        if (!File.Exists(StylePath)) { return; }
 
-        viewModel.Logger.Info("Loading conditional formatting configurations");
+        viewModel.Logger.Info("Loading optional conditional formatting configurations");
         jsonString = File.ReadAllText(StylePath);
-        StyleConfig? styleJson = JsonSerializer.Deserialize<StyleConfig>(jsonString);
-        if (styleJson is not null) { Style = styleJson; }
+        Style = JsonSerializer.Deserialize<StyleConfig>(jsonString);
 
         // Themeing
         if (!File.Exists(ThemePath)) { return; }
 
-        viewModel.Logger.Info("Loading themeing configurations");
+        viewModel.Logger.Info("Loading optional themeing configurations");
         Application app = Application.Current;
         StreamReader streamReader = new(ThemePath);
         ResourceDictionary dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);

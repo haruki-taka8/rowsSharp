@@ -1,11 +1,11 @@
-﻿namespace rowsSharp.ViewModel; 
-
-using rowsSharp.Model;
+﻿using rowsSharp.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
+
+namespace rowsSharp.ViewModel;
 
 public class FilterVM : ViewModelBase
 {
@@ -139,20 +139,20 @@ public class FilterVM : ViewModelBase
         Record row = (Record)obj;
         foreach (KeyValuePair<string, string> criterion in criteria)
         {
-            if (string.IsNullOrWhiteSpace(criterion.Value))
-            {
-                string concatField = viewModel.Csv.ConcatenateFields(row);
-                if (
-                    (useRegex && Regex.IsMatch(concatField, criterion.Key, RegexOptions.IgnoreCase)) ||
-                    (!useRegex && concatField.ToLower().Contains(criterion.Key.ToLower()))
-                ) { continue; }
-                return false;
-            }
+            string input = string.IsNullOrWhiteSpace(criterion.Value)
+                ? viewModel.Csv.ConcatenateFields(row)
+                : CsvVM.GetField(row, int.Parse(criterion.Key));
 
-            string field = CsvVM.GetField(row, int.Parse(criterion.Key));
+            string pattern = string.IsNullOrWhiteSpace(criterion.Value)
+                ? criterion.Key
+                : criterion.Value;
+
+            input = input.ToLower();
+            pattern = pattern.ToLower();
+
             if (
-                (useRegex && Regex.IsMatch(field, criterion.Value, RegexOptions.IgnoreCase)) ||
-                (!useRegex && field.ToLower().Contains(criterion.Value.ToLower()))
+                (useRegex && Regex.IsMatch(input, pattern)) ||
+                (!useRegex && input.Contains(pattern))
             ) { continue; }
             return false;
         }
@@ -180,18 +180,18 @@ public class FilterVM : ViewModelBase
         catch (InvalidFilterCriteriaException ex)
         {
             viewModel.Logger.Warn(ex.Message);
-            viewModel.RecordsView.Filter = (object obj) => false;
+            viewModel.CsvView.Filter = (object obj) => false;
             return;
         }
 
         // Filtering
-        viewModel.RecordsView = CollectionViewSource.GetDefaultView(viewModel.Csv.Records);
-        viewModel.RecordsView.Filter = RecordsViewFilter;
+        viewModel.CsvView = CollectionViewSource.GetDefaultView(viewModel.Csv.Records);
+        viewModel.CsvView.Filter = RecordsViewFilter;
 
         // Output alias
         if (viewModel.Config.UseOutputAlias)
         {
-            viewModel.RecordsView = OutputAlias(viewModel.RecordsView, viewModel.Csv, viewModel.Config.Style.Alias);
+            viewModel.CsvView = OutputAlias(viewModel.CsvView, viewModel.Csv, viewModel.Config.Style.Alias);
         }
 
         viewModel.Preview.PreviewSource = new();
