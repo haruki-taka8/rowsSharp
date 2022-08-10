@@ -16,13 +16,6 @@ public class ConfigVM : Config, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private DelegateCommand? canEditCommand;
-    public DelegateCommand CanEditCommand => canEditCommand ??=
-        new(
-            () => OnPropertyChanged(nameof(CanEdit)),
-            () => !UseOutputAlias
-        );
-
     private bool originalCanEdit;
     private DelegateCommand? outputAliasCommand;
     public DelegateCommand OutputAliasCommand => outputAliasCommand ??=
@@ -35,17 +28,13 @@ public class ConfigVM : Config, INotifyPropertyChanged
 
             OnPropertyChanged(nameof(UseOutputAlias));
             OnPropertyChanged(nameof(CanEdit));
-            viewModel.Filter.FilterCommand.Execute(this);
         });
 
-    private readonly RowsVM viewModel;
     private readonly string baseDir = Environment.CurrentDirectory + "./Userdata/";
     private const string InputPath = "./Userdata/Configurations/Configuration.json";
 
-    public ConfigVM (RowsVM inViewModel)
+    public ConfigVM(RowsVM viewModel)
     {
-        viewModel = inViewModel;
-
         // General configuration
         if (!File.Exists(InputPath))
         {
@@ -80,9 +69,8 @@ public class ConfigVM : Config, INotifyPropertyChanged
         if (!File.Exists(ThemePath)) { return; }
 
         viewModel.Logger.Info("Loading optional themeing configurations");
-        Application app = Application.Current;
         StreamReader streamReader = new(ThemePath);
         ResourceDictionary dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
-        app.Resources.MergedDictionaries.Add(dictionary);
+        Application.Current.Resources.MergedDictionaries.Add(dictionary);
     }
 }

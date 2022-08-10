@@ -101,16 +101,24 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
                     <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}" IsChecked="{Binding Config.UseInputAlias}"/>
-                    <CheckBox Grid.Row="2" Content=" Output" Command="{Binding Config.OutputAliasCommand}" IsChecked="{Binding Config.UseOutputAlias}"/>
+                    <CheckBox Grid.Row="2" Content=" Output" IsChecked="{Binding Config.UseOutputAlias}">
+						<b:Interaction.Triggers>
+							<b:EventTrigger EventName="Click">
+								<b:InvokeCommandAction Command="{Binding Config.OutputAliasCommand}"/>
+								<b:InvokeCommandAction Command="{Binding Filter.FilterCommand}"/>
+							</b:EventTrigger>
+						</b:Interaction.Triggers>
+                    </CheckBox>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}" Command="{Binding Config.CanEditCommand}"
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}"
                               ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Config.UseOutputAlias}" Value="True">
                                         <Setter Property="ToolTip" Value="Editing is not possible while using Output Alias."/>
+                                        <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

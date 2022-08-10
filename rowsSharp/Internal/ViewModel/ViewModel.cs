@@ -1,7 +1,6 @@
 ﻿using NLog;
 using rowsSharp.View;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -59,11 +58,6 @@ public class RowsVM : ViewModelBase
         new NewFileWindow(Config).ShowDialog();
         Csv = new(this);
         csvView = CollectionViewSource.GetDefaultView(Csv.Records);
-
-        if (Csv.Records.Any()) { return; }
-        FileNotFoundException ex = new(Config.CsvPath);
-        Logger.Fatal(ex, "CSV file still not found. Bailing out.");
-        throw ex;
     }
 
     private DelegateCommand<CancelEventArgs>? exitCommand;
