@@ -22,10 +22,12 @@
         <Style TargetType="Window">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Edit.IsDirtyEditor}" Value="True">
-                    <Setter Property="Title" Value="RowsSharp  -  Unsaved Changes"/>
+                    <Setter Property="Title"
+                            Value="{Binding Version, StringFormat='RowsSharp {0} - Unsaved Changes'}"/>
                 </DataTrigger>
             </Style.Triggers>
-            <Setter Property="Title" Value="RowsSharp"/>
+            <Setter Property="Title"
+                    Value="{Binding Version, StringFormat='RowsSharp {0}'}"/>
         </Style>
     </Window.Style>
 
@@ -197,7 +199,7 @@
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding RecordsView.IsEmpty}" Value="True">
+                        <DataTrigger Binding="{Binding CsvView.IsEmpty}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -206,7 +208,7 @@
         </TextBlock>
 
         <!-- DataGrid (left) -->
-        <DataGrid Name="Grid" ItemsSource="{Binding RecordsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <DataGrid Name="Grid" ItemsSource="{Binding CsvView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
                   Foreground="{StaticResource Rows.Text}" MinRowHeight="{Binding Config.MinRowHeight}" 
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 

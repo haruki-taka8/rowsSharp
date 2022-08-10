@@ -5,11 +5,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	<Deterministic>False</Deterministic>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Page Remove="Userdata\Configurations\Themes\AMOLED.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="Userdata\Configurations\Themes\Absolute.xaml">

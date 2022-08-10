@@ -3,6 +3,7 @@ using rowsSharp.View;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 
@@ -20,16 +21,19 @@ public abstract class ViewModelBase : INotifyPropertyChanged
 public class RowsVM : ViewModelBase
 {
     public Logger Logger { get; } = LogManager.GetCurrentClassLogger();
+    public string Version { get; }
+        = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+
     public ConfigVM Config { get; init; }
     public CsvVM Csv { get; init; }
-    private ICollectionView recordsView;
-    public ICollectionView RecordsView
+    private ICollectionView csvView;
+    public ICollectionView CsvView
     {
-        get => recordsView;
+        get => csvView;
         set
         {
-            recordsView = value;
-            OnPropertyChanged(nameof(RecordsView));
+            csvView = value;
+            OnPropertyChanged(nameof(CsvView));
         }
     }
     public FilterVM Filter { get; init; }
@@ -40,13 +44,13 @@ public class RowsVM : ViewModelBase
     public RowsVM()
     {
         Logger.Debug("Begin VM construction");
-        Config      = new(this);
-        Csv         = new(this);
-        recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
-        Filter      = new(this);
-        Preview     = new(this);
-        History     = new(this);
-        Edit        = new(this);
+        Config  = new(this);
+        Csv     = new(this);
+        csvView = CollectionViewSource.GetDefaultView(Csv.Records);
+        Filter  = new(this);
+        Preview = new(this);
+        History = new(this);
+        Edit    = new(this);
         Logger.Debug("End VM construction");
 
         // Open the file creation dialog
@@ -54,7 +58,7 @@ public class RowsVM : ViewModelBase
         Logger.Warn("CSV file not found. Starting creation wizard.");
         new NewFileWindow(Config).ShowDialog();
         Csv = new(this);
-        recordsView = CollectionViewSource.GetDefaultView(Csv.Records);
+        csvView = CollectionViewSource.GetDefaultView(Csv.Records);
 
         if (Csv.Records.Any()) { return; }
         FileNotFoundException ex = new(Config.CsvPath);
