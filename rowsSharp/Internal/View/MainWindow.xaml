@@ -242,30 +242,7 @@
                     <Setter Property="Background" Value="Transparent" />
                 </Style>
             </DataGrid.RowHeaderStyle>
-            <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
-                <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Config.CanEdit}" Value="True">
-                            <Setter Property="IsReadOnly" Value="False"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                    <Setter Property="IsReadOnly" Value="True"/>
-                </Style>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource Rows.DataGrid.Hover}"/>
-                        </Trigger>
-                    </Style.Triggers>
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
-                    </Style.Resources>
-                </Style>
+            <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="MinWidth" Value="128"/>
                     <Setter Property="Height" Value="32"/>
@@ -307,6 +284,33 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Rows.DataGrid.Hover}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
+                    </Style.Resources>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
+                <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Config.CanEdit}" Value="True">
+                            <Setter Property="IsReadOnly" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="IsReadOnly" Value="True"/>
                 </Style>
             </DataGrid.Resources>
         </DataGrid>

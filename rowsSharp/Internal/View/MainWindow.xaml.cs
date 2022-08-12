@@ -21,21 +21,23 @@ public partial class MainWindow : Window
         viewModel = new RowsVM();
         DataContext = viewModel;
         InitializeComponent();
-        DefineColumnStyle();
+        editingStyle = DefineEditingStyle();
         viewModel.Logger.Info("Okay, it's happening! Everybody stay calm!");
     }
 
     // Sorry, no MVVM
-    private Style? editingStyle;
+    private readonly Style editingStyle;
 
-    private void DefineColumnStyle()
+    private Style DefineEditingStyle()
     {
-        editingStyle = new(
+        Style style = new(
             typeof(TextBox),
             (Style)Application.Current.TryFindResource(typeof(TextBox))
         );
-        editingStyle.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, true));
-        editingStyle.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+
+        style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, viewModel.Config.AllowMultiline));
+        style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+        return style;
     }
 
     private void Grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -51,12 +53,7 @@ public partial class MainWindow : Window
 
         string columnName = viewModel.Csv.Headers[columnIndex];
         column.Header = columnName;
-
-        // Multiline
-        if (viewModel.Config.AllowMultiline)
-        {
-            column.EditingElementStyle = editingStyle;
-        }
+        column.EditingElementStyle = editingStyle;
 
         // Column width
         if (viewModel.Config.Style.Width.ContainsKey(columnName))
