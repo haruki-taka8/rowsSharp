@@ -62,7 +62,7 @@ public class CsvVM
         string inputPath = viewModel.Config.CsvPath;
         if (!File.Exists(inputPath)) { return; }
 
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        CsvConfiguration config = new(CultureInfo.InvariantCulture)
         {
             MissingFieldFound = null,
             BadDataFound = null,
@@ -75,18 +75,15 @@ public class CsvVM
         csv.Context.RegisterClassMap<RecordMap>();
 
         Records = new(csv.GetRecords<Record>());
-        Headers = csv.Context.Reader.HeaderRecord is null
-            ? new()
-            : csv.Context.Reader.HeaderRecord.ToList();
+        Headers = csv.Context.Reader.HeaderRecord?.ToList() ?? new();
 
         // Default headers
-        if (!viewModel.Config.HasHeader && Records.Any())
+        if (Headers.Any() || !Records.Any()) { return; }
+
+        for (int i = 0; i < RecordMap.MaxColumns - 1; i++)
         {
-            for (int i = 0; i < RecordMap.MaxColumns - 1; i++)
-            {
-                if (GetField(Records[0], i) == string.Empty) { break; }
-                Headers.Add("Column" + i);
-            }
+            if (GetField(Records[0], i) == string.Empty) { break; }
+            Headers.Add("Column" + i);
         }
     }
 }

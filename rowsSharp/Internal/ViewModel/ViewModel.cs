@@ -17,35 +17,25 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     }
 }
 
-public class RowsVM : ViewModelBase
+public class RowsVM
 {
-    public Logger Logger { get; } = LogManager.GetCurrentClassLogger();
-    public string Version { get; }
-        = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+    public readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    public string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
 
-    public ConfigVM Config { get; init; }
-    public CsvVM Csv { get; init; }
-    private ICollectionView csvView;
-    public ICollectionView CsvView
-    {
-        get => csvView;
-        set
-        {
-            csvView = value;
-            OnPropertyChanged(nameof(CsvView));
-        }
-    }
-    public FilterVM Filter { get; init; }
-    public PreviewVM Preview { get; init; }
-    public HistoryVM History { get; init; }
-    public EditVM Edit { get; init; }
+    public ConfigVM Config { get; }
+    public CsvVM Csv { get; }
+    public ICollectionView CsvView { get; set; }
+    public FilterVM Filter { get; }
+    public PreviewVM Preview { get; }
+    public HistoryVM History { get; }
+    public EditVM Edit { get; }
 
     public RowsVM()
     {
         Logger.Debug("Begin VM construction");
         Config  = new(this);
         Csv     = new(this);
-        csvView = CollectionViewSource.GetDefaultView(Csv.Records);
+        CsvView = CollectionViewSource.GetDefaultView(Csv.Records);
         Filter  = new(this);
         Preview = new(this);
         History = new(this);
@@ -57,35 +47,30 @@ public class RowsVM : ViewModelBase
         Logger.Warn("CSV file not found. Starting creation wizard.");
         new NewFileWindow(Config).ShowDialog();
         Csv = new(this);
-        csvView = CollectionViewSource.GetDefaultView(Csv.Records);
+        CsvView = CollectionViewSource.GetDefaultView(Csv.Records);
     }
 
     private DelegateCommand<CancelEventArgs>? exitCommand;
-    public DelegateCommand<CancelEventArgs> ExitCommand => exitCommand ??= new DelegateCommand<CancelEventArgs>(
+    public DelegateCommand<CancelEventArgs> ExitCommand => exitCommand ??= new(
         (e) =>
         {
-            Logger.Info("Trigger exit");
-            MessageBoxResult dialog = MessageBoxResult.No;
-            if (Edit.IsDirtyEditor)
-            {
-                Logger.Info("Changes unsaved, asking for confirmation before exiting.");
-                dialog = MessageBox.Show(
-                    "Save changes before exiting?",
-                    "RowsSharp",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question
-                );
-            }
+            Logger.Info("Changes unsaved, asking for confirmation before exiting.");
+            MessageBoxResult dialog = MessageBox.Show(
+                "Save changes before exiting?",
+                "RowsSharp",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question
+            );
 
             if (dialog == MessageBoxResult.Cancel)
             {
                 e.Cancel = true;
-                return;
             }
             else if (dialog == MessageBoxResult.Yes)
             {
                 Edit.SaveCommand.Execute(this);
             }
-        }
+        },
+        (e) => Edit.IsDirtyEditor
     );
 }
