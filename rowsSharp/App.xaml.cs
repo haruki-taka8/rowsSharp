@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace rowsSharp;
 
@@ -15,10 +13,10 @@ public partial class App : Application
 
     static void Handler(object sender, UnhandledExceptionEventArgs args)
     {
-        Exception inner = ((Exception)args.ExceptionObject).InnerException ?? new();
+        Exception exception = (Exception)args.ExceptionObject;
 
         MessageBox.Show(
-           "RowsSharp will close due to the following exception:\n\n" + inner.Message + "\n\n" + inner.StackTrace,
+           "RowsSharp will close due to the following exception:\n\n" + exception.Message + "\n\n" + exception.StackTrace,
            "RowsSharp",
            MessageBoxButton.OK,
            MessageBoxImage.Error
