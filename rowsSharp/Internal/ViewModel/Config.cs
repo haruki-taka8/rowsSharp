@@ -16,6 +16,17 @@ public class ConfigVM : Config, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    private bool canEdit;
+    public new bool CanEdit
+    {
+        get => canEdit;
+        set
+        {
+            canEdit = value;
+            OnPropertyChanged(nameof(CanEdit));
+        }
+    }
+
     private bool originalCanEdit;
     private DelegateCommand? outputAliasCommand;
     public DelegateCommand OutputAliasCommand => outputAliasCommand ??=
