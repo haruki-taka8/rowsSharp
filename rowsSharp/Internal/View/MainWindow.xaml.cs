@@ -32,7 +32,7 @@ public partial class MainWindow : Window
     {
         Style style = new(
             typeof(TextBox),
-            (Style)Application.Current.TryFindResource(typeof(TextBox))
+            (Style)Application.Current.FindResource(typeof(TextBox))
         );
 
         style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, viewModel.Config.AllowMultiline));

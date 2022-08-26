@@ -17,14 +17,23 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     }
 }
 
-public class RowsVM
+public class RowsVM : ViewModelBase
 {
     public readonly Logger Logger = LogManager.GetCurrentClassLogger();
     public string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
 
     public ConfigVM Config { get; }
     public CsvVM Csv { get; }
-    public ICollectionView CsvView { get; set; }
+    private ICollectionView csvView;
+    public ICollectionView CsvView
+    {
+        get => csvView;
+        set
+        {
+            csvView = value;
+            OnPropertyChanged(nameof(CsvView));
+        }
+    }
     public FilterVM Filter { get; }
     public PreviewVM Preview { get; }
     public HistoryVM History { get; }
@@ -35,7 +44,7 @@ public class RowsVM
         Logger.Debug("Begin VM construction");
         Config  = new(this);
         Csv     = new(this);
-        CsvView = CollectionViewSource.GetDefaultView(Csv.Records);
+        CsvView = csvView = CollectionViewSource.GetDefaultView(Csv.Records);
         Filter  = new(this);
         Preview = new(this);
         History = new(this);

@@ -28,60 +28,62 @@ public class ConfigVM : Config, INotifyPropertyChanged
     }
 
     private bool originalCanEdit;
+
     private DelegateCommand? outputAliasCommand;
     public DelegateCommand OutputAliasCommand => outputAliasCommand ??=
-        new(() =>
-        {
-            // Make ReadWrite FALSE when OutputAlias is TRUE
-            // Revert originalReadWrite when OutputAlias is FALSE
-            if (UseOutputAlias) { originalCanEdit = CanEdit; }
-            CanEdit = !UseOutputAlias && originalCanEdit;
+    new(() =>
+    {
+        // Make ReadWrite FALSE when OutputAlias is TRUE
+        // Revert originalReadWrite when OutputAlias is FALSE
+        if (UseOutputAlias) { originalCanEdit = CanEdit; }
+        CanEdit = !UseOutputAlias && originalCanEdit;
 
-            OnPropertyChanged(nameof(UseOutputAlias));
-            OnPropertyChanged(nameof(CanEdit));
-        });
+        OnPropertyChanged(nameof(UseOutputAlias));
+    });
 
     private readonly string baseDir = Environment.CurrentDirectory + "./Userdata/";
-    private const string InputPath = "./Userdata/Configurations/Configuration.json";
+    private const string ConfigPath = "./Userdata/Configurations/Configuration.json";
 
     public ConfigVM(RowsVM viewModel)
     {
         // General configuration
-        if (!File.Exists(InputPath))
+        if (!File.Exists(ConfigPath))
         {
-            FileNotFoundException ex = new(InputPath);
+            FileNotFoundException ex = new(ConfigPath);
             viewModel.Logger.Fatal(ex, "Base configuration file not found.");
             throw ex;
         }
 
         viewModel.Logger.Info("Loading base configurations");
-        string jsonString = File.ReadAllText(InputPath);
-        Config config = JsonSerializer.Deserialize<Config>(jsonString) ?? new();
+        string jsonString = File.ReadAllText(ConfigPath);
+        var config = JsonSerializer.Deserialize<Config>(jsonString) ?? new();
 
         foreach (var configItem in config.GetType().GetProperties())
         {
             configItem.SetValue(this, configItem.GetValue(config));
         }
 
+        CanEdit     = config.CanEdit; // override
+        originalCanEdit = CanEdit;
         CsvPath     = CsvPath.Replace("$baseDir", baseDir);
         StylePath   = StylePath.Replace("$baseDir", baseDir);
         PreviewPath = PreviewPath.Replace("$baseDir", baseDir);
         ThemePath   = ThemePath.Replace("$baseDir", baseDir);
-        originalCanEdit = CanEdit;
 
         // Conditional Formatting
-        if (!File.Exists(StylePath)) { return; }
-
-        viewModel.Logger.Info("Loading optional conditional formatting configurations");
-        jsonString = File.ReadAllText(StylePath);
-        Style = JsonSerializer.Deserialize<StyleConfig>(jsonString);
+        if (File.Exists(StylePath))
+        {
+            viewModel.Logger.Info("Loading optional conditional formatting configurations");
+            jsonString = File.ReadAllText(StylePath);
+            Style = JsonSerializer.Deserialize<StyleConfig>(jsonString);
+        }
 
         // Themeing
         if (!File.Exists(ThemePath)) { return; }
 
         viewModel.Logger.Info("Loading optional themeing configurations");
-        StreamReader streamReader = new(ThemePath);
-        ResourceDictionary dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
+        using StreamReader streamReader = new(ThemePath);
+        var dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
         Application.Current.Resources.MergedDictionaries.Add(dictionary);
     }
 }
