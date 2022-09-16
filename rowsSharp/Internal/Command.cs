@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace rowsSharp.ViewModel;
+namespace rowsSharp;
 
 public class DelegateCommand : ICommand
 {
     private readonly Func<bool> _canExecute;
     private readonly Action _execute;
 
-    public DelegateCommand(Action execute) : this(execute, () => true) { }
-    public DelegateCommand(Action execute, Func<bool> canExecute)
+    internal DelegateCommand(Action execute) : this(execute, () => true) { }
+    internal DelegateCommand(Action execute, Func<bool> canExecute)
     {
         _execute = execute;
         _canExecute = canExecute;
@@ -30,9 +30,9 @@ public class DelegateCommand<T> : ICommand where T : class
     private readonly Predicate<T> _canExecute;
     private readonly Action<T> _execute;
 
-    public DelegateCommand(Action<T> execute) : this(execute, (T obj) => true) { }
+    internal DelegateCommand(Action<T> execute) : this(execute, (T obj) => true) { }
 
-    public DelegateCommand(Action<T> execute, Predicate<T> canExecute)
+    internal DelegateCommand(Action<T> execute, Predicate<T> canExecute)
     {
         _execute = execute;
         _canExecute = canExecute;

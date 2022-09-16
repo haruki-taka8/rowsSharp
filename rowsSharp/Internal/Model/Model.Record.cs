@@ -38,10 +38,10 @@ public class Record
     public string Column31 { get; set; } = string.Empty;
 }
 
-public class RecordMap : ClassMap<Record>
+internal class RecordMap : ClassMap<Record>
 {
-    public const int MaxColumns = 32;
-    public RecordMap()
+    internal const int MaxColumns = 32;
+    internal RecordMap()
     {
         for (int i = 0; i < MaxColumns - 1; i++)
         {

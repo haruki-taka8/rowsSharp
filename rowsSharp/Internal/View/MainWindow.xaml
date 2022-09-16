@@ -1,43 +1,43 @@
-﻿<Window x:Class="rowsSharp.View.MainWindow"
+﻿<Window x:Class="rowsSharp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewmodel="clr-namespace:rowsSharp.ViewModel"
+        xmlns:rowsSharp="clr-namespace:rowsSharp"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        d:DataContext="{d:DesignInstance Type=viewmodel:RowsVM}"
+        d:DataContext="{d:DesignInstance Type=rowsSharp:DataContext}"
         mc:Ignorable="d"
         Background="{StaticResource Rows.Background}"
-        Width="{Binding Config.StartupWidth, FallbackValue=1400}" Height="{Binding Config.StartupHeight, FallbackValue=600}"
-        FontFamily="{Binding Config.FontFamily, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, FallbackValue=16}">
+        Width="{Binding Config.StartupWidth, Mode=OneTime, FallbackValue=1400}" Height="{Binding Config.StartupHeight, Mode=OneTime, FallbackValue=600}"
+        FontFamily="{Binding Config.FontFamily, Mode=OneTime, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, Mode=OneTime, FallbackValue=16}">
 
     <Window.InputBindings>
-        <KeyBinding Gesture="CTRL+S" Command="{Binding Edit.SaveCommand}"/>
-        <KeyBinding Gesture="CTRL+Z" Command="{Binding History.UndoCommand}"/>
-        <KeyBinding Gesture="CTRL+Y" Command="{Binding History.RedoCommand}"/>
-        <KeyBinding Gesture="CTRL+F" Command="{Binding Filter.FocusCommand}"/>
+        <KeyBinding Gesture="CTRL+S" Command="{Binding Command.Save}"/>
+        <KeyBinding Gesture="CTRL+Z" Command="{Binding Command.Undo}"/>
+        <KeyBinding Gesture="CTRL+Y" Command="{Binding Command.Redo}"/>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding Command.Focus}"/>
     </Window.InputBindings>
 
     <Window.Style>
         <Style TargetType="Window">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Edit.IsDirtyEditor}" Value="True">
+                <DataTrigger Binding="{Binding Status.IsDirtyEditor}" Value="True">
                     <Setter Property="Title"
-                            Value="{Binding Version, StringFormat='RowsSharp {0} - Unsaved Changes'}"/>
+                            Value="{Binding Status.Version, Mode=OneTime, StringFormat='RowsSharp {0} - Unsaved Changes'}"/>
                 </DataTrigger>
             </Style.Triggers>
             <Setter Property="Title"
-                    Value="{Binding Version, StringFormat='RowsSharp {0}'}"/>
+                    Value="{Binding Status.Version, Mode=OneTime, StringFormat='RowsSharp {0}'}"/>
         </Style>
     </Window.Style>
 
     <Window.Resources>
         <!-- Styles -->
-        <ResourceDictionary>            
+        <ResourceDictionary>
             <Style TargetType="ToolTip">
-                <Setter Property="FontFamily" Value="{Binding Config.FontFamily, FallbackValue='Courier New'}"/>
+                <Setter Property="FontFamily" Value="{Binding Config.FontFamily, Mode=OneTime, FallbackValue='Courier New'}"/>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Config.UseToolTip}" Value="False">
+                    <DataTrigger Binding="{Binding Config.UseToolTip, Mode=OneTime}" Value="False">
                         <Setter Property="Template" Value="{x:Null}"/>
                     </DataTrigger>
                 </Style.Triggers>
@@ -61,7 +61,7 @@
 
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Closing">
-            <b:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True"/>
+            <b:InvokeCommandAction Command="{Binding Exit}" PassEventArgsToCommand="True"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
 
@@ -73,7 +73,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="{Binding Config.PreviewWidth}"/>
+            <ColumnDefinition Width="{Binding Config.PreviewWidth, Mode=OneTime}"/>
         </Grid.ColumnDefinitions>
 
         <!-- Toolbar (top) -->
@@ -83,7 +83,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Expander Grid.ColumnSpan="2" Margin="24,14,0,0" IsExpanded="{Binding Edit.IsEditing}">
+            <Expander Grid.ColumnSpan="2" Margin="24,14,0,0" IsExpanded="{Binding Status.IsEditing}">
                 <Grid Height="84" Margin="0,16,15,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -100,14 +100,14 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="ALIASING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Filter.FilterCommand}" IsChecked="{Binding Config.UseInputAlias}"/>
+                    <CheckBox Grid.Row="1" Content=" Input"  Command="{Binding Command.Filter}" IsChecked="{Binding Config.UseInputAlias}"/>
                     <CheckBox Grid.Row="2" Content=" Output" IsChecked="{Binding Config.UseOutputAlias}">
-						<b:Interaction.Triggers>
-							<b:EventTrigger EventName="Click">
-								<b:InvokeCommandAction Command="{Binding Config.OutputAliasCommand}"/>
-								<b:InvokeCommandAction Command="{Binding Filter.FilterCommand}"/>
-							</b:EventTrigger>
-						</b:Interaction.Triggers>
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:InvokeCommandAction Command="{Binding Command.OutputAlias}"/>
+                                <b:InvokeCommandAction Command="{Binding Command.Filter}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
                     </CheckBox>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
@@ -127,13 +127,13 @@
                     <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate}" IsEnabled="{Binding Config.CanEdit}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
-                        <Button Content="Undo" Command="{Binding History.UndoCommand}" Margin="0,0,4,0"/>
-                        <Button Content="Redo" Command="{Binding History.RedoCommand}" Margin="0,0,4,0"/>
+                        <Button Content="Undo" Command="{Binding Command.Undo}" Margin="0,0,4,0"/>
+                        <Button Content="Redo" Command="{Binding Command.Redo}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
                     <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.CanEdit}" Margin="4,0"
-                                      Content="{Binding Edit.SelectedItems.Count}" ContentStringFormat=" Insert selected rows (×{0})"/>
-                    <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Edit.IsInsertExpanded}" Command="{Binding Edit.CanInsertCommand}"
+                                      Content="{Binding Status.SelectedItems.Count}" ContentStringFormat=" Insert selected rows (×{0})"/>
+                    <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Status.IsInsertExpanded}" Command="{Binding Command.CanInsert}"
                                   ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
@@ -145,55 +145,55 @@
                             </Style>
                         </ToggleButton.Style>
                     </ToggleButton>
-                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Edit.IsInsertExpanded}" StaysOpen="False">
+                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Status.IsInsertExpanded}" StaysOpen="False">
                         <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
                             <StackPanel.Resources>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Height" Value="30"/>
                                 </Style>
                             </StackPanel.Resources>
-                            <Button Command="{Binding Edit.InsertTopCommand}"   Content="At Top"/>
-                            <Button Command="{Binding Edit.InsertAboveCommand}" Content="Above"/>
-                            <Button Command="{Binding Edit.InsertBelowCommand}" Content="Below"/>
-                            <Button Command="{Binding Edit.InsertLastCommand}"  Content="At Bottom"/>
+                            <Button Command="{Binding Command.InsertTop}"   Content="At Top"/>
+                            <Button Command="{Binding Command.InsertAbove}" Content="Above"/>
+                            <Button Command="{Binding Command.InsertBelow}" Content="Below"/>
+                            <Button Command="{Binding Command.InsertLast}"  Content="At Bottom"/>
                         </StackPanel>
                     </Popup>
-                    <Button Grid.Row="2" Grid.Column="4" Content="Remove" Command="{Binding Edit.RemoveCommand}" Margin="4,0"/>
-                    <Button Grid.Row="2" Grid.Column="5" Content="Save" Command="{Binding Edit.SaveCommand}" Margin="4,0"/>
+                    <Button Grid.Row="2" Grid.Column="4" Content="Remove" Command="{Binding Command.Remove}" Margin="4,0"/>
+                    <Button Grid.Row="2" Grid.Column="5" Content="Save" Command="{Binding Command.Save}" Margin="4,0"/>
 
                     <TextBlock Grid.Column="7" Text="SELECTION" Style="{StaticResource Caption}"/>
-                    <Button Grid.Column="7" Grid.Row="1" Content="Copy Row" Margin="0,-2,0,2" Command="{Binding Preview.CopyStringCommand}"/>
-                    <Button Grid.Column="7" Grid.Row="2" Content="Copy Image" Command="{Binding Preview.CopyImageCommand}"/>
+                    <Button Grid.Column="7" Grid.Row="1" Content="Copy Row" Margin="0,-2,0,2" Command="{Binding Command.CopyString}"/>
+                    <Button Grid.Column="7" Grid.Row="2" Content="Copy Image" Command="{Binding Command.CopyImage}"/>
                 </Grid>
             </Expander>
 
             <DockPanel Grid.Column="1" Margin="8,8,16,8" Height="36" VerticalAlignment="Top">
-                <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Filter.FilterCommand}"/>
+                <Button Content="Filter" DockPanel.Dock="Right" Height="24" Padding="96,0,96,0" Command="{Binding Command.Filter}"/>
                 <Grid Margin="0,0,8,0">
                     <TextBlock Height="24" Padding="7,3" Foreground="{StaticResource Rows.Caption}" Background="{StaticResource TextBox.Background}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Filter.FilterText}" Value="">
+                                    <DataTrigger Binding="{Binding Status.FilterText}" Value="">
                                         <Setter Property="Text" Value="Enter filter criteria"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBox Text="{Binding Filter.FilterText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24" Padding="4,0"
+                    <TextBox Text="{Binding Status.FilterText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24" Padding="4,0"
                              Background="Transparent">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Filter.HasFocus}" Value="True">
+                                    <DataTrigger Binding="{Binding Status.IsFilterFocused}" Value="True">
                                         <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </TextBox.Style>
                         <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding Filter.FilterCommand}"/>
+                            <KeyBinding Key="Enter" Command="{Binding Command.Filter}"/>
                         </TextBox.InputBindings>
                     </TextBox>
                 </Grid>
@@ -207,7 +207,7 @@
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding CsvView.IsEmpty}" Value="True">
+                        <DataTrigger Binding="{Binding RecordsView.CollectionView.IsEmpty}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -216,9 +216,9 @@
         </TextBlock>
 
         <!-- DataGrid (left) -->
-        <DataGrid Name="Grid" ItemsSource="{Binding CsvView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  FrozenColumnCount="{Binding Config.FrozenColumn}" SelectedIndex="{Binding Edit.SelectedIndex}"
-                  Foreground="{StaticResource Rows.Text}" MinRowHeight="{Binding Config.MinRowHeight}" 
+        <DataGrid Name="Grid" ItemsSource="{Binding RecordsView.CollectionView, UpdateSourceTrigger=PropertyChanged}"
+                  FrozenColumnCount="{Binding Config.FrozenColumn, Mode=OneTime}" SelectedIndex="{Binding Status.SelectedIndex}"
+                  Foreground="{StaticResource Rows.Text}" MinRowHeight="{Binding Config.MinRowHeight, Mode=OneTime}" 
                   Grid.Row="1" Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
                   CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
                   EnableColumnVirtualization="True" EnableRowVirtualization="True"
@@ -227,15 +227,15 @@
                   SelectionChanged="Grid_SelectionChanged">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="BeginningEdit">
-                    <b:InvokeCommandAction Command="{Binding Edit.BeginEditCommand}"/>
+                    <b:InvokeCommandAction Command="{Binding Command.BeginEdit}"/>
                 </b:EventTrigger>
                 <b:EventTrigger EventName="CellEditEnding">
-                    <b:InvokeCommandAction Command="{Binding Edit.EndEditCommand}" PassEventArgsToCommand="True"/>
+                    <b:InvokeCommandAction Command="{Binding Command.EndEdit}" PassEventArgsToCommand="True"/>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
             <DataGrid.InputBindings>
-                <KeyBinding Key="Delete" Command="{Binding Edit.RemoveCommand}"/>
-                <KeyBinding Gesture="CTRL+C" Command="{Binding Preview.CopyStringCommand}"/>
+                <KeyBinding Key="Delete" Command="{Binding Command.Remove}"/>
+                <KeyBinding Gesture="CTRL+C" Command="{Binding Command.CopyString}"/>
             </DataGrid.InputBindings>
             <DataGrid.RowHeaderStyle>
                 <Style TargetType="DataGridRowHeader">
@@ -295,10 +295,10 @@
                         </Trigger>
                     </Style.Triggers>
                     <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected}, Mode=OneTime}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Control}, Mode=OneTime}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}, Mode=OneTime}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color, Source={StaticResource Rows.DataGrid.Selected.Text}, Mode=OneTime}"/>
                     </Style.Resources>
                 </Style>
             </DataGrid.RowStyle>
@@ -318,10 +318,10 @@
         <!-- Preview image (right) -->
         <Grid Grid.Row="1" Grid.Column="1">
             <TextBlock Text="No preview available" Style="{StaticResource Caption}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <Image Source="{Binding Preview.PreviewSource}" ToolTip="Click to copy image" ToolTipService.InitialShowDelay="500">
+            <Image Source="{Binding Status.PreviewBitmap, Mode=OneWay}" ToolTip="Click to copy image" ToolTipService.InitialShowDelay="500">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="MouseUp">
-                        <b:InvokeCommandAction Command="{Binding Preview.CopyImageCommand}"/>
+                        <b:InvokeCommandAction Command="{Binding Command.CopyImage}"/>
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
             </Image>
@@ -341,7 +341,7 @@
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Edit.IsEditing}" Value="True">
+                        <DataTrigger Binding="{Binding Status.IsEditing}" Value="True">
                             <Setter Property="Text" Value="Editing"/>
                         </DataTrigger>
                     </Style.Triggers>

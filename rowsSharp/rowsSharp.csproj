@@ -7,9 +7,23 @@
     <UseWPF>true</UseWPF>
 	<Deterministic>False</Deterministic>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Internal\ViewModel\Config_.cs" />
+    <Compile Remove="Internal\ViewModel\Csv_.cs" />
+    <Compile Remove="Internal\ViewModel\Edit.cs" />
+    <Compile Remove="Internal\ViewModel\Filter.cs" />
+    <Compile Remove="Internal\ViewModel\History_.cs" />
+    <Compile Remove="Internal\ViewModel\NewFileWindow.cs" />
+    <Compile Remove="Internal\ViewModel\Preview.cs" />
+    <Compile Remove="Internal\ViewModel\ViewModel_.cs" />
+    <Compile Remove="Internal\ViewModel\VM.Commands.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Internal\Command.cs" />
     <None Include="Userdata\Configurations\Themes\Absolute.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
