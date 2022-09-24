@@ -10,12 +10,7 @@ public class Config : INPC
     public string PreviewPath { get; set; } = string.Empty;
     public string CopyRowFormat { get; init; } = string.Empty;
 
-    private bool useInputAlias;
-    public bool UseInputAlias
-    {
-        get => useInputAlias;
-        set => SetField(ref useInputAlias, value);
-    }
+    public bool UseInputAlias { get; set; }
 
     private bool useOutputAlias;
     public bool UseOutputAlias
@@ -36,23 +31,9 @@ public class Config : INPC
 
     internal bool OriginalCanEdit { get; set; } = true;
     public bool AllowMultiline { get; set; } = true;
-
-    private bool insertSelectedCount;
-    public bool InsertSelectedCount
-    {
-        get => insertSelectedCount;
-        set => SetField(ref insertSelectedCount, value);
-    }
-
+    public bool InsertSelectedCount { get; set; }
     public int InsertCount { get; init; }
-
-    private bool useInsertTemplate;
-    public bool UseInsertTemplate
-    {
-        get => useInsertTemplate;
-        set => SetField(ref useInsertTemplate, value);
-    }
-
+    public bool UseInsertTemplate { get; set; }
     public string ThemePath { get; set; } = "$baseDir/Configurations/Themes/Light.xaml";
     public double StartupWidth { get; init; } = 1400;
     public double StartupHeight { get; init; } = 600;

@@ -32,7 +32,7 @@ internal class Preview
             if (columnIndex == -1) { return string.Empty; }
 
             string replaceFrom = string.Format("<{0}>", match.Value);
-            string replaceTo = CsvRowHelper.GetField(activeRow, columnIndex);
+            string replaceTo = activeRow.GetField(columnIndex);
 
             inString = inString.Replace(replaceFrom, replaceTo);
         }

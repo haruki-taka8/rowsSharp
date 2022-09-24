@@ -1,20 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using rowsSharp.Model;
+using System.Collections.Generic;
 
 namespace rowsSharp.DataStore;
 
-internal class OperationHistory : INPC
+internal class OperationHistory
 {
-    private Stack<Model.Operation> undoStack = new();
-    internal Stack<Model.Operation> UndoStack
-    {
-        get => undoStack;
-        set => SetField(ref undoStack, value);
-    }
-
-    private Stack<Model.Operation> redoStack = new();
-    internal Stack<Model.Operation> RedoStack
-    {
-        get => redoStack;
-        set => SetField(ref redoStack, value);
-    }
+    internal Stack<Operation> UndoStack = new();
+    internal Stack<Operation> RedoStack = new();
 }

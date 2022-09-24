@@ -15,16 +15,15 @@ internal class DataContext : INPC
     public Csv Csv { get; } = new();
 
     // ViewModel
-    public RecordsView RecordsView { get; set; }
+    public Command Command { get; }
+    public RecordsView RecordsView { get; }
     public Status Status { get; } = new();
 
     // Domain
-    internal readonly CsvRowHelper CsvRowHelper;
     internal readonly Filter Filter;
     internal readonly Preview Preview;
     internal readonly Edit Edit;
     internal readonly History History;
-    public Command Command { get; }
 
     internal DataContext()
     {
@@ -32,12 +31,11 @@ internal class DataContext : INPC
 
         Csv = Domain.IO.Csv.Import(Config.CsvPath, Config.HasHeader);
         RecordsView = new(Csv.Records);
-        CsvRowHelper = new(Csv);
 
-        Filter = new(CsvRowHelper, Status, Config, Csv, RecordsView);
+        Filter = new( Status, Config, Csv, RecordsView);
         Preview = new(Status, Csv, Config.PreviewPath, Config.CopyRowFormat);
         History = new(Status, OperationHistory, Csv);
-        Edit = new(Status, Config, Csv, CsvRowHelper, History);
+        Edit = new(Status, Config, Csv, History);
         Command = new(Edit, Filter, Preview, History, Status, Config, OperationHistory);
 
         if (!Csv.Records.Any())
@@ -47,7 +45,6 @@ internal class DataContext : INPC
 
             Csv = Domain.IO.Csv.Import(Config.CsvPath, Config.HasHeader);
             RecordsView = new(Csv.Records);
-            CsvRowHelper = new(Csv);
         }
     }
 

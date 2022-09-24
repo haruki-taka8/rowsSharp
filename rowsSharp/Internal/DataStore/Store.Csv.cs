@@ -1,8 +1,6 @@
 ﻿using rowsSharp.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Data;
 
 namespace rowsSharp.DataStore;
 

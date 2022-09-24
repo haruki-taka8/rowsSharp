@@ -10,18 +10,16 @@ namespace rowsSharp.Domain;
 
 internal class Filter
 {
-    private readonly CsvRowHelper domainCsv;
     private readonly Status status;
     private readonly DataStore.Config config;
-    private readonly DataStore.Csv dataStoreCsv;
+    private readonly DataStore.Csv csv;
     private readonly RecordsView recordsView;
 
-    internal Filter(CsvRowHelper inputDomainCsv, Status inputStatus, DataStore.Config inputConfig, DataStore.Csv inputCsv, RecordsView inputRecordsView)
+    internal Filter(Status inputStatus, DataStore.Config inputConfig, DataStore.Csv inputCsv, RecordsView inputRecordsView)
     {
-        domainCsv = inputDomainCsv;
         status = inputStatus;
         config = inputConfig;
-        dataStoreCsv = inputCsv;
+        csv = inputCsv;
         recordsView = inputRecordsView;
     }
 
@@ -48,7 +46,7 @@ internal class Filter
             // Handle Header:Value
             if (keyvalue.Length == 2)
             {
-                if (!dataStoreCsv.Headers.Contains(header)) { throw new InvalidFilterCriteriaException($"Invalid column {header}"); }
+                if (!csv.Headers.Contains(header)) { throw new InvalidFilterCriteriaException($"Invalid column {header}"); }
 
                 value = keyvalue[1].Trim().Trim('"');
 
@@ -59,7 +57,7 @@ internal class Filter
                 }
 
                 // Convert user-provided header to internal ColumnX notation
-                header = dataStoreCsv.Headers.IndexOf(header).ToString();
+                header = csv.Headers.IndexOf(header).ToString();
             }
 
             // Validate regular expression
@@ -85,16 +83,15 @@ internal class Filter
         List<Record> tempRecords = new();
         foreach (Record record in recordsView.CollectionView)
         {
-            Record thisRecord = domainCsv.DeepCopy(record);
-            for (int i = 0; i < dataStoreCsv.Headers.Count - 1; i++)
+            Record thisRecord = record.DeepCopy(csv.Headers.Count);
+            for (int i = 0; i < csv.Headers.Count; i++)
             {
-                Dictionary<string, string> thisAlias = config.Style.Alias.GetValueOrDefault(dataStoreCsv.Headers[i]) ?? new();
+                Dictionary<string, string> thisAlias = config.Style.Alias.GetValueOrDefault(csv.Headers[i]) ?? new();
                 foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
                 {
-                    CsvRowHelper.SetField(
-                        thisRecord,
+                    thisRecord.SetField(
                         i,
-                        CsvRowHelper.GetField(thisRecord, i).Replace(aliasKeyValue.Key, aliasKeyValue.Value)
+                        thisRecord.GetField(i).Replace(aliasKeyValue.Key, aliasKeyValue.Value)
                     );
                 }
             }
@@ -109,8 +106,8 @@ internal class Filter
         foreach (KeyValuePair<string, string> criterion in criteria)
         {
             string input = string.IsNullOrWhiteSpace(criterion.Value)
-                ? domainCsv.ConcatenateFields(row)
-                : CsvRowHelper.GetField(row, int.Parse(criterion.Key));
+                ? row.ConcatenateFields(csv.Headers.Count)
+                : row.GetField(int.Parse(criterion.Key));
 
             string pattern = string.IsNullOrWhiteSpace(criterion.Value)
                 ? criterion.Key
@@ -149,7 +146,7 @@ internal class Filter
         }
 
         // Filtering
-        recordsView.CollectionView = CollectionViewSource.GetDefaultView(dataStoreCsv.Records);
+        recordsView.CollectionView = CollectionViewSource.GetDefaultView(csv.Records);
         recordsView.CollectionView.Filter = RecordsViewFilter;
 
         // Output alias

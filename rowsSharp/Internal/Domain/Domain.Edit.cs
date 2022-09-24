@@ -6,20 +6,18 @@ using System.Linq;
 using System.Windows.Controls;
 
 namespace rowsSharp.Domain;
-internal class Edit : INPC
+internal class Edit
 {
     private readonly ViewModel.Status status;
     private readonly DataStore.Config config;
     private readonly DataStore.Csv csv;
-    private readonly CsvRowHelper csvRowHelper;
     private readonly History history;
 
-    internal Edit (ViewModel.Status status, DataStore.Config config, DataStore.Csv csv, CsvRowHelper csvRowHelper, History history)
+    internal Edit (ViewModel.Status status, DataStore.Config config, DataStore.Csv csv, History history)
     {
         this.status = status;
         this.config = config;
         this.csv = csv;
-        this.csvRowHelper = csvRowHelper;
         this.history = history;
     }
 
@@ -37,14 +35,14 @@ internal class Edit : INPC
     {
         var record = (Record)e.Row.Item;
         int columnIndex = csv.Headers.IndexOf(e.Column.Header.ToString()!);
-        string oldString = CsvRowHelper.GetField(record, columnIndex);
+        string oldString = record.GetField(columnIndex);
 
         if (((TextBox)e.EditingElement).Text == oldString) { return; }
         
         history.AddOperation(
             OperationType.Inline,
             csv.Records.IndexOf(record),
-            csvRowHelper.DeepCopy(record)
+            record.DeepCopy(csv.Headers.Count)
         );
         history.CommitOperation();
     }
@@ -94,8 +92,7 @@ internal class Edit : INPC
             foreach (KeyValuePair<string, string> keyValuePair in config.Style.Template)
             {
                 int columnIndex = csv.Headers.IndexOf(keyValuePair.Key);
-                CsvRowHelper.SetField(
-                    templatedRow,
+                templatedRow.SetField(
                     columnIndex,
                     keyValuePair.Value
                         .Replace("<D>", now.ToString("yyyyMMdd"))
@@ -109,13 +106,12 @@ internal class Edit : INPC
         // Insert
         for (int i = 0; i < count; i++)
         {
-            Record thisRow = csvRowHelper.DeepCopy(templatedRow);
+            Record thisRow = templatedRow.DeepCopy(csv.Headers.Count);
             for (int j = 0; j < csv.Headers.Count; j++)
             {
-                CsvRowHelper.SetField(
-                    thisRow,
+                thisRow.SetField(
                     j,
-                    CsvRowHelper.GetField(thisRow, j)
+                    thisRow.GetField(j)
                         .Replace("<#>", i.ToString())
                         .Replace("<!#>", (count - i - 1).ToString())
                 );
@@ -141,7 +137,7 @@ internal class Edit : INPC
 
         foreach (Record record in csv.Records)
         {
-            string toOutput = csvRowHelper.ConcatenateFields(record);
+            string toOutput = record.ConcatenateFields(csv.Headers.Count);
             writer.WriteLine(toOutput);
         }
 

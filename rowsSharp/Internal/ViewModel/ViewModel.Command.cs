@@ -2,8 +2,9 @@
 using rowsSharp.ViewModel;
 using System.Linq;
 using System.Windows.Controls;
+using rowsSharp.Domain;
 
-namespace rowsSharp.Domain;
+namespace rowsSharp.ViewModel;
 internal class Command
 {
     private readonly Edit edit;
@@ -13,7 +14,6 @@ internal class Command
     private readonly Status status;
     private readonly Config config;
     private readonly OperationHistory operationHistory;
-    private readonly bool hasCopyRowFormat;
 
     public Command(Edit edit, Filter filter, Preview preview, History history, Status status, Config config, OperationHistory operationHistory)
     {
@@ -24,7 +24,6 @@ internal class Command
         this.status = status;
         this.config = config;
         this.operationHistory = operationHistory;
-        hasCopyRowFormat = !string.IsNullOrWhiteSpace(config.CopyRowFormat);
     }
 
     public DelegateCommand OutputAlias => new(() => { edit.OutputAliasEditing(); });
@@ -77,6 +76,6 @@ internal class Command
     );
     public DelegateCommand CopyString => new(
         () => preview.CopyString(),
-        () => hasCopyRowFormat && (status.SelectedIndex != -1)
+        () => (!string.IsNullOrWhiteSpace(config.CopyRowFormat)) && (status.SelectedIndex != -1)
     );
 }

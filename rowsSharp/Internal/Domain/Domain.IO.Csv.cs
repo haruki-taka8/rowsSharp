@@ -36,7 +36,7 @@ internal static class Csv
     
         for (int i = 0; i < RecordMap.MaxColumns - 1; i++)
         {
-            if (CsvRowHelper.GetField(csv.Records[0], i) == string.Empty) { break; }
+            if (csv.Records[0].GetField(i) == string.Empty) { break; }
             csv.Headers.Add("Column" + i);
         }
         return csv;

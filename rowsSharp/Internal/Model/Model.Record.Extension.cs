@@ -1,15 +1,7 @@
-﻿using rowsSharp.Model;
-
-namespace rowsSharp.Domain;
-internal class CsvRowHelper
+﻿namespace rowsSharp.Model;
+internal static class ModelExtensions
 {
-    private readonly DataStore.Csv csv;
-    internal CsvRowHelper(DataStore.Csv inputCsvDataStore)
-    {
-        csv = inputCsvDataStore;
-    }
-
-    internal static string GetField(Record record, int column)
+    internal static string GetField(this Record record, int column)
     {
         if (column < 0 || column > RecordMap.MaxColumns - 1) { return string.Empty; }
 
@@ -22,7 +14,7 @@ internal class CsvRowHelper
         #pragma warning restore CS8602, CS8603
     }
 
-    internal static void SetField(Record record, int column, string value)
+    internal static void SetField(this Record record, int column, string value)
     {
         if (column < 0 || column > RecordMap.MaxColumns - 1) { return; }
         #pragma warning disable CS8602
@@ -32,22 +24,22 @@ internal class CsvRowHelper
         #pragma warning restore CS8602
     }
 
-    internal Record DeepCopy(Record record)
+    internal static Record DeepCopy(this Record record, int columnCount = RecordMap.MaxColumns - 1)
     {
         Record output = new();
-        for (int i = 0; i < csv.Headers.Count; i++)
+        for (int i = 0; i < columnCount; i++)
         {
-            SetField(output, i, GetField(record, i));
+            SetField(output, i, record.GetField(i));
         }
         return output;
     }
 
-    internal string ConcatenateFields(Record record)
+    internal static string ConcatenateFields(this Record record, int columnCount = RecordMap.MaxColumns - 1)
     {
         string output = string.Empty;
-        for (int i = 0; i < csv.Headers.Count; i++)
+        for (int i = 0; i < columnCount; i++)
         {
-            output += '"' + GetField(record, i).Replace("\"", "\"\"") + "\",";
+            output += '"' + record.GetField(i).Replace("\"", "\"\"") + "\",";
         }
         return output.TrimEnd(',');
     }

@@ -33,6 +33,6 @@
         <TextBox Text="{Binding InitHeaders, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource TextBox.Background}"
                  Margin="0,4,0,64" Height="24" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"/>
 
-        <Button Command="{Binding CreateCommand}" Click="Button_Click" Content="Create" Height="24" Width="768" HorizontalAlignment="Left"/>
+        <Button Command="{Binding CreateCommand, Mode=OneTime}" Click="Button_Click" Content="Create" Height="24" Width="768" HorizontalAlignment="Left"/>
     </StackPanel>
 </Window>
