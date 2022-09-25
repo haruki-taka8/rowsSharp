@@ -89,11 +89,15 @@ public partial class MainWindow : Window
 
     private void Grid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        DataGrid dataGrid = (DataGrid)sender;
-        List<Model.Record> selected = dataGrid.SelectedItems.Cast<Model.Record>().ToList();
+        var dataGrid = (DataGrid)sender;
+        var selected = dataGrid.SelectedItems.Cast<Model.Record>().ToList();
 
         dataContext.Status.SelectedItems = selected;
         dataContext.Preview.UpdatePreview();
-        if (selected.Any()) { dataGrid.ScrollIntoView(selected[0]); }
+
+        if (dataContext.Status.ScrollAfterInsert) { 
+            dataGrid.ScrollIntoView(selected[0]);
+            dataContext.Status.ScrollAfterInsert = false;
+        }
     }
 }

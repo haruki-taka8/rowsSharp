@@ -19,8 +19,8 @@
     
     <StackPanel Margin="32" Grid.RowSpan="3" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
         <TextBlock Text="Create a New File" FontWeight="Bold" Margin="0"/>
-        <TextBlock Text="RowsSharp is unable to read the specified CSV file." Style="{StaticResource Caption}" Margin="0,32,0,0"/>
-        <TextBlock Text="Please use this wizard to create a new file." Style="{StaticResource Caption}" Margin="0,0,0,64"/>
+        <TextBlock Text="RowsSharp cannot read the specified CSV file." Style="{StaticResource Caption}" Margin="0,32,0,0"/>
+        <TextBlock Text="Use this wizard to create a new file." Style="{StaticResource Caption}" Margin="0,0,0,64"/>
 
         <TextBlock Text="Filename"/>
         <TextBox Text="{Binding Config.CsvPath, Mode=OneTime}" Background="{StaticResource TextBox.Background}"
@@ -28,7 +28,7 @@
 
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Columns"/>
-            <TextBlock Text="Use commas to separate fields" Style="{StaticResource Caption}" Margin="32,0,0,0" VerticalAlignment="Bottom"/>
+            <TextBlock Text="Separate fields with commas" Style="{StaticResource Caption}" Margin="32,0,0,0" VerticalAlignment="Bottom"/>
         </StackPanel>
         <TextBox Text="{Binding InitHeaders, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource TextBox.Background}"
                  Margin="0,4,0,64" Height="24" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"/>

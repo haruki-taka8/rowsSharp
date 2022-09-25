@@ -65,4 +65,6 @@ public class Status : INPC
         get => previewBitmap;
         set => SetField(ref previewBitmap, value);
     }
+
+    internal bool ScrollAfterInsert;
 }

@@ -121,6 +121,7 @@ internal class Edit
             history.AddOperation(OperationType.Insert, at + i, thisRow);
         }
         history.CommitOperation();
+        status.ScrollAfterInsert = true;
         status.SelectedIndex = at;
     }
 

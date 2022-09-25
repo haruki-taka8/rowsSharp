@@ -22,12 +22,10 @@
         <Style TargetType="Window">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Status.IsDirtyEditor}" Value="True">
-                    <Setter Property="Title"
-                            Value="{Binding Status.Version, Mode=OneTime, StringFormat='RowsSharp {0} - Unsaved Changes'}"/>
+                    <Setter Property="Title" Value="*RowsSharp"/>
                 </DataTrigger>
             </Style.Triggers>
-            <Setter Property="Title"
-                    Value="{Binding Status.Version, Mode=OneTime, StringFormat='RowsSharp {0}'}"/>
+            <Setter Property="Title" Value="RowsSharp"/>
         </Style>
     </Window.Style>
 
@@ -64,7 +62,6 @@
     </b:Interaction.Triggers>
 
     <DockPanel Margin="16,8">
-
         <!-- Toolbar (top) -->
         <Grid DockPanel.Dock="Top" Margin="-16,-8,-16,8" Background="{StaticResource Rows.Header}">
             <Grid.ColumnDefinitions>
@@ -100,42 +97,42 @@
                     </CheckBox>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}"
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit, Mode=OneWay}"
                               ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Config.UseOutputAlias}" Value="True">
-                                        <Setter Property="ToolTip" Value="Editing is not possible while using Output Alias."/>
+                                    <DataTrigger Binding="{Binding Config.UseOutputAlias, Mode=OneWay}" Value="True">
+                                        <Setter Property="ToolTip" Value="Editing disabled while using Output Alias"/>
                                         <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
-                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate}" IsEnabled="{Binding Config.CanEdit}"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate, Mode=OneWay}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
                         <Button Content="Undo" Command="{Binding Command.Undo, Mode=OneTime}" Margin="0,0,4,0"/>
                         <Button Content="Redo" Command="{Binding Command.Redo, Mode=OneTime}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.CanEdit}" Margin="4,0"
-                                      Content="{Binding Status.SelectedItems.Count}" ContentStringFormat=" Insert selected rows (×{0})"/>
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount, Mode=OneWay}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}" Margin="4,0"
+                                      Content="{Binding Status.SelectedItems.Count, Mode=OneWay}" ContentStringFormat=" Insert selected rows (×{0})"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Status.IsInsertExpanded}" Command="{Binding Command.CanInsert, Mode=OneTime}"
                                   ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="ToolTip" Value="Insertion is not possible when Insert Selected Rows is enabled, but no rows are selected."/>
+                                        <Setter Property="ToolTip" Value="Insertion disabled when Insert Selected Rows is enabled, but no rows are selected"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </ToggleButton.Style>
                     </ToggleButton>
-                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Status.IsInsertExpanded}" StaysOpen="False">
-                        <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth}">
+                    <Popup PlacementTarget="{Binding ElementName=Insert}" IsOpen="{Binding Status.IsInsertExpanded, Mode=OneWay}" StaysOpen="False">
+                        <StackPanel Width="{Binding ElementName=Insert, Path=ActualWidth, Mode=OneWay}">
                             <StackPanel.Resources>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Height" Value="30"/>
@@ -199,17 +196,7 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
-            <TextBlock HorizontalAlignment="Right" Text="Ready">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Status.IsEditing}" Value="True">
-                                <Setter Property="Text" Value="Editing"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+            <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource Caption}" Text="{Binding Status.Version, Mode=OneTime, StringFormat='Build {0}'}"/>
         </DockPanel>
 
         <!-- Empty Grid messages (left) -->
@@ -220,12 +207,12 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock VerticalAlignment="Center" TextAlignment="Center" LineHeight="20"
-                   Text="No results&#x0a;Please try a different filter term or add new rows">
+                   Text="No results&#x0a;Try a different filter term or add new rows">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding RecordsView.CollectionView.View.IsEmpty}" Value="True">
+                            <DataTrigger Binding="{Binding RecordsView.CollectionView.IsEmpty}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -257,7 +244,7 @@
                 </DataGrid.InputBindings>
                 <DataGrid.RowHeaderStyle>
                     <Style TargetType="DataGridRowHeader">
-                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent"/>
                     </Style>
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.ColumnHeaderStyle>
@@ -324,7 +311,7 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
                     <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Config.CanEdit}" Value="True">
+                            <DataTrigger Binding="{Binding Config.CanEdit, Mode=OneWay}" Value="True">
                                 <Setter Property="IsReadOnly" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
