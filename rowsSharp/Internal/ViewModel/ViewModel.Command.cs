@@ -1,81 +1,68 @@
-﻿using rowsSharp.DataStore;
-using rowsSharp.ViewModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Controls;
-using rowsSharp.Domain;
 
 namespace rowsSharp.ViewModel;
 internal class Command
 {
-    private readonly Edit edit;
-    private readonly Filter filter;
-    private readonly Preview preview;
-    private readonly History history;
-    private readonly Status status;
-    private readonly Config config;
-    private readonly OperationHistory operationHistory;
+    private DataContext DataContext { get; init; }
 
-    public Command(Edit edit, Filter filter, Preview preview, History history, Status status, Config config, OperationHistory operationHistory)
+    internal Command (DataContext dataContext)
     {
-        this.edit = edit;
-        this.filter = filter;
-        this.preview = preview;
-        this.history = history;
-        this.status = status;
-        this.config = config;
-        this.operationHistory = operationHistory;
+        DataContext = dataContext;
     }
 
-    public DelegateCommand OutputAlias => new(() => { edit.OutputAliasEditing(); });
-    public DelegateCommand BeginEdit => new(() => edit.BeginEdit());
-    public DelegateCommand<DataGridCellEditEndingEventArgs> EndEdit => new((e) => edit.EndEdit(e));
+    public DelegateCommand OutputAlias => new(() => { DataContext.Edit.OutputAliasEditing(); });
+
+    public DelegateCommand BeginEdit => new(() => DataContext.Edit.BeginEdit());
+    public DelegateCommand<DataGridCellEditEndingEventArgs> EndEdit => new((e) => DataContext.Edit.EndEdit(e));
+
     public DelegateCommand CanInsert => new(
         () => { }, // do nothing
-        () => edit.CanInsertTopOrBottom()
+        () => DataContext.Edit.CanInsertTopOrBottom()
     );
     public DelegateCommand InsertTop => new(
-        () => edit.Insert(0),
-        () => edit.CanInsertTopOrBottom()
+        () => DataContext.Edit.Insert(0),
+        () => DataContext.Edit.CanInsertTopOrBottom()
     );
     public DelegateCommand InsertAbove => new(
-        () => edit.Insert(status.SelectedIndex),
-        () => edit.IsAnyRowSelected()
+        () => DataContext.Edit.Insert(DataContext.Status.SelectedIndex),
+        () => DataContext.Edit.IsAnyRowSelected()
     );
     public DelegateCommand InsertBelow => new(
-        () => edit.Insert(status.SelectedIndex + status.SelectedItems.Count),
-        () => edit.IsAnyRowSelected()
+        () => DataContext.Edit.Insert(DataContext.Status.SelectedIndex + DataContext.Status.SelectedItems.Count),
+        () => DataContext.Edit.IsAnyRowSelected()
     );
     public DelegateCommand InsertLast => new(
-        () => edit.Insert(-1),
-        () => edit.CanInsertTopOrBottom()
+        () => DataContext.Edit.Insert(-1),
+        () => DataContext.Edit.CanInsertTopOrBottom()
     );
     public DelegateCommand Remove => new(
-        () => edit.Remove(),
-        () => config.CanEdit && status.SelectedIndex != -1
+        () => DataContext.Edit.Remove(),
+        () => DataContext.Config.CanEdit && DataContext.Status.SelectedIndex != -1
     );
     public DelegateCommand Save => new(
-        () => edit.Save(),
-        () => config.CanEdit && status.IsDirtyEditor
+        () => DataContext.Edit.Save(),
+        () => DataContext.Config.CanEdit && DataContext.Status.IsDirtyEditor
     );
 
-    public DelegateCommand Focus => new(() => filter.FocusFilter());
-    public DelegateCommand Filter => new(() => filter.DoFilter());
+    public DelegateCommand Focus => new(() => DataContext.Filter.FocusFilter());
+    public DelegateCommand Filter => new(() => DataContext.Filter.DoFilter());
 
     public DelegateCommand Undo => new(
-        () => history.Undo(),
-        () => config.CanEdit && operationHistory.UndoStack.Any()
+        () => DataContext.History.Undo(),
+        () => DataContext.Config.CanEdit && DataContext.OperationHistory.UndoStack.Any()
     );
     public DelegateCommand Redo => new(
-        () => history.Redo(),
-        () => config.CanEdit && operationHistory.RedoStack.Any()
+        () => DataContext.History.Redo(),
+        () => DataContext.Config.CanEdit && DataContext.OperationHistory.RedoStack.Any()
     );
 
     public DelegateCommand CopyImage => new(
-        () => preview.CopyImage(),
-        () => status.PreviewBitmap.UriSource is not null
+        () => DataContext.Preview.CopyImage(),
+        () => DataContext.Status.PreviewBitmap.UriSource is not null
     );
     public DelegateCommand CopyString => new(
-        () => preview.CopyString(),
-        () => (!string.IsNullOrWhiteSpace(config.CopyRowFormat)) && (status.SelectedIndex != -1)
+        () => DataContext.Preview.CopyString(),
+        () => (!string.IsNullOrWhiteSpace(DataContext.Config.CopyRowFormat)) && (DataContext.Status.SelectedIndex != -1)
     );
 }
