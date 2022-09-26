@@ -11,8 +11,8 @@ internal class DataContext : INPC
 {
     // DataStore
     public OperationHistory OperationHistory { get; } = new();
-    public Config Config { get; } = new();
-    public Csv Csv { get; } = new();
+    public Config Config { get; }
+    public Csv Csv { get; }
 
     // ViewModel
     public Command Command { get; }
@@ -20,10 +20,10 @@ internal class DataContext : INPC
     public Status Status { get; } = new();
 
     // Domain
-    internal readonly Filter Filter;
-    internal readonly Preview Preview;
-    internal readonly Edit Edit;
-    internal readonly History History;
+    internal Filter Filter { get; }
+    internal Preview Preview { get; }
+    internal Edit Edit { get; }
+    internal History History { get; }
 
     internal DataContext()
     {
@@ -32,11 +32,11 @@ internal class DataContext : INPC
         Csv = Domain.IO.Csv.Import(Config.CsvPath, Config.HasHeader);
         RecordsView = new(Csv.Records);
 
-        Filter = new( Status, Config, Csv, RecordsView);
+        Filter = new(Status, Config, Csv, RecordsView);
         Preview = new(Status, Csv, Config.PreviewPath, Config.CopyRowFormat);
         History = new(Status, OperationHistory, Csv);
         Edit = new(Status, Config, Csv, History);
-        Command = new(Edit, Filter, Preview, History, Status, Config, OperationHistory);
+        Command = new(this);
 
         if (!Csv.Records.Any())
         {
