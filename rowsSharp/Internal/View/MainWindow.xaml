@@ -117,7 +117,7 @@
                         <Button Content="Redo" Command="{Binding Command.Redo, Mode=OneTime}" Margin="0,0,4,0"/>
                     </UniformGrid>
 
-                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount, Mode=OneWay}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}" Margin="4,0"
+                    <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" IsChecked="{Binding Config.InsertSelectedCount}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}" Margin="4,0"
                                       Content="{Binding Status.SelectedItems.Count, Mode=OneWay}" ContentStringFormat=" Insert selected rows (×{0})"/>
                     <ToggleButton Name="Insert" Grid.Row="2" Grid.Column="3" Content="Insert" Margin="4,0" IsChecked="{Binding Status.IsInsertExpanded}" Command="{Binding Command.CanInsert, Mode=OneTime}"
                                   ToolTipService.InitialShowDelay="0" ToolTipService.ShowOnDisabled="True">

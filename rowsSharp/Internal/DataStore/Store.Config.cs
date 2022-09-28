@@ -31,7 +31,14 @@ public class Config : INPC
 
     internal bool OriginalCanEdit { get; set; } = true;
     public bool AllowMultiline { get; set; } = true;
-    public bool InsertSelectedCount { get; set; }
+
+    private bool insertSelectedCount;
+    public bool InsertSelectedCount
+    {
+        get => insertSelectedCount;
+        set => SetField(ref insertSelectedCount, value);
+    }
+
     public int InsertCount { get; init; }
     public bool UseInsertTemplate { get; set; }
     public string ThemePath { get; set; } = "$baseDir/Configurations/Themes/Light.xaml";
