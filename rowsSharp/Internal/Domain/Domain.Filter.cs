@@ -30,50 +30,56 @@ internal class Filter
         status.IsFilterFocused = true;
     }
 
-    private List<KeyValuePair<string, string>> criteria = new();
+    private List<KeyValuePair<int, string>> criteria = new();
 
-    private List<KeyValuePair<string, string>> ParseInput()
+    private List<KeyValuePair<int, string>> ParseInput()
     {
-        List<KeyValuePair<string, string>> output = new();
+        List<KeyValuePair<int, string>> output = new();
 
-        string[] splittedFilterText = Regex.Split(status.FilterText, "\\s+(?=(?:\"[^\"]*\"|[^\"])*$)");
-        foreach (string criterion in splittedFilterText)
+        string[] splitFilterText = Regex.Split(status.FilterText, "\\s+(?=(?:\"[^\"]*\"|[^\"])*$)");
+        foreach (string criterion in splitFilterText)
         {
             string[] keyvalue = Regex.Split(criterion, ":(?=(?:\"[^\"]*\"|[^\"])*$)");
-            string header = keyvalue[0].Trim().Trim('"');
-            string value = string.Empty;
+            // Handle value-only criterion (default)
+            int column = -1;
+            string value = keyvalue[^1].Trim('"');
 
-            // Handle Header:Value
+            // Extra handling for Key:Value
             if (keyvalue.Length == 2)
             {
-                if (!csv.Headers.Contains(header)) { throw new InvalidFilterCriteriaException($"Invalid column {header}"); }
+                string header = keyvalue[0].Trim('"');
+                column = csv.Headers.IndexOf(header);
 
-                value = keyvalue[1].Trim().Trim('"');
-
-                Dictionary<string, string> thisAlias = config.UseInputAlias ? config.Style.Alias.GetValueOrDefault(header) ?? new() : new();
-                foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
+                if (column == -1)
                 {
-                    value = value.Replace(aliasKeyValue.Value, aliasKeyValue.Key);
+                    throw new InvalidFilterCriteriaException($"Invalid column {header}");
                 }
 
-                // Convert user-provided header to internal ColumnX notation
-                header = csv.Headers.IndexOf(header).ToString();
+                // Input alias
+                value = keyvalue[1].Trim('"');
+                if (config.UseInputAlias)
+                {
+                    Dictionary<string, string> columnAlias = config.Style.Alias.GetValueOrDefault(header, new());
+                    foreach ((string raw, string aliased) in columnAlias)
+                    {
+                        value = value.Replace(aliased, raw);
+                    }
+                }
             }
 
             // Validate regular expression
             if (config.UseRegexFilter)
             {
-                string regexToTest = value == string.Empty ? header : value;
                 try
                 {
-                    Regex.IsMatch("", regexToTest);
+                    Regex.IsMatch("", value);
                 }
                 catch
                 {
-                    throw new InvalidFilterCriteriaException($"Invalid regex {regexToTest}");
+                    throw new InvalidFilterCriteriaException($"Invalid regex {value}");
                 }
             }
-            output.Add(new(header, value));
+            output.Add(new(column, value));
         }
         return output;
     }
@@ -86,12 +92,12 @@ internal class Filter
             Record thisRecord = record.DeepCopy(csv.Headers.Count);
             for (int i = 0; i < csv.Headers.Count; i++)
             {
-                Dictionary<string, string> thisAlias = config.Style.Alias.GetValueOrDefault(csv.Headers[i]) ?? new();
-                foreach (KeyValuePair<string, string> aliasKeyValue in thisAlias)
+                Dictionary<string, string> thisAlias = config.Style.Alias.GetValueOrDefault(csv.Headers[i], new());
+                foreach ((string raw, string aliased) in thisAlias)
                 {
                     thisRecord.SetField(
                         i,
-                        thisRecord.GetField(i).Replace(aliasKeyValue.Key, aliasKeyValue.Value)
+                        thisRecord.GetField(i).Replace(raw, aliased)
                     );
                 }
             }
@@ -103,23 +109,17 @@ internal class Filter
     private bool RecordsViewFilter(object obj)
     {
         var row = (Record)obj;
-        foreach (KeyValuePair<string, string> criterion in criteria)
+        foreach ((int column, string pattern) in criteria)
         {
-            string input = string.IsNullOrWhiteSpace(criterion.Value)
+            string input = column == -1
                 ? row.ConcatenateFields(csv.Headers.Count)
-                : row.GetField(int.Parse(criterion.Key));
-
-            string pattern = string.IsNullOrWhiteSpace(criterion.Value)
-                ? criterion.Key
-                : criterion.Value;
-
-            input = input.ToLower();
-            pattern = pattern.ToLower();
+                : row.GetField(column);
 
             if (
-                (config.UseRegexFilter && Regex.IsMatch(input, pattern)) ||
-                (!config.UseRegexFilter && input.Contains(pattern))
-            ) { continue; }
+                (config.UseRegexFilter && Regex.IsMatch(input.ToLower(), pattern.ToLower())) ||
+                (!config.UseRegexFilter && input.Contains(pattern.ToLower()))
+            )
+            { continue; }
             return false;
         }
         return true;
