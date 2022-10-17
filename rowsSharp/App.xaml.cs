@@ -5,15 +5,16 @@ namespace rowsSharp;
 
 public partial class App : Application
 {
-    public App()
+    internal static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    private App()
     {
-        AppDomain domain = AppDomain.CurrentDomain;
-        domain.UnhandledException += new UnhandledExceptionEventHandler(Handler);
+        AppDomain.CurrentDomain.UnhandledException += new(Handler);
     }
 
-    static void Handler(object sender, UnhandledExceptionEventArgs args)
+    private void Handler(object sender, UnhandledExceptionEventArgs args)
     {
-        Exception exception = (Exception)args.ExceptionObject;
+        var exception = (Exception)args.ExceptionObject;
 
         MessageBox.Show(
            "RowsSharp will close due to the following exception:\n\n" + exception.Message + "\n\n" + exception.StackTrace,
