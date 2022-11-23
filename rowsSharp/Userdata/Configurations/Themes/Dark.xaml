@@ -10,6 +10,8 @@
     <SolidColorBrush x:Key="Rows.DataGrid.Selected" Color="#2a3c56"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected.Control" Color="#151e2b"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected.Text" Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="Rows.DataGrid.Grid.Horizontal" Color="#323232"/>
+    <SolidColorBrush x:Key="Rows.DataGrid.Grid.Vertical" Color="Transparent"/>
 
     <SolidColorBrush x:Key="Button.Static.Foreground" Color="#FFD0D0D0"/>
     <SolidColorBrush x:Key="Button.Static.Background" Color="#FF323232"/>

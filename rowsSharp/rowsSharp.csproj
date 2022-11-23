@@ -40,10 +40,6 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Userdata\Configurations\Themes\Light.xaml">
-		<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -79,6 +75,12 @@
     <None Update="Userdata\CSVData\data.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Userdata\Configurations\Themes\Light.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 
 </Project>

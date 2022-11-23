@@ -8,8 +8,8 @@
         mc:Ignorable="d"
         Title="RowsSharp"
         Background="{StaticResource Rows.Background}"
-        Width="{Binding Config.StartupWidth, Mode=OneTime, FallbackValue=1400}" Height="{Binding Config.StartupHeight, Mode=OneTime, FallbackValue=600}"
-        FontFamily="{Binding Config.FontFamily, Mode=OneTime, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, Mode=OneTime, FallbackValue=16}">
+        Width="{StaticResource Rows.StartupWidth}" Height="{StaticResource Rows.StartupHeight}"
+        FontFamily="{StaticResource Rows.FontFamily}" FontSize="{StaticResource Rows.PrimaryFontSize}">
 
     <Window.Resources>
         <Style TargetType="TextBlock">

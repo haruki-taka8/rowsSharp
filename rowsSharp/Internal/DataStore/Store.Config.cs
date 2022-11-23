@@ -42,13 +42,5 @@ public class Config : INPC
     public int InsertCount { get; init; }
     public bool UseInsertTemplate { get; set; }
     public string ThemePath { get; set; } = "$baseDir/Configurations/Themes/Light.xaml";
-    public double StartupWidth { get; init; } = 1400;
-    public double StartupHeight { get; init; } = 600;
-    public int FrozenColumn { get; init; }
-    public int MinRowHeight { get; init; } = 25;
-    public string PreviewWidth { get; init; } = string.Empty;
-    public string FontFamily { get; init; } = "Courier New,Roboto Mono";
-    public double PrimaryFontSize { get; init; }
-    public double SecondaryFontSize { get; init; }
     public ColumnStyle Style { get; set; }
 }

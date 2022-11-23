@@ -51,6 +51,7 @@ dotnet_diagnostic.CA1001.severity = warning
 dotnet_diagnostic.CA1309.severity = silent
 dotnet_diagnostic.CA1805.severity = warning
 dotnet_diagnostic.IDE0036.severity = suggestion
+dotnet_diagnostic.IDE0060.severity = warning
 
 [*.{cs,vb}]
 #### Naming styles ####
