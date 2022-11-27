@@ -34,7 +34,6 @@ public partial class MainWindow : Window
         );
 
         style.Setters.Add(new Setter(System.Windows.Controls.Primitives.TextBoxBase.AcceptsReturnProperty, dataContext.Config.AllowMultiline));
-        style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
         return style;
     }
 

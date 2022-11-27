@@ -120,6 +120,7 @@
         </Setter>
     </Style>
     <Style TargetType="TextBox">
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="BorderBrush" Value="{StaticResource TextBox.Border}"/>
         <Setter Property="Foreground" Value="{StaticResource TextBox.Foreground}"/>
         <Setter Property="CaretBrush" Value="{StaticResource TextBox.Foreground}"/>
