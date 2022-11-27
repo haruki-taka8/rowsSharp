@@ -43,12 +43,18 @@ internal static class Config
         // Themeing
         if (File.Exists(config.ThemePath))
         {
-            App.Logger.Info("Loading optional themeing configurations");
+            App.Logger.Info("Loading XAML theme file");
             using StreamReader streamReader = new(config.ThemePath);
-            var dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
-            Application.Current.Resources.MergedDictionaries.Add(dictionary);
+            try
+            {
+                var dictionary = (ResourceDictionary)XamlReader.Load(streamReader.BaseStream);
+                Application.Current.Resources.MergedDictionaries.Add(dictionary);
+            } 
+            catch (XamlParseException e)
+            {
+                App.Logger.Error(e, "Error parsing XAML theme file");
+            }
         }
-
         return config;
     }
 }
