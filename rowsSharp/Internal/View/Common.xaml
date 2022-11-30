@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="Caption" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="{Binding Config.SecondaryFontSize, FallbackValue=14, Mode=OneTime}"/>
+        <Setter Property="FontSize" Value="{StaticResource Rows.SecondaryFontSize}"/>
         <Setter Property="Foreground" Value="{StaticResource Rows.Caption}"/>
     </Style>
 
@@ -120,6 +120,7 @@
         </Setter>
     </Style>
     <Style TargetType="TextBox">
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="BorderBrush" Value="{StaticResource TextBox.Border}"/>
         <Setter Property="Foreground" Value="{StaticResource TextBox.Foreground}"/>
         <Setter Property="CaretBrush" Value="{StaticResource TextBox.Foreground}"/>

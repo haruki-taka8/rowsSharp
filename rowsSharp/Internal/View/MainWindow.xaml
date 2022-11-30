@@ -8,9 +8,10 @@
         d:DataContext="{d:DesignInstance Type=rowsSharp:DataContext}"
         mc:Ignorable="d"
         Background="{StaticResource Rows.Background}"
-        Width="{Binding Config.StartupWidth, Mode=OneTime, FallbackValue=1400}" Height="{Binding Config.StartupHeight, Mode=OneTime, FallbackValue=600}"
-        FontFamily="{Binding Config.FontFamily, Mode=OneTime, FallbackValue='Courier New'}" FontSize="{Binding Config.PrimaryFontSize, Mode=OneTime, FallbackValue=16}">
-
+        Width="{StaticResource Rows.StartupWidth}"
+        Height="{StaticResource Rows.StartupHeight}"
+        FontFamily="{StaticResource Rows.FontFamily}"
+        FontSize="{StaticResource Rows.PrimaryFontSize}">
     <Window.InputBindings>
         <KeyBinding Gesture="CTRL+S" Command="{Binding Command.Save, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+Z" Command="{Binding Command.Undo, Mode=OneTime}"/>
@@ -32,7 +33,7 @@
     <Window.Resources>
         <!-- Styles -->
         <Style TargetType="ToolTip">
-            <Setter Property="FontFamily" Value="{Binding Config.FontFamily, Mode=OneTime, FallbackValue='Courier New'}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Rows.FontFamily}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Config.UseToolTip, Mode=OneTime}" Value="False">
                     <Setter Property="Template" Value="{x:Null}"/>
@@ -97,7 +98,7 @@
                     </CheckBox>
 
                     <TextBlock Grid.Column="1" Text="EDITING" Style="{StaticResource Caption}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit, Mode=OneWay}"
+                    <CheckBox Grid.Column="1" Grid.Row="1" Content=" Enable" VerticalAlignment="Center" IsChecked="{Binding Config.CanEdit}"
                               ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
@@ -110,7 +111,7 @@
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
-                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate, Mode=OneWay}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content=" Template Rows" IsChecked="{Binding Config.UseInsertTemplate}" IsEnabled="{Binding Config.CanEdit, Mode=OneWay}"/>
 
                     <UniformGrid Grid.Row="2" Grid.Column="2" Columns="2">
                         <Button Content="Undo" Command="{Binding Command.Undo, Mode=OneTime}" Margin="0,0,4,0"/>
@@ -203,7 +204,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="{Binding Config.PreviewWidth, Mode=OneTime, FallbackValue='*'}"/>
+                <ColumnDefinition Width="{StaticResource Rows.Preview.Width}"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock VerticalAlignment="Center" TextAlignment="Center" LineHeight="20"
@@ -222,9 +223,11 @@
 
             <!-- DataGrid (left) -->
             <DataGrid Name="Grid" ItemsSource="{Binding RecordsView.CollectionView}"
-				FrozenColumnCount="{Binding Config.FrozenColumn, Mode=OneTime}" SelectedIndex="{Binding Status.SelectedIndex}"
-				Foreground="{StaticResource Rows.Text}" MinRowHeight="{Binding Config.MinRowHeight, Mode=OneTime}" 
-				Background="Transparent" GridLinesVisibility="None" BorderThickness="0" 
+				FrozenColumnCount="{StaticResource Rows.DataGrid.FrozenColumn}" SelectedIndex="{Binding Status.SelectedIndex}"
+				Foreground="{StaticResource Rows.Text}" MinRowHeight="{StaticResource Rows.DataGrid.MinRowHeight}" 
+				Background="Transparent" BorderThickness="0"
+                VerticalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Vertical}"
+                HorizontalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Horizontal}"
 				CanUserAddRows="False" CanUserDeleteRows="False" RowHeaderWidth="10"
 				EnableColumnVirtualization="True" EnableRowVirtualization="True"
 				AutoGeneratingColumn="Grid_AutoGeneratingColumn"
@@ -314,6 +317,25 @@
                             <DataTrigger Binding="{Binding Config.CanEdit, Mode=OneWay}" Value="True">
                                 <Setter Property="IsReadOnly" Value="False"/>
                             </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Color, Source={StaticResource Rows.DataGrid.Grid.Vertical}, Mode=OneTime}" Value="#00FFFFFF">
+                                <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Color, Source={StaticResource Rows.DataGrid.Grid.Horizontal}, Mode=OneTime}" Value="#00FFFFFF">
+                                <Setter Property="GridLinesVisibility" Value="Vertical"/>
+                            </DataTrigger>
+
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Color, Source={StaticResource Rows.DataGrid.Grid.Vertical}, Mode=OneTime}" Value="#00FFFFFF"/>
+                                    <Condition Binding="{Binding Color, Source={StaticResource Rows.DataGrid.Grid.Horizontal}, Mode=OneTime}" Value="#00FFFFFF"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="GridLinesVisibility" Value="None"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            
                         </Style.Triggers>
                         <Setter Property="IsReadOnly" Value="True"/>
                     </Style>
