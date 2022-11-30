@@ -116,8 +116,8 @@ internal class Filter
                 : row.GetField(column);
 
             if (
-                (config.UseRegexFilter && Regex.IsMatch(input.ToLower(), pattern.ToLower())) ||
-                (!config.UseRegexFilter && input.Contains(pattern.ToLower()))
+                (config.UseRegexFilter && Regex.IsMatch(input.ToLower(), pattern))
+                || (!config.UseRegexFilter && input.ToLower().Contains(pattern.ToLower()))
             )
             { continue; }
             return false;
