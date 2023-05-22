@@ -3,8 +3,8 @@
   "HasHeader": true,
 
   "StylePath": "$baseDir/Configurations/Style.json",
-  "PreviewPath": "$baseDir/CSVData/<Train>.png",
-  "CopyRowFormat": "<Train>: <Top Speed> km/h",
+  "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
+  "PreviewPath": "$baseDir/CSVData/<A>.png",
 
   "UseInputAlias": true,
   "UseOutputAlias": false,
@@ -12,10 +12,8 @@
   "UseToolTip": true,
 
   "CanEdit": true,
-  "AllowMultiline": true,
-  "InsertSelectedCount": true,
-  "InsertCount": 10,
+  "AllowMultiline": false,
   "UseInsertTemplate": true,
-
-  "ThemePath": "$baseDir/Configurations/Themes/Light.xaml"
+  "UseAutosave": false,
+  "AutosavePeriod": 60
 }
