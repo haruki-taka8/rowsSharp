@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="Caption" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Rows.SecondaryFontSize}"/>
+        <Setter Property="Foreground" Value="{StaticResource Rows.Caption}"/>
+        <!-- <Setter Property="FontWeight" Value="Bold"/> -->
+    </Style>
+
+    <Style x:Key="Text" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Rows.Text}"/>
+    </Style>
+</ResourceDictionary>
