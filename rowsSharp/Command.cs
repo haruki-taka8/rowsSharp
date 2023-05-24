@@ -25,32 +25,43 @@ public class DelegateCommand : ICommand
     }
 }
 
-public class DelegateCommand<T> : ICommand where T : class
+/* 
+ * The following constructors deliberately ALLOW the use of value type,
+ * despite Microsoft.Practices.Prism.Commands doing otherwise.
+ * 
+ * It can be safely assumed that CanExecute(null) will not cause any
+ * issues.
+ */
+
+public class DelegateCommand<T> : ICommand
 {
-    private readonly Predicate<T> _canExecute;
+    private readonly Func<T, bool> _canExecute;
     private readonly Action<T> _execute;
 
-    internal DelegateCommand(Action<T> execute) : this(execute, (T obj) => true) { }
-
-    internal DelegateCommand(Action<T> execute, Predicate<T> canExecute)
+    internal DelegateCommand(Action<T> execute) : this(execute, (T parameter) => true) { }
+    internal DelegateCommand(Action<T> execute, Func<T, bool> canExecute)
     {
         _execute = execute;
         _canExecute = canExecute;
     }
 
-    public bool CanExecute(object? parameter) =>
-        _canExecute is not null
-        && parameter is not null
-        && _canExecute((T)parameter);
+    public bool CanExecute(object? parameter)
+    {
+        return parameter is T type
+            && _canExecute.Invoke(type);
+    }
 
     public void Execute(object? parameter)
     {
-        if (parameter is not null) { _execute((T)parameter); }
+        if (parameter is T type)
+        {
+            _execute(type);
+        }
     }
 
-    public event EventHandler? CanExecuteChanged;
-    public void RaiseCanExecuteChanged()
+    public event EventHandler? CanExecuteChanged
     {
-        if (CanExecuteChanged is not null) { CanExecuteChanged(this, EventArgs.Empty); }
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
     }
 }
