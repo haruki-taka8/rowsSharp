@@ -1,0 +1,159 @@
+﻿<UserControl x:Class="rowsSharp.View.Settings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:rowsSharp.View"
+      xmlns:ViewModel="clr-namespace:rowsSharp.ViewModel"
+      d:DataContext="{d:DesignInstance Type=ViewModel:RootVM}"
+      mc:Ignorable="d" 
+      d:DesignWidth="1400" d:DesignHeight="600" d:Background="{StaticResource Rows.Background}" d:FontSize="16">
+
+    <UserControl.Resources>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Style.Setters>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Style.Setters>
+                <Setter Property="Margin" Value="0,1"/>
+                <Setter Property="Foreground" Value="{StaticResource Rows.Text}"/>
+            </Style.Setters>
+        </Style>
+        <Style x:Key="Info" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="{StaticResource Rows.SecondaryFontSize}"/>
+            </Style.Setters>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="24,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock FontSize="24" FontWeight="Bold" Text="Preferences"/>
+            <Button Command="{Binding SettingsVM.Return}" HorizontalAlignment="Right"
+                    Background="Transparent"
+                    Content="&#xe5c4;" FontFamily="{StaticResource Symbol}"/>
+        </DockPanel>
+        
+        <ScrollViewer Margin="0,16,0,0" Grid.Row="2" Grid.Column="1">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="BulletDecorator">
+                        <Setter Property="Margin" Value="0,12"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Text="Filtering" Style="{StaticResource Caption}" FontSize="{StaticResource Rows.PrimaryFontSize}"/>
+
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsChecked="{Binding Preferences.UseInputAlias}">
+                        </CheckBox>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Input Alias</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Convert aliased filters to match raw CSV data</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+                
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsEnabled="{Binding Preferences.IsReadOnly}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="False">
+                                            <Setter Property="IsChecked" Value="{Binding Preferences.UseOutputAlias}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="IsChecked" Value="False"/>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Output Alias</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Alias raw CSV data when displaying</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsChecked="{Binding Preferences.UseRegexFilter}"/>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Regular Expression</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Parse regular expressions in filters</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+
+                <TextBlock Text="Editing" Style="{StaticResource Caption}" Margin="0,24,0,0" FontSize="{StaticResource Rows.PrimaryFontSize}"/>
+                
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsChecked="{Binding Preferences.CanEdit}"/>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Editing</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Enabling editing will disable Output Alias</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsChecked="{Binding Preferences.UseInsertTemplate}"/>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Insertion Template</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Template rows when inserting</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsEnabled="{Binding Preferences.CanEdit}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="True">
+                                            <Setter Property="IsChecked" Value="{Binding Preferences.UseAutosave}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="IsChecked" Value="False"/>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Autosave</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Automatically save changes periodically</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+
+                <TextBlock Text="General" Style="{StaticResource Caption}" Margin="0,24,0,0" FontSize="{StaticResource Rows.PrimaryFontSize}"/>
+
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsChecked="{Binding Preferences.UseToolTip}"/>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Show Tooltips</TextBlock>
+                        <TextBlock Style="{StaticResource Info}">Show helpful text on obsecure gotcha's</TextBlock>
+                    </StackPanel>
+                </BulletDecorator>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
