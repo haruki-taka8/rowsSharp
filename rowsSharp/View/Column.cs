@@ -11,20 +11,20 @@ namespace rowsSharp.View;
  * License: [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
  * Modifications:
  *   - Code formatting
- *   - Removing unncessary bits
+ *   - Removing unnecessary bits
  */
 
 public class ColumnsBindingBehaviour : Behavior<DataGrid>
 {
     public ObservableCollection<DataGridColumn> Columns
     {
-        get { return (ObservableCollection<DataGridColumn>)GetValue(ColumnsProperty); }
-        set { SetValue(ColumnsProperty, value); }
+        get => (ObservableCollection<DataGridColumn>)GetValue(ColumnsProperty);
+        set => SetValue(ColumnsProperty, value);
     }
 
     public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register("Columns",
         typeof(ObservableCollection<DataGridColumn>), typeof(ColumnsBindingBehaviour),
-            new PropertyMetadata(OnDataGridColumnsPropertyChanged));
+            new(OnDataGridColumnsPropertyChanged));
 
     private static void OnDataGridColumnsPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
     {
