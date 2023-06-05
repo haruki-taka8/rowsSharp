@@ -187,7 +187,7 @@
 
             <!-- Filter -->
             <DockPanel Grid.Column="2">
-                <Button Command="{Binding EditorVM.Filter}" Content="&#xe8b6;" Margin="0,8,8,8" ToolTip="Filter"/>
+                <Button Command="{Binding EditorVM.Filter.InvokeFilter}" Content="&#xe8b6;" Margin="0,8,8,8" ToolTip="Filter"/>
                 <Button CommandParameter="{Binding ElementName=Grid}" Command="{Binding EditorVM.Filter.ResetSorting}" Content="&#xe053;" ToolTip="Reset sorting"/>
                 <Rectangle/>
                 <Button Command="{Binding EditorVM.Filter.OpenPreferences}" Content="&#xe8b8;" Margin="8,8,16,8" ToolTip="Preferences"/>
@@ -249,17 +249,26 @@
                     FrozenColumnCount="{StaticResource Rows.DataGrid.FrozenColumn}"
                     RowHeaderWidth="10" MinRowHeight="{StaticResource Rows.DataGrid.MinRowHeight}" 
                     SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                    CanUserReorderColumns="{Binding Preferences.CanEdit}"
 				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding EditorVM.Preview.CopyPreview}" Header="Copy image" InputGestureText="Ctrl+Shift+C"/>
+                        <MenuItem Header="Cut">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:InvokeCommandAction Command="Copy"/>
+                                    <i:InvokeCommandAction Command="{Binding EditorVM.Edit.ClearCells}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </MenuItem>
                         <MenuItem Command="Copy" Header="Copy"/>
                         <MenuItem Command="{Binding EditorVM.Edit.Paste}" Header="Paste" InputGestureText="Ctrl+V"/>
                         <Separator/>
                         <MenuItem Command="{Binding EditorVM.Edit.InsertRowFirst}" Header="Prepend rows" InputGestureText="Ctrl+8"/>
-                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Prepend columns" InputGestureText="Ctrl+;"/>
-                        <MenuItem Command="{Binding EditorVM.Edit.InsertRowLast}" Header="Append rows" InputGestureText="Ctrl+K"/>
-                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Append columns" InputGestureText="Ctrl+L"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Prepend columns" InputGestureText="Ctrl+H"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertRowLast}" Header="Append rows" InputGestureText="Ctrl+,"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Append columns" InputGestureText="Ctrl+;"/>
                         <MenuItem Command="{Binding EditorVM.Edit.RenameColumn}" Header="Rename column..." InputGestureText="Ctrl+R"/>
                         <Separator/>
                         <MenuItem Command="{Binding EditorVM.Edit.ClearRows}" Header="Clear rows" InputGestureText="Ctrl+Delete"/>
@@ -273,6 +282,9 @@
                     </i:EventTrigger>
                     <i:EventTrigger EventName="SelectedCellsChanged">
                         <i:InvokeCommandAction CommandParameter="{Binding ElementName=Grid, Path=SelectedCells}" Command="{Binding EditorVM.Edit.ChangeSelectedCells}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="ColumnReordered">
+                        <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding EditorVM.Edit.ReorderColumn}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <i:Interaction.Behaviors>
