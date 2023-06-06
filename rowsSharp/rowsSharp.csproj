@@ -8,46 +8,69 @@
 	<Deterministic>False</Deterministic>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+	<GenerateDocumentationFile>False</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Internal\ViewModel\Config_.cs" />
-    <Compile Remove="Internal\ViewModel\Csv_.cs" />
-    <Compile Remove="Internal\ViewModel\Edit.cs" />
-    <Compile Remove="Internal\ViewModel\Filter.cs" />
-    <Compile Remove="Internal\ViewModel\History_.cs" />
-    <Compile Remove="Internal\ViewModel\NewFileWindow.cs" />
-    <Compile Remove="Internal\ViewModel\Preview.cs" />
-    <Compile Remove="Internal\ViewModel\ViewModel_.cs" />
-    <Compile Remove="Internal\ViewModel\VM.Commands.cs" />
+	  <Resource Include="View\Font\material-symbols-outlined.otf">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Internal\Command.cs" />
+    <Page Remove="Userdata\Configurations\Themes\Dark.xaml" />
+    <Page Remove="Userdata\Configurations\Themes\Light.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Command.cs" />
     <None Include="Userdata\Configurations\Themes\Absolute.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Userdata\Configurations\Themes\Bleach.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Userdata\Configurations\Themes\AMOLED.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Userdata\Configurations\Themes\Dark.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Include="Userdata\Configurations\Themes\Light.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
 	<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
 	  <TreatAsUsed>true</TreatAsUsed>
 	</PackageReference>
-    <PackageReference Include="NLog" Version="5.0.1" />
+    <PackageReference Include="NLog" Version="5.1.4" />
+    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ObservableTable">
+      <HintPath>..\..\ObservableTable\Publish\ObservableTable.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -55,31 +78,30 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Userdata\Configurations\Configuration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Userdata\Configurations\Style.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Userdata\CSVData\0.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="Userdata\CSVData\A1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Userdata\CSVData\100.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="Userdata\CSVData\A2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Userdata\CSVData\300.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Userdata\CSVData\500.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="Userdata\CSVData\A3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Userdata\CSVData\data.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Userdata\Configurations\Themes\Light.xaml">
+    <Page Update="View\Light.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 
