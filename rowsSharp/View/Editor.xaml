@@ -173,7 +173,7 @@
                     <TextBox.Style>
                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding EditorVM.Filter.IsFilterFocused}" Value="True">
+                                <DataTrigger Binding="{Binding EditorVM.Filter.IsFilterFocused, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                     <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                                 </DataTrigger>
                             </Style.Triggers>
