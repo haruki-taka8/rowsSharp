@@ -1,12 +1,24 @@
 ﻿<Application x:Class="rowsSharp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Internal/View/MainWindow.xaml">
+             StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Font -->
+            <FontFamily x:Key="Symbol">pack://application,,,/View/Font/#Material Symbols Outlined 48pt</FontFamily>
+            
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/rowsSharp;component/Internal/View/Light.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/Internal/View/Common.xaml"/>
+                <!-- Fallback Theme -->
+                <ResourceDictionary Source="/rowsSharp;component/View/Light.xaml"/>
+
+                <!-- Element Styling -->
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Button.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/DataGrid.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/OptionMark.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Scrollbar.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBlock.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBox.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/ToggleButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

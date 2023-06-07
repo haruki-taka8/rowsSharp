@@ -1,28 +1,31 @@
 ## 📌 rowsSharp
-C#/WPF-based CSV filtering and editing tool. Rewritten from [Rows](https://github.com/haruki-taka8/rows).
+C#/WPF-based CSV filtering and editing tool. Rewritten and enhanced from [Rows](https://github.com/haruki-taka8/rows).
 <br><br>
 
 ## ✔️ Features
 
 **Filtering**
   * Display user-friendly aliases instead of raw data
-  * Display a preview image based on the selected row
-  * Conditional formatting support
-  * Regular expressions support
+  * Display an image based on the selected row
+  * Conditional formatting
+  * Regular expressions
 <br>
 
 **Editing**
-  * Add/remove rows
+  * Add/edit/remove rows and columns
   * Add rows with a template
-  * Change existing rows
   * Unlimited undo & redo
+  * Shortcut keys
 <br>
 
-## 🌎 Using
-* [CsvHelper](https://joshclose.github.io/CsvHelper/)
-* [Microsoft.Xaml.Behaviors.Wpf](https://github.com/microsoft/XamlBehaviorsWpf)
-* [NLog](https://nlog-project.org/)
+## 🌎 Dependencies
+* [CsvHelper](https://joshclose.github.io/CsvHelper/) ([License](https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt))
+* [Material Symbols](https://github.com/marella/material-symbols/) ([License](https://github.com/marella/material-symbols/blob/main/LICENSE))
+	* Font was converted to `.otf` for WPF compatibility
+	* Font content is rotated and/or flipped inside the UI
+* [Microsoft.Xaml.Behaviors.Wpf](https://github.com/microsoft/XamlBehaviorsWpf) ([License](https://github.com/microsoft/XamlBehaviorsWpf/blob/master/LICENSE))
+* [NLog](https://nlog-project.org/) ([License](https://github.com/NLog/NLog/blob/dev/LICENSE.txt))
 <br>
 
 ## 🧪 Building
-Official binaries are built with Visual Studio 2022 and .NET 6, using the _release_ configuration.
+Official binaries are built with Visual Studio 2022 and .NET 6 using the _release_ configuration.

@@ -1,0 +1,423 @@
+﻿<UserControl x:Class="rowsSharp.View.Editor"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:rowsSharp.View"
+      xmlns:viewmodel="clr-namespace:rowsSharp.ViewModel"
+      d:DataContext="{d:DesignInstance Type=viewmodel:RootVM}"
+      mc:Ignorable="d" 
+      d:DesignWidth="1400" d:DesignHeight="600" d:Background="{StaticResource Rows.Background}">
+
+    <UserControl.Resources>
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="{StaticResource Rows.Background}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Preferences.UseToolTip, Mode=OneWay}" Value="False">
+                    <Setter Property="Template" Value="{x:Null}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <DockPanel Margin="24,8">
+        <Grid DockPanel.Dock="Top" Background="{StaticResource Rows.Header}" Margin="-24,-8,-24,16">
+            <Grid.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="FontFamily" Value="{StaticResource Symbol}"/>
+                    <Setter Property="FontSize" Value="{StaticResource Rows.IconFontSize}"/>
+                    <Setter Property="Margin" Value="4,12"/>
+                    <Setter Property="Padding" Value="4,0"/>
+                    <!-- Width is generally larger than height -->
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
+                </Style>
+                <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                    <Setter Property="FontFamily" Value="{StaticResource Symbol}"/>
+                    <Setter Property="FontSize" Value="{StaticResource Rows.IconFontSize}"/>
+                    <Setter Property="Margin" Value="4,12"/>
+                    <Setter Property="Padding" Value="4,0"/>
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"/>
+                </Style>
+                <Style TargetType="Rectangle">
+                    <Setter Property="Margin" Value="8,16"/>
+                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                    <Setter Property="Fill" Value="{StaticResource Separator.Fill}"/>
+                    <Setter Property="Width" Value="1"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel>
+                <!-- Save -->
+                <Button Margin="16,8,8,8" Content="&#xe161;" ToolTip="Save" Command="{Binding EditorVM.Edit.Save}"/>
+                <!-- Autosave -->
+                <ToggleButton ToolTip="Autosave" IsChecked="{Binding Preferences.UseAutosave}" IsEnabled="{Binding Preferences.CanEdit}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Content" Value="&#xe425;"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Content" Value="&#xe426;"/>
+                                </Trigger>
+                            </Style.Triggers>
+                            <Setter Property="Content" Value="&#xe426;"/>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <Rectangle/>
+                <!-- Undo -->
+                <Button Content="&#xe166;" ToolTip="Undo" Command="{Binding EditorVM.Edit.Undo}"/>
+                <!-- Redo -->
+                <Button Content="&#xe15a;" ToolTip="Redo" Command="{Binding EditorVM.Edit.Redo}"/>
+                <Rectangle/>
+                <!-- Edit -->
+                <ToggleButton IsChecked="{Binding Preferences.CanEdit}" ToolTip="Editing">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Content" Value="&#xe3c9;"/>
+                                </Trigger>
+                            </Style.Triggers>
+                            <Setter Property="Content" Value="&#xe950;"/>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <!-- Template -->
+                <ToggleButton Content="&#xf76f;" ToolTip="Template rows" IsChecked="{Binding Preferences.UseInsertTemplate}"/>
+                <!-- Insert Above -->
+                <Button Content="&#xf0fb;" ToolTip="Insert row above"
+                        Command="{Binding EditorVM.Edit.InsertRowAbove}"/>
+                <!-- Insert Below -->
+                <Button Content="&#xf0fb;" RenderTransformOrigin="0.5,0.5" ToolTip="Insert row below"
+                        Command="{Binding EditorVM.Edit.InsertRowBelow}">
+                    <Button.RenderTransform>
+                        <ScaleTransform ScaleY="-1"/>
+                    </Button.RenderTransform>
+                </Button>
+                <!-- Insert Left -->
+                <Button Content="&#xf0fb;" RenderTransformOrigin="0.5,0.5" ToolTip="Insert column left"
+                        Command="{Binding EditorVM.Edit.InsertColumnLeft}">
+                    <Button.RenderTransform>
+                        <RotateTransform CenterX="0" CenterY="0" Angle="-90"/>
+                    </Button.RenderTransform>
+                </Button>
+                <!-- Insert Right -->
+                <Button Content="&#xf0fb;" RenderTransformOrigin="0.5,0.5" ToolTip="Insert column right"
+                        Command="{Binding EditorVM.Edit.InsertColumnRight}">
+                    <Button.RenderTransform>
+                        <RotateTransform CenterX="0" CenterY="0" Angle="90"/>
+                    </Button.RenderTransform>
+                </Button>                
+                <!-- Remove Row -->
+                <Button Content="&#xeb80;" ToolTip="Remove selected rows"
+                        Command="{Binding EditorVM.Edit.RemoveRows}"/>
+                <!-- Remove Column -->
+                <Button Content="&#xeb80;" RenderTransformOrigin="0.5,0.5" ToolTip="Remove selected columns"
+                        Command="{Binding EditorVM.Edit.RemoveColumns}">
+                    <Button.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="90"/>
+                            <ScaleTransform ScaleX="-1"/>
+                        </TransformGroup>
+                    </Button.RenderTransform>
+                </Button>
+                <Rectangle/>
+                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseRegexFilter}" Content="&#xf750;" ToolTip="Use regular expressions in filters"/>
+                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseInputAlias}" Content="&#xe39f;" ToolTip="Input alias"/>
+
+                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsEnabled="{Binding Preferences.IsReadOnly}" ToolTip="Output alias">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="False">
+                                        <Setter Property="IsChecked" Value="{Binding Preferences.UseOutputAlias}"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="&#xe662;"/>
+                                    </Trigger>
+                            </Style.Triggers>
+                            <Setter Property="Content" Value="&#xe665;"/>
+                            <Setter Property="IsChecked" Value="False"/>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </DockPanel>
+
+            <Grid VerticalAlignment="Center" Grid.Column="1">
+                <TextBlock Foreground="{StaticResource Rows.Caption}" Background="{StaticResource TextBox.Background}"
+                           FontFamily="{StaticResource Rows.FontFamily}" FontSize="{StaticResource Rows.PrimaryFontSize}"
+                           Margin="8" Padding="7,4">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value=""/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EditorVM.Filter.FilterText, Mode=OneWay}" Value="">
+                                    <Setter Property="Text" Value="Filter"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBox Margin="8" Padding="4,2" VerticalContentAlignment="Center" Background="Transparent" 
+                         FontFamily="{StaticResource Rows.FontFamily}" FontSize="{StaticResource Rows.PrimaryFontSize}"
+                         Text="{Binding EditorVM.Filter.FilterText, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EditorVM.Filter.IsFilterFocused, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding EditorVM.Filter.InvokeFilter, Mode=OneTime}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+            </Grid>
+
+            <!-- Filter -->
+            <DockPanel Grid.Column="2">
+                <Button Command="{Binding EditorVM.Filter.InvokeFilter}" Content="&#xe8b6;" Margin="0,8,8,8" ToolTip="Filter"/>
+                <Button CommandParameter="{Binding ElementName=Grid}" Command="{Binding EditorVM.Filter.ResetSorting}" Content="&#xe053;" ToolTip="Reset sorting"/>
+                <Rectangle/>
+                <Button Command="{Binding EditorVM.Filter.OpenPreferences}" Content="&#xe8b8;" Margin="8,8,16,8" ToolTip="Preferences"/>
+            </DockPanel>
+        </Grid>
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="-24,16,-24,-12" Background="{StaticResource Rows.Header}">
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="{StaticResource Rows.Text}"/>
+                    <Setter Property="FontSize" Value="{StaticResource Rows.SecondaryFontSize}"/>
+                    <Setter Property="Margin" Value="16,8,16,10"/>
+                </Style>
+            </DockPanel.Resources>
+            <TextBlock MinWidth="128">
+                <Run Text="{Binding EditorVM.Edit.SelectedRows, Mode=OneWay}"/>
+                <Run Text="×"/>
+                <Run Text="{Binding EditorVM.Edit.SelectedColumns, Mode=OneWay}"/>
+                <Run Text="selected"/>
+            </TextBlock>
+            <TextBlock MinWidth="128">
+                <Run Text="{Binding EditorVM.CollectionView.Count, Mode=OneWay}"/>
+                <Run Text="of"/>
+                <Run Text="{Binding Table.Records.Count, Mode=OneWay}"/>
+                <Run Text="rows"/>
+            </TextBlock>
+            <TextBlock MinWidth="128">
+                <Run Text="{Binding Table.Headers.Count, Mode=OneWay}"/>
+                <Run Text="columns"/>
+            </TextBlock>
+            <TextBlock Text="{Binding Preferences.CsvName, Mode=OneTime}"/>
+            <TextBlock HorizontalAlignment="Right">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding EditorVM.Edit.IsEditorDirty, Mode=OneWay}" Value="True">
+                                <Setter Property="Text" Value="Unsaved"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Text" Value="Saved"/>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </DockPanel>
+
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource Rows.Width.DataGrid}"/>
+                <ColumnDefinition Width="{StaticResource Rows.Width.Preview}"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid Name="Grid"
+                    ItemsSource="{Binding EditorVM.CollectionView}" AutoGenerateColumns="False"
+                    FontFamily="{StaticResource Rows.FontFamily}"
+                    Foreground="{StaticResource Rows.Text}"
+				    Background="Transparent" BorderThickness="0"
+                    VerticalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Vertical}"
+                    HorizontalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Horizontal}"
+                    CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="{Binding Preferences.IsReadOnly, Mode=OneWay}"
+                    FrozenColumnCount="{StaticResource Rows.DataGrid.FrozenColumn}"
+                    RowHeaderWidth="10" MinRowHeight="{StaticResource Rows.DataGrid.MinRowHeight}" 
+                    SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                    CanUserReorderColumns="{Binding Preferences.CanEdit}"
+				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding EditorVM.Preview.CopyPreview}" Header="Copy image" InputGestureText="Ctrl+Shift+C"/>
+                        <MenuItem Header="Cut">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:InvokeCommandAction Command="Copy"/>
+                                    <i:InvokeCommandAction Command="{Binding EditorVM.Edit.ClearCells}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </MenuItem>
+                        <MenuItem Command="Copy" Header="Copy"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.Paste}" Header="Paste" InputGestureText="Ctrl+V"/>
+                        <Separator/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertRowFirst}" Header="Prepend rows" InputGestureText="Ctrl+8"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Prepend columns" InputGestureText="Ctrl+H"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertRowLast}" Header="Append rows" InputGestureText="Ctrl+,"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.InsertColumnLast}" Header="Append columns" InputGestureText="Ctrl+;"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.RenameColumn}" Header="Rename column..." InputGestureText="Ctrl+R"/>
+                        <Separator/>
+                        <MenuItem Command="{Binding EditorVM.Edit.ClearRows}" Header="Clear rows" InputGestureText="Ctrl+Delete"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.ClearColumns}" Header="Clear columns" InputGestureText="Ctrl+Shift+Delete"/>
+                        <MenuItem Command="{Binding EditorVM.Edit.ClearCells}" Header="Clear cells" InputGestureText="Alt+Delete"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CurrentCellChanged">
+                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=Grid, Path=CurrentItem}" Command="{Binding EditorVM.Preview.ChangePreview}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="SelectedCellsChanged">
+                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=Grid, Path=SelectedCells}" Command="{Binding EditorVM.Edit.ChangeSelectedCells}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="ColumnReordered">
+                        <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding EditorVM.Edit.ReorderColumn}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <i:Interaction.Behaviors>
+                    <local:ColumnsBindingBehaviour Columns="{Binding EditorVM.DataGridColumns, Mode=OneWay}"/>
+                </i:Interaction.Behaviors>
+                <DataGrid.Resources>
+                    <Style TargetType="Thumb">
+                        <Setter Property="Width" Value="8"/>
+                        <Setter Property="Cursor" Value="SizeWE"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Thumb">
+                                    <Border Background="Transparent"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
+                </DataGrid.Resources>
+            </DataGrid>
+
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EditorVM.CollectionView.IsEmpty, Mode=OneWay}" Value="True">
+                                    <Setter Property="Text" Value="No Matches"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Table.Records.Count}" Value="0">
+                                    <Setter Property="Text" Value="No Rows"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Table.Headers.Count}" Value="0">
+                                    <Setter Property="Text" Value="No Columns"/>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Table.Records.Count}" Value="0"/>
+                                        <Condition Binding="{Binding Table.Headers.Count}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Empty File"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <Button>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Table.Records.Count, Mode=OneWay}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Content" Value="Click to add a row"/>
+                                    <Setter Property="Command" Value="{Binding EditorVM.InsertRowLast}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Table.Headers.Count, Mode=OneWay}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Content" Value="Click to add a column"/>
+                                    <Setter Property="Command" Value="{Binding EditorVM.InsertColumnLast}"/>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Table.Records.Count, Mode=OneWay}" Value="0"/>
+                                        <Condition Binding="{Binding Table.Headers.Count, Mode=OneWay}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Content" Value="Click to initialize table"/>
+                                        <Setter Property="Command" Value="{Binding EditorVM.Edit.NewTable}"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                            <Setter Property="Margin" Value="16"/>
+                            <Setter Property="Padding" Value="4,0"/>
+                            <Setter Property="Content" Value=""/>
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <GridSplitter Grid.Column="1" Width="16" Background="Transparent" HorizontalAlignment="Left"/>
+
+            <Image Grid.Column="1" Source="{Binding EditorVM.Preview.Bitmap, Mode=OneWay}"/>
+
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Text="No Preview Available">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding EditorVM.Preview.Bitmap}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Visibility" Value="Hidden"/>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+    </DockPanel>
+
+    <!-- Place KeyBinding's last so it knows ElementName=Grid -->
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+," Command="{Binding EditorVM.Filter.OpenPreferences, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding EditorVM.Filter.FocusFilter, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+SHIFT+C" Command="{Binding EditorVM.Preview.CopyPreview, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="CTRL+Z" Command="{Binding EditorVM.Edit.Undo, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+Y" Command="{Binding EditorVM.Edit.Redo, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+S" Command="{Binding EditorVM.Edit.Save, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+V" Command="{Binding EditorVM.Edit.Paste, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="CTRL+I" Command="{Binding EditorVM.Edit.InsertRowAbove, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+K" Command="{Binding EditorVM.Edit.InsertRowBelow, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+J" Command="{Binding EditorVM.Edit.InsertColumnLeft, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+L" Command="{Binding EditorVM.Edit.InsertColumnRight, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="CTRL+8" Command="{Binding EditorVM.Edit.InsertRowFirst, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+OemComma" Command="{Binding EditorVM.Edit.InsertRowLast, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+H" Command="{Binding EditorVM.Edit.InsertColumnFirst, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+OemSemicolon" Command="{Binding EditorVM.Edit.InsertColumnLast, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="CTRL+Back" Command="{Binding EditorVM.Edit.RemoveRows, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+Delete" Command="{Binding EditorVM.Edit.ClearRows, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="CTRL+SHIFT+Back" Command="{Binding EditorVM.Edit.RemoveColumns, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+SHIFT+Delete" Command="{Binding EditorVM.Edit.ClearColumns, Mode=OneTime}"/>
+        <KeyBinding Gesture="CTRL+R" Command="{Binding EditorVM.Edit.RenameColumn, Mode=OneTime}"/>
+
+        <KeyBinding Gesture="ALT+Delete" Command="{Binding EditorVM.Edit.ClearCells, Mode=OneTime}" />
+    </UserControl.InputBindings>
+</UserControl>

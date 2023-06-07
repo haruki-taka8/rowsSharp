@@ -6,6 +6,9 @@
     <SolidColorBrush x:Key="Rows.Header" Color="#101010"/>
     <SolidColorBrush x:Key="Rows.Text" Color="#B0B0B0"/>
 
+    <SolidColorBrush x:Key="ProgressBar.Background" Color="#121212"/>
+    <SolidColorBrush x:Key="ProgressBar.Foreground" Color="#C000796B"/>
+
     <SolidColorBrush x:Key="Rows.DataGrid.Hover" Color="#242424"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected" Color="#2a3c56"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected.Control" Color="#151e2b"/>
@@ -14,15 +17,16 @@
     <SolidColorBrush x:Key="Rows.DataGrid.Grid.Vertical" Color="Transparent"/>
 
     <SolidColorBrush x:Key="Button.Static.Foreground" Color="#B0B0B0"/>
-    <SolidColorBrush x:Key="Button.Static.Background" Color="#FF242424"/>
-    <SolidColorBrush x:Key="Button.Static.Border" Color="#FF808080"/>
+    <SolidColorBrush x:Key="Button.Static.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="Button.Static.Border" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF484848"/>
-    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF606060"/>
-    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF323232"/>
-    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF606060"/>
-    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FF121212"/>
-    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FF363636"/>
-    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#646464"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="Transparent"/>
+    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#301DE9B6"/>
+    <SolidColorBrush x:Key="Button.Pressed.Foreground" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="Button.Pressed.Border" Color="Transparent"/>
+    <SolidColorBrush x:Key="Button.Disabled.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="Button.Disabled.Border" Color="Transparent"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#606060"/>
 
     <SolidColorBrush x:Key="Expander.Static.Circle.Stroke" Color="#B0B0B0"/>
     <SolidColorBrush x:Key="Expander.Static.Circle.Fill" Color="#101010"/>

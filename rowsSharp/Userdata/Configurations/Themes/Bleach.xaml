@@ -4,7 +4,7 @@
 
     <system:Double x:Key="Rows.StartupWidth">512</system:Double>
     <system:Double x:Key="Rows.StartupHeight">512</system:Double>
-    <system:Int32 x:Key="Rows.DataGrid.FrozenColumn">1</system:Int32>
+    <system:Int32 x:Key="Rows.DataGrid.FrozenColumn">3</system:Int32>
     <system:Double x:Key="Rows.DataGrid.MinRowHeight">32</system:Double>
     <GridLength x:Key="Rows.Preview.Width">*</GridLength>
     <FontFamily x:Key="Rows.FontFamily">Comics Sans MS,Impact</FontFamily>
