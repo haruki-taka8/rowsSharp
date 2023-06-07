@@ -28,7 +28,7 @@ public class EditorVM : NotifyPropertyChanged
         collectionView = CollectionViewSource.GetDefaultView(Table.Records);
 
         Edit = new(rootVM);
-        Filter = new(rootVM, collectionView);
+        Filter = new(rootVM, CollectionView);
         Preview = new(rootVM);
 
         ((INotifyCollectionChanged)Table.Headers).CollectionChanged += Headers_CollectionChanged;
