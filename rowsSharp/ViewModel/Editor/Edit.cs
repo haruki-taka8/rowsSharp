@@ -8,7 +8,6 @@ using System.Timers;
 using rowsSharp.View;
 using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Input;
 
 namespace rowsSharp.ViewModel.Editor;
 
@@ -67,12 +66,12 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
     public DelegateCommand Undo => new(
         () => Table.Undo(),
-        () => Table.UndoCount > 0
+        () => Preferences.CanEdit && Table.UndoCount > 0
     );
 
     public DelegateCommand Redo => new(
         () => Table.Redo(),
-        () => Table.RedoCount > 0
+        () => Preferences.CanEdit && Table.RedoCount > 0
     );
 
     private enum InsertionMode
