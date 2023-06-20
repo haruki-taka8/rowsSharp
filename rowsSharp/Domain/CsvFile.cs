@@ -18,7 +18,7 @@ internal class CsvFile
     {
         SaveFileDialog dialog = new()
         {
-            Filter = "Comma-seperated values (*.csv)|*.csv|All files (*.*)|*.*",
+            Filter = "Comma-separated values (*.csv)|*.csv|All files (*.*)|*.*",
             DefaultExt = "csv"
         };
 
@@ -29,11 +29,17 @@ internal class CsvFile
 
     internal static void Export(string path, ObservableTable<string> table, bool hasHeader)
     {
-        if (!File.Exists(path))
+        while (true)
         {
-            path = RequestFilePath();
+            try
+            {
+                Exporter.ToFile(path, table, hasHeader);
+                return;
+            }
+            catch (IOException)
+            { 
+                path = RequestFilePath();
+            }
         }
-
-        Exporter.ToFile(path, table, hasHeader);
     }
 }
