@@ -12,13 +12,6 @@ public class Preferences : NotifyPropertyChanged
     public string StylePath { get; set; } = "";
     public string PreviewPath { get; set; } = "";
 
-    public bool UseInputAlias { get; set; }
-    private bool useOutputAlias;
-    public bool UseOutputAlias
-    {
-        get => useOutputAlias;
-        set => SetField(ref useOutputAlias, value);
-    }
     public bool UseRegexFilter { get; set; }
 
     private bool canEdit;

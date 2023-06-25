@@ -6,8 +6,6 @@
   "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
   "PreviewPath": "$baseDir/CSVData/<A>.png",
 
-  "UseInputAlias": true,
-  "UseOutputAlias": false,
   "UseRegexFilter": false,
   "UseToolTip": true,
 

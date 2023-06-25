@@ -18,7 +18,6 @@ public class Filter : NotifyPropertyChanged
     {
         rootVM = rootViewModel;
         filter = new(collectionView);
-        filter.Alias = Preferences.ColumnStyle?.Alias ?? new();
     }
 
     private string filterText = "";
@@ -31,8 +30,6 @@ public class Filter : NotifyPropertyChanged
     public DelegateCommand InvokeFilter => new(() =>
     {
         filter.UseRegex = Preferences.UseRegexFilter;
-        filter.UseInputAlias = Preferences.UseInputAlias;
-        filter.UseOutputAlias = Preferences.IsReadOnly && Preferences.UseOutputAlias;
         filter.Headers = Table.Headers;
         filter.FilterText = FilterText;
         rootVM.EditorVM!.CollectionView = filter.Invoke();
