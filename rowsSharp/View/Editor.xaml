@@ -132,24 +132,6 @@
                 </Button>
                 <Rectangle/>
                 <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseRegexFilter}" Content="&#xf750;" ToolTip="Use regular expressions in filters"/>
-                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseInputAlias}" Content="&#xe39f;" ToolTip="Input alias"/>
-
-                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsEnabled="{Binding Preferences.IsReadOnly}" ToolTip="Output alias">
-                    <ToggleButton.Style>
-                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="False">
-                                        <Setter Property="IsChecked" Value="{Binding Preferences.UseOutputAlias}"/>
-                                    </DataTrigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content" Value="&#xe662;"/>
-                                    </Trigger>
-                            </Style.Triggers>
-                            <Setter Property="Content" Value="&#xe665;"/>
-                            <Setter Property="IsChecked" Value="False"/>
-                        </Style>
-                    </ToggleButton.Style>
-                </ToggleButton>
             </DockPanel>
 
             <Grid VerticalAlignment="Center" Grid.Column="1">
