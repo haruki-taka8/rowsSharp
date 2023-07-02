@@ -84,13 +84,8 @@ internal class Filter
 
     private void ValidateRegex()
     {
-        foreach ((int column, string criterion) in filter)
+        foreach ((var _, string criterion) in filter)
         {
-            if (column == -1)
-            {
-                continue;
-            }
-
             // Throws exception on invalid regex
             Regex.IsMatch("", criterion);
         }
