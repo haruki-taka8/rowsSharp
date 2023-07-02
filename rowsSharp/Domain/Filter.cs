@@ -7,7 +7,7 @@ namespace rowsSharp.Domain;
 
 internal class Filter
 {
-    private static readonly Regex splitBySpace = new(@"\s + (?= (?:\""[^\""] *\"" |[^\""]) *$)");
+    private static readonly Regex splitBySpace = new(@"\s+(?=(?:\""[^\""]*\""|[^\""])*$)");
     private static readonly Regex splitByColon = new(@"(?<!\\):");
 
     private readonly List<KeyValuePair<int, string>> filter = new();
