@@ -14,7 +14,7 @@ internal class Filter
 
     internal IList<string> Headers { get; set; } = new List<string>();
     internal string FilterText { get; set; } = "";
-    internal ICollectionView CollectionView { get; private set; }
+    internal ICollectionView CollectionView { get; init; }
 
     internal bool UseRegex { get; set; }
 
@@ -32,14 +32,13 @@ internal class Filter
             {
                 ValidateRegex();
             }
+            CollectionView.Filter = Predicate;
         }
         catch
         {
             CollectionView.Filter = (object obj) => false;
-            return CollectionView;
         }
 
-        CollectionView.Filter = Predicate;
         return CollectionView;
     }
 
