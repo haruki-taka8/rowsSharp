@@ -20,6 +20,7 @@ C#/WPF-based CSV filtering and editing tool. Rewritten and enhanced from [Rows](
 
 ## 🌎 Dependencies
 * [CsvHelper](https://joshclose.github.io/CsvHelper/) ([License](https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt))
+* * [Json.NET](https://www.newtonsoft.com/json ([License](https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md))
 * [Material Symbols](https://github.com/marella/material-symbols/) ([License](https://github.com/marella/material-symbols/blob/main/LICENSE))
 	* Font was converted to `.otf` for WPF compatibility
 	* Font content is rotated and/or flipped inside the UI
