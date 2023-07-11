@@ -16,7 +16,7 @@ public class WelcomeVM : NotifyPropertyChanged
     {
         OpenFileDialog dialog = new()
         {
-            Filter = "Comma-seperated values (*.csv)|*.csv|All files (*.*)|*.*",
+            Filter = "Comma-separated values (*.csv)|*.csv|All files (*.*)|*.*",
             DefaultExt = "csv"
         };
 
@@ -27,7 +27,7 @@ public class WelcomeVM : NotifyPropertyChanged
 
     public DelegateCommand OpenFile => new(() =>
     {
-        rootVM.Preferences.CsvPath = RequestFilePath();
+        rootVM.Preferences.Csv.Path = RequestFilePath();
         rootVM.Initialize();
     });
 

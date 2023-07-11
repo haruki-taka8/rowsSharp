@@ -21,9 +21,9 @@ public class Preview : NotifyPropertyChanged
     public DelegateCommand<IList<string?>> ChangePreview => new(
         (item) =>
         {
-            string path = Preferences.PreviewPath;
+            string path = Preferences.Preview.Path;
             path = ColumnNotation.Expand(path, Table.Headers, item);
-
+            
             Bitmap = Domain.Preview.FromPath(path);
         }
      );
