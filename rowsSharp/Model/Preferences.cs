@@ -1,40 +1,17 @@
-﻿using System.IO;
-using System.Windows;
+﻿namespace rowsSharp.Model;
 
-namespace rowsSharp.Model;
-
-public class Preferences : NotifyPropertyChanged
+/// <summary>
+/// The root of all configurations.
+/// </summary>
+public class Preferences
 {
-    public string CsvPath { get; set; } = "";
-    public string CsvName => Path.GetFileName(CsvPath);
+    public Csv Csv { get; set; } = new();
 
-    public bool HasHeader { get; init; } = true;
-    public string StylePath { get; set; } = "";
-    public string PreviewPath { get; set; } = "";
+    public Editor Editor { get; set; } = new();
 
-    public bool UseRegexFilter { get; set; }
+    public Filter Filter { get; set; } = new();
 
-    private bool canEdit;
-    public bool CanEdit
-    {
-        get => canEdit;
-        set
-        {
-            SetField(ref canEdit, value);
-            OnPropertyChanged(nameof(IsReadOnly));
-        }
-    }
-    public bool IsReadOnly => !CanEdit;
-    public bool AllowMultiline { get; set; }
-    public bool UseInsertTemplate { get; set; } = true;
+    public Preview Preview { get; set; } = new();
 
-    public bool UseAutosave { get; set; } = true;
-    public int AutosavePeriod { get; set; } = 60;
-
-    public bool UseToolTip { get; set; } = true;
-
-    public string ThemePath { get; set; } = "";
-    internal ResourceDictionary? Theme { get; set; }
-
-    public ColumnStyle ColumnStyle { get; set; } = new();
+    public UserInterface UserInterface { get; set; } = new();
 }

@@ -10,10 +10,10 @@
         d:DataContext="{d:DesignInstance Type=ViewModel:RootVM}"
         d:Width="1400" d:Height="600" d:FontSize="16"
         
-        Background="{StaticResource Rows.Background}"
-        Width="{StaticResource Rows.StartupWidth}"
-        Height="{StaticResource Rows.StartupHeight}"
+        Width="{Binding Preferences.UserInterface.WindowWidth}"
+        Height="{Binding Preferences.UserInterface.WindowHeight}"
         FontSize="{StaticResource Rows.PrimaryFontSize}"
+        Background="{StaticResource Rows.Background}"
         Title="{Binding VersionShort, StringFormat='RowsSharp {0}'}">
 
     <i:Interaction.Triggers>

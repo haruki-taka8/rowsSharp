@@ -29,7 +29,7 @@ public class Filter : NotifyPropertyChanged
 
     public DelegateCommand InvokeFilter => new(() =>
     {
-        filter.UseRegex = Preferences.UseRegexFilter;
+        filter.UseRegex = Preferences.Filter.IsRegexEnabled;
         filter.Headers = Table.Headers;
         filter.FilterText = FilterText;
         rootVM.EditorVM!.CollectionView = filter.Invoke();

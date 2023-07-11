@@ -20,33 +20,24 @@ internal static class ColumnStyleHelper
     }
 
 
-    internal static Style GetConditionalFormatting(this Dictionary<string, Dictionary<string, string>> colorStyles, string header, int column)
+    internal static Style GetConditionalFormatting(int column, IDictionary<string, string> rules)
     {
         Style style = GetDefaultStyle(typeof(DataGridCell));
 
-        colorStyles.TryGetValue(header, out var rules);
-        if (rules is null) { return style; }
-
-        var triggers = GetDataTriggers(column, rules);
-        style.Triggers.AddRange(triggers);
+        foreach (var (key, value) in rules)
+        {
+            style.Triggers.Add(GetDataTrigger(column, key, value));
+        }
 
         return style;
     }
 
-    private static IEnumerable<DataTrigger> GetDataTriggers(int column, IDictionary<string, string> rules)
-    {
-        foreach (var (key, value) in rules)
-        {
-            yield return GetDataTrigger(column, key, value);
-        }
-    }
-
-    private static DataTrigger GetDataTrigger(int column, string key, string color)
+    private static DataTrigger GetDataTrigger(int column, string match, string color)
     {
         DataTrigger dataTrigger = new()
         {
             Binding = new Binding("[" + column + "]"),
-            Value = key
+            Value = match
         };
 
         dataTrigger.Setters.Add(new Setter()

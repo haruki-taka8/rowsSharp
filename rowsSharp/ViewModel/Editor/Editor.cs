@@ -18,6 +18,8 @@ public class EditorVM : NotifyPropertyChanged
     private Preferences Preferences => rootVM.Preferences;
     private ObservableTable<string> Table => rootVM.Table;
 
+    public string CsvName => System.IO.Path.GetFileName(Preferences.Csv.Path);
+
     public Edit Edit { get; set; }
     public Editor.Filter Filter { get; set; }
     public Editor.Preview Preview { get; set; }
@@ -31,12 +33,33 @@ public class EditorVM : NotifyPropertyChanged
         Filter = new(rootVM, CollectionView);
         Preview = new(rootVM);
 
-        ((INotifyCollectionChanged)Table.Headers).CollectionChanged += Headers_CollectionChanged;
+        ((INotifyCollectionChanged)Table.Headers).CollectionChanged += HeadersChanged;
+        HeadersChanged(null, new(NotifyCollectionChangedAction.Reset));
     }
 
-    private void Headers_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HeadersChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(DataGridColumns));
+        DataGridColumns.Clear();
+
+        for (int i = 0; i < Table.Headers.Count; i++)
+        {
+            string header = Table.Headers[i];
+
+            DataGridTextColumn column = new()
+            {
+                Header = header,
+                Binding = new Binding("[" + i + "]"),
+                EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(Preferences.Editor.CanInsertNewline)
+            };
+
+            if (Preferences.Editor.ColumnStyles.TryGetValue(header, out var style))
+            {
+                column.Width = style.Width > 0 ? style.Width : column.Width;
+                column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(i, style.ConditionalFormatting);
+            }
+
+            DataGridColumns.Add(column);
+        }
     }
 
     private ICollectionView collectionView;
@@ -46,18 +69,5 @@ public class EditorVM : NotifyPropertyChanged
         set => SetField(ref collectionView, value);
     }
 
-    private const int DefaultColumnWidth = 128;
-
-    public ObservableCollection<DataGridColumn> DataGridColumns =>
-        new(
-            Table.Headers.Select((header, index) => new DataGridTextColumn()
-            {
-                Header = header,
-                Binding = new Binding("[" + index + "]"),
-                Width = Preferences.ColumnStyle.Width.GetValueOrDefault(header, DefaultColumnWidth),
-                
-                CellStyle = Preferences.ColumnStyle.Color.GetConditionalFormatting(header, index),
-                EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(Preferences.AllowMultiline)
-            })
-        );
+    public ObservableCollection<DataGridColumn> DataGridColumns { get; } = new();
 }

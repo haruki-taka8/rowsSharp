@@ -26,7 +26,7 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
         Table.TableModified += Table_TableModified;
 
-        timer = new(Preferences.AutosavePeriod * 1000);
+        timer = new(Preferences.Editor.AutosaveInterval * 1000);
         timer.Enabled = true;
         timer.AutoReset = true;
         timer.Elapsed += Timer_Elapsed;
@@ -40,9 +40,9 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
     private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        if (!Preferences.UseAutosave || !Preferences.CanEdit || !isEditorDirty) { return; }
+        if (!Preferences.Editor.IsAutosaveEnabled || !Preferences.Editor.CanEdit || !isEditorDirty) { return; }
 
-        CsvFile.Export(Preferences.CsvPath, Table, Preferences.HasHeader);
+        CsvFile.Export(Preferences.Csv.Path, Table, Preferences.Csv.HasHeader);
         IsEditorDirty = false;
     }
 
@@ -58,23 +58,22 @@ public class Edit : NotifyPropertyChanged, IDisposable
         private set => SetField(ref isEditorDirty, value);
     }
 
-
     private bool DataGridEditableAndSelected()
     {
-        return Preferences.CanEdit && selectedCells.Count > 0;
+        return Preferences.Editor.CanEdit && selectedCells.Count > 0;
     }
 
     public DelegateCommand Undo => new(
         () => Table.Undo(),
-        () => Preferences.CanEdit && Table.UndoCount > 0
+        () => Preferences.Editor.CanEdit && Table.UndoCount > 0
     );
 
     public DelegateCommand Redo => new(
         () => Table.Redo(),
-        () => Preferences.CanEdit && Table.RedoCount > 0
+        () => Preferences.Editor.CanEdit && Table.RedoCount > 0
     );
 
-    private enum InsertionMode
+    private enum Insertion
     {
         Prepend,
         Before,
@@ -82,7 +81,7 @@ public class Edit : NotifyPropertyChanged, IDisposable
         Append
     }
 
-    private void InsertRow(InsertionMode insertionMode)
+    private void InsertRow(Insertion insertionMode)
     {
         int count = selectedCells.Count > 0
             ? selectedCells.Rows().Count()
@@ -90,48 +89,48 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
         int index = insertionMode switch
         {
-            InsertionMode.Prepend => 0,
-            InsertionMode.Before => selectedCells.RowIndices(Table.Records).Min(),
-            InsertionMode.After => selectedCells.RowIndices(Table.Records).Max() + 1,
+            Insertion.Prepend => 0,
+            Insertion.Before => selectedCells.RowIndices(Table.Records).Min(),
+            Insertion.After => selectedCells.RowIndices(Table.Records).Max() + 1,
             _ => Table.Records.Count
         };
 
-        var template = Preferences.UseInsertTemplate ? Preferences.ColumnStyle?.Template : null;
-
+        var template = Preferences.Editor.IsTemplateEnabled ? Preferences.Editor.ColumnStyles : null;
+        
         var toAdd = RowTemplate.Generate(count, Table.Headers, template);
         Table.InsertRow(index, toAdd);
     }
 
     public DelegateCommand InsertRowAbove => new(
-        () => InsertRow(InsertionMode.Before),
+        () => InsertRow(Insertion.Before),
         () => DataGridEditableAndSelected()
     );
 
     public DelegateCommand InsertRowBelow => new(
-        () => InsertRow(InsertionMode.After),
+        () => InsertRow(Insertion.After),
         () => DataGridEditableAndSelected()
     );
 
     public DelegateCommand InsertRowFirst => new(
-        () => InsertRow(InsertionMode.Prepend),
-        () => Preferences.CanEdit
+        () => InsertRow(Insertion.Prepend),
+        () => Preferences.Editor.CanEdit
     );
 
     public DelegateCommand InsertRowLast => new(
-        () => InsertRow(InsertionMode.Append),
-        () => Preferences.CanEdit
+        () => InsertRow(Insertion.Append),
+        () => Preferences.Editor.CanEdit
     );
 
     public DelegateCommand NewTable => new(
         () =>
         {
-            InsertColumn(InsertionMode.Append);
-            InsertRow(InsertionMode.Append);
+            InsertColumn(Insertion.Append);
+            InsertRow(Insertion.Append);
         },
-        () => Preferences.CanEdit
+        () => Preferences.Editor.CanEdit
     );
 
-    private void InsertColumn(InsertionMode insertionMode)
+    private void InsertColumn(Insertion insertionMode)
     {
         int count = selectedCells.Count > 0
             ? selectedCells.Columns().Count()
@@ -139,9 +138,9 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
         int index = insertionMode switch
         {
-            InsertionMode.Prepend => 0,
-            InsertionMode.Before => selectedCells.ColumnIndices(Table.Headers).Min(),
-            InsertionMode.After => selectedCells.ColumnIndices(Table.Headers).Max() + 1,
+            Insertion.Prepend => 0,
+            Insertion.Before => selectedCells.ColumnIndices(Table.Headers).Min(),
+            Insertion.After => selectedCells.ColumnIndices(Table.Headers).Max() + 1,
             _ => Table.Headers.Count
         };
 
@@ -149,23 +148,23 @@ public class Edit : NotifyPropertyChanged, IDisposable
     }
 
     public DelegateCommand InsertColumnLeft => new(
-        () => InsertColumn(InsertionMode.Before),
+        () => InsertColumn(Insertion.Before),
         () => DataGridEditableAndSelected()
     );
 
     public DelegateCommand InsertColumnRight => new(
-        () => InsertColumn(InsertionMode.After),
+        () => InsertColumn(Insertion.After),
         () => DataGridEditableAndSelected()
     );
 
     public DelegateCommand InsertColumnFirst => new(
-        () => InsertColumn(InsertionMode.Prepend),
-        () => Preferences.CanEdit
+        () => InsertColumn(Insertion.Prepend),
+        () => Preferences.Editor.CanEdit
     );
 
     public DelegateCommand InsertColumnLast => new(
-        () => InsertColumn(InsertionMode.Append),
-        () => Preferences.CanEdit
+        () => InsertColumn(Insertion.Append),
+        () => Preferences.Editor.CanEdit
     );
 
     public DelegateCommand RemoveRows => new(
@@ -200,10 +199,10 @@ public class Edit : NotifyPropertyChanged, IDisposable
     public DelegateCommand Save => new(
         () =>
         {
-            CsvFile.Export(Preferences.CsvPath, Table, Preferences.HasHeader);
+            CsvFile.Export(Preferences.Csv.Path, Table, Preferences.Csv.HasHeader);
             IsEditorDirty = false;
         },
-        () => Preferences.CanEdit && isEditorDirty
+        () => Preferences.Editor.CanEdit && isEditorDirty
     );
 
     public DelegateCommand RenameColumn => new(
@@ -218,7 +217,7 @@ public class Edit : NotifyPropertyChanged, IDisposable
             int index = Table.Headers.IndexOf((string)selectedCells[0].Column.Header);
             Table.RenameColumn(index, newHeader);
         },
-        () => DataGridEditableAndSelected() && Preferences.HasHeader
+        () => DataGridEditableAndSelected() && Preferences.Csv.HasHeader
     );
 
     private IEnumerable<Cell<string>> EmptiedSelectedCells()
@@ -313,6 +312,6 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
             Table.ReorderColumn(oldIndex, newIndex);
         },
-        (e) => Preferences.CanEdit
+        (e) => Preferences.Editor.CanEdit
     );
 }

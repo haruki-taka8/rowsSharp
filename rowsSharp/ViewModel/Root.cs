@@ -42,9 +42,9 @@ public class RootVM : NotifyPropertyChanged
         App.Logger.Info("Building DataContext");
 
         Preferences = PreferencesReader.Import(ConfigPath);
-        if (Preferences.Theme is not null)
+        if (Preferences.UserInterface.Theme is not null)
         {
-            Application.Current.Resources.MergedDictionaries.Add(Preferences.Theme);
+            Application.Current.Resources.MergedDictionaries.Add(Preferences.UserInterface.Theme);
         }
 
         Initialize();
@@ -76,7 +76,7 @@ public class RootVM : NotifyPropertyChanged
     {
         if (!hasFilePath) { return true; }
 
-        Table = CsvFile.Import(Preferences.CsvPath, Preferences.HasHeader);
+        Table = CsvFile.Import(Preferences.Csv.Path, Preferences.Csv.HasHeader);
         return Table.Headers.Count != 0;
     }
 
