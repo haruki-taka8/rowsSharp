@@ -49,6 +49,18 @@
     <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#FF646464"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="#FF484848"/>
 
+    <SolidColorBrush x:Key="SliderThumb.Static.Background" Color="#A0A0A0"/>
+    <SolidColorBrush x:Key="SliderThumb.Static.Border" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="SliderThumb.Static.Foreground" Color="#A0A0A0"/>
+    <SolidColorBrush x:Key="SliderThumb.MouseOver.Background" Color="#727272"/>
+    <SolidColorBrush x:Key="SliderThumb.MouseOver.Border" Color="#FF363636"/>
+    <SolidColorBrush x:Key="SliderThumb.Pressed.Background" Color="#565656"/>
+    <SolidColorBrush x:Key="SliderThumb.Pressed.Border" Color="#FF323232"/>
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Background" Color="#FF646464"/>
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Border" Color="#FF484848"/>
+    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="#484848"/>
+    <SolidColorBrush x:Key="SliderThumb.Track.Border" Color="#484848"/>
+
     <SolidColorBrush x:Key="TextBox.Background" Color="#181818"/>
     <SolidColorBrush x:Key="TextBox.Foreground" Color="#FFD0D0D0"/>
     <SolidColorBrush x:Key="TextBox.Border" Color="#606060"/>

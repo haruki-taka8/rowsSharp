@@ -57,7 +57,7 @@
                 <!-- Save -->
                 <Button Margin="16,8,8,8" Content="&#xe161;" ToolTip="Save" Command="{Binding EditorVM.Edit.Save}"/>
                 <!-- Autosave -->
-                <ToggleButton ToolTip="Autosave" IsChecked="{Binding Preferences.Editor.IsAutosaveEnabled}" IsEnabled="{Binding Preferences.Editor.CanEdit}">
+                <ToggleButton ToolTip="Autosave" IsChecked="{Binding EditorVM.Edit.IsAutosaveEnabled}" IsEnabled="{Binding Preferences.Editor.CanEdit}">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                             <Style.Triggers>

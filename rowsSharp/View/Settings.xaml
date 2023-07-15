@@ -56,42 +56,10 @@
                     </Style>
                 </StackPanel.Resources>
                 <TextBlock Text="Filtering" Style="{StaticResource Caption}" FontSize="{StaticResource Rows.PrimaryFontSize}"/>
-
-                <BulletDecorator>
-                    <BulletDecorator.Bullet>
-                        <CheckBox IsChecked="{Binding Preferences.UseInputAlias}">
-                        </CheckBox>
-                    </BulletDecorator.Bullet>
-                    <StackPanel Margin="24,0">
-                        <TextBlock>Input Alias</TextBlock>
-                        <TextBlock Style="{StaticResource Info}">Convert aliased filters to match raw CSV data</TextBlock>
-                    </StackPanel>
-                </BulletDecorator>
                 
                 <BulletDecorator>
                     <BulletDecorator.Bullet>
-                        <CheckBox IsEnabled="{Binding Preferences.IsReadOnly}">
-                            <CheckBox.Style>
-                                <Style TargetType="CheckBox">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="False">
-                                            <Setter Property="IsChecked" Value="{Binding Preferences.UseOutputAlias}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                    <Setter Property="IsChecked" Value="False"/>
-                                </Style>
-                            </CheckBox.Style>
-                        </CheckBox>
-                    </BulletDecorator.Bullet>
-                    <StackPanel Margin="24,0">
-                        <TextBlock>Output Alias</TextBlock>
-                        <TextBlock Style="{StaticResource Info}">Alias raw CSV data when displaying</TextBlock>
-                    </StackPanel>
-                </BulletDecorator>
-
-                <BulletDecorator>
-                    <BulletDecorator.Bullet>
-                        <CheckBox IsChecked="{Binding Preferences.UseRegexFilter}"/>
+                        <CheckBox IsChecked="{Binding Preferences.Filter.IsRegexEnabled}"/>
                     </BulletDecorator.Bullet>
                     <StackPanel Margin="24,0">
                         <TextBlock>Regular Expression</TextBlock>
@@ -103,7 +71,7 @@
                 
                 <BulletDecorator>
                     <BulletDecorator.Bullet>
-                        <CheckBox IsChecked="{Binding Preferences.CanEdit}"/>
+                        <CheckBox IsChecked="{Binding Preferences.Editor.CanEdit}"/>
                     </BulletDecorator.Bullet>
                     <StackPanel Margin="24,0">
                         <TextBlock>Editing</TextBlock>
@@ -113,7 +81,7 @@
 
                 <BulletDecorator>
                     <BulletDecorator.Bullet>
-                        <CheckBox IsChecked="{Binding Preferences.UseInsertTemplate}"/>
+                        <CheckBox IsChecked="{Binding Preferences.Editor.IsTemplateEnabled}"/>
                     </BulletDecorator.Bullet>
                     <StackPanel Margin="24,0">
                         <TextBlock>Insertion Template</TextBlock>
@@ -123,12 +91,12 @@
 
                 <BulletDecorator>
                     <BulletDecorator.Bullet>
-                        <CheckBox IsEnabled="{Binding Preferences.CanEdit}">
+                        <CheckBox IsEnabled="{Binding Preferences.Editor.CanEdit}">
                             <CheckBox.Style>
-                                <Style TargetType="CheckBox">
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="True">
-                                            <Setter Property="IsChecked" Value="{Binding Preferences.UseAutosave}"/>
+                                        <DataTrigger Binding="{Binding Preferences.Editor.CanEdit}" Value="True">
+                                            <Setter Property="IsChecked" Value="{Binding EditorVM.Edit.IsAutosaveEnabled}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                     <Setter Property="IsChecked" Value="False"/>
@@ -142,11 +110,26 @@
                     </StackPanel>
                 </BulletDecorator>
 
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <CheckBox IsHitTestVisible="False" IsTabStop="False" Visibility="Hidden"/>
+                    </BulletDecorator.Bullet>
+                    <StackPanel Margin="24,0">
+                        <TextBlock>Autosave Interval</TextBlock>
+                        <TextBlock Style="{StaticResource Info}"
+                                   Text="{Binding EditorVM.Edit.AutosaveInterval, StringFormat='{}Changes are saved every {0:0} milliseconds automatically.'}"/>
+                        <Slider Margin="0,4,0,0" Value="{Binding EditorVM.Edit.AutosaveInterval}"
+                                Minimum="10000" Maximum="600000"
+                                IsSnapToTickEnabled="True" TickFrequency="1000"
+                                IsEnabled="{Binding EditorVM.Edit.IsAutosaveEnabled}"/>
+                    </StackPanel>
+                </BulletDecorator>
+
                 <TextBlock Text="General" Style="{StaticResource Caption}" Margin="0,24,0,0" FontSize="{StaticResource Rows.PrimaryFontSize}"/>
 
                 <BulletDecorator>
                     <BulletDecorator.Bullet>
-                        <CheckBox IsChecked="{Binding Preferences.UseToolTip}"/>
+                        <CheckBox IsChecked="{Binding Preferences.UserInterface.IsToolTipEnabled}"/>
                     </BulletDecorator.Bullet>
                     <StackPanel Margin="24,0">
                         <TextBlock>Show Tooltips</TextBlock>
