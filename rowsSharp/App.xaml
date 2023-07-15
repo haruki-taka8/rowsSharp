@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/DataGrid.xaml"/>
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/OptionMark.xaml"/>
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Scrollbar.xaml"/>
+                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Slider.xaml"/>
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBlock.xaml"/>
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBox.xaml"/>
                 <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/ToggleButton.xaml"/>

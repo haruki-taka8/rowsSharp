@@ -11,14 +11,36 @@ using System.Windows;
 
 namespace rowsSharp.ViewModel.Editor;
 
-public class Edit : NotifyPropertyChanged, IDisposable
+public class Edit : NotifyPropertyChanged
 {
     private readonly RootVM rootVM;
     private Preferences Preferences => rootVM.Preferences;
     private ObservableTable<string> Table => rootVM.Table;
 
     private readonly UniqueColumn column = new();
-    private readonly Timer timer;
+    private readonly Autosave autosave;
+
+    private bool isAutosaveEnabled;
+    public bool IsAutosaveEnabled
+    {
+        get => isAutosaveEnabled;
+        set
+        {
+            autosave.Enabled = value;
+            SetField(ref isAutosaveEnabled, value);
+        }
+    }
+
+    private double autosaveInterval;
+    public double AutosaveInterval
+    {
+        get => autosaveInterval;
+        set
+        {
+            autosave.Interval = value;
+            SetField(ref autosaveInterval, value);
+        }
+    }
 
     public Edit(RootVM rootViewModel)
     {
@@ -26,22 +48,15 @@ public class Edit : NotifyPropertyChanged, IDisposable
 
         Table.TableModified += Table_TableModified;
 
-        timer = new(Preferences.Editor.AutosaveInterval * 1000);
-        timer.Enabled = true;
-        timer.AutoReset = true;
-        timer.Elapsed += Timer_Elapsed;
+        autosave = new(Autosave_Elapsed);
+        AutosaveInterval = Preferences.Editor.AutosaveInterval;
+        IsAutosaveEnabled = Preferences.Editor.IsAutosaveEnabled;
     }
 
-    public void Dispose()
-    {
-        timer.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
+    private void Autosave_Elapsed(object? sender, ElapsedEventArgs e)
     {
         if (!Preferences.Editor.IsAutosaveEnabled || !Preferences.Editor.CanEdit || !isEditorDirty) { return; }
-
+    
         CsvFile.Export(Preferences.Csv.Path, Table, Preferences.Csv.HasHeader);
         IsEditorDirty = false;
     }
