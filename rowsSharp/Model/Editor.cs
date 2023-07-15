@@ -38,7 +38,7 @@ public class Editor
     /// <summary>
     /// The period, in seconds, when an autosave occurs.
     /// </summary>
-    public int AutosaveInterval { get; init; } = 60;
+    public int AutosaveInterval { get; set; } = 60;
 
     /// <summary>
     /// Number of columns from the left that cannot be scrolled out of view.

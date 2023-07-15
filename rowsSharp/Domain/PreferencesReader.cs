@@ -13,6 +13,7 @@ internal static class PreferencesReader
         App.Logger.Info("Reading preferences");
        
         Preferences config = FromPath(path);
+        config.Editor.AutosaveInterval *= 1000;
         config.UserInterface.Theme = GetTheme(config.UserInterface.ThemePath);
 
         return config;
