@@ -63,7 +63,6 @@
 	<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
 	  <TreatAsUsed>true</TreatAsUsed>
 	</PackageReference>
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.1.4" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
   </ItemGroup>

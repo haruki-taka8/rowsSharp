@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using rowsSharp.Model;
 using System.IO;
 using System.Windows;
@@ -24,7 +24,7 @@ internal static class PreferencesReader
         string json = File.ReadAllText(path);
         json = BaseDir.ExpandEscaped(json);
 
-        return JsonConvert.DeserializeObject<Preferences>(json) ?? new();
+        return JsonSerializer.Deserialize<Preferences>(json) ?? new();
     }
 
     private static ResourceDictionary? GetTheme(string path)
