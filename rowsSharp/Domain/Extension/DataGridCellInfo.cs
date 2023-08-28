@@ -3,13 +3,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
-internal static class Cell
+internal static class DataGridCellInfoExtensions
 {
     private static IEnumerable<DataGridCellInfo> WhereValid(this IList<DataGridCellInfo> cells)
     {
-        return cells.Where(x => x.IsValid);
+        return cells.AsParallel()
+                    .AsUnordered()
+                    .Where(x => x.IsValid);
     }
 
     // Rows
@@ -49,5 +51,18 @@ internal static class Cell
     internal static int ColumnIndex(this DataGridCellInfo cell, IList<string> headers)
     {
         return headers.IndexOf((string)cell.Column.Header);
+    }
+
+    internal static (int, int) RowColumnPairs(this DataGridCellInfo cell, IList<ObservableCollection<string?>> records, IList<string> headers)
+    {
+        return (RowIndex(cell, records), ColumnIndex(cell, headers));
+    }
+
+    internal static IEnumerable<(int, int)> RowColumnPairs(this IList<DataGridCellInfo> cells, IList<ObservableCollection<string?>> records, IList<string> headers)
+    {
+        foreach (var cell in cells) 
+        { 
+            yield return RowColumnPairs(cell, records, headers);
+        }
     }
 }
