@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.IO;
 using System.Windows;
 
 namespace RowsSharp.Domain;
 
 public static class ClipboardHelper
 {
-    public static void SetFileFromPath(string path)
+    public static void SetClipboardFile(string path)
     {
         StringCollection list = new() { path };
 
         Clipboard.SetFileDropList(list);
     }
 
-    public static string[,] SplitTable()
+    public static string[,] SplitTo2DArray()
     {
         string clipboard = Clipboard.GetText()
-                                    .ReplaceLineEndings();
+                                    .ReplaceLineEndings()
+                                    .Trim();
 
         string[] fields = clipboard.Split(new string[] { Environment.NewLine, "\t" }, StringSplitOptions.None);
 
