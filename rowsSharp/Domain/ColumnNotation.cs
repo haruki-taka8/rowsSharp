@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal static class ColumnNotation
 {

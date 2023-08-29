@@ -1,10 +1,10 @@
 ﻿using System.Text.Json;
-using rowsSharp.Model;
+using RowsSharp.Model;
 using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal static class PreferencesReader
 {
@@ -13,8 +13,6 @@ internal static class PreferencesReader
         App.Logger.Info("Reading preferences");
        
         Preferences config = FromPath(path);
-        config.Editor.AutosaveInterval *= 1000;
-        config.UserInterface.Theme = GetTheme(config.UserInterface.ThemePath);
 
         return config;
     }
@@ -27,9 +25,9 @@ internal static class PreferencesReader
         return JsonSerializer.Deserialize<Preferences>(json) ?? new();
     }
 
-    private static ResourceDictionary? GetTheme(string path)
+    internal static ResourceDictionary GetTheme(string path)
     {
-        if (!File.Exists(path)) { return null; }
+        if (!File.Exists(path)) { return new(); }
 
         App.Logger.Info("Parsing XAML theme file");
 

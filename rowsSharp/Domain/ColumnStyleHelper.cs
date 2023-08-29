@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal static class ColumnStyleHelper
 {
@@ -54,14 +53,17 @@ internal static class ColumnStyleHelper
     {
         Style style = GetDefaultStyle(typeof(TextBoxBase));
 
-        List<Setter> setters = new()
+        var setters = new Setter[]
         {
             new(TextBoxBase.AcceptsReturnProperty, allowMultiline),
             new(TextBoxBase.PaddingProperty, new Thickness(1, 1, 0, 0)),
             new(TextBoxBase.MarginProperty, new Thickness(-2))
         };
 
-        style.Setters.AddRange(setters);
+        foreach (var setter in setters)
+        {
+            style.Setters.Add(setter);
+        }
         return style;
     }
 

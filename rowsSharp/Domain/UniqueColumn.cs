@@ -1,11 +1,11 @@
 ﻿using ObservableTable.Core;
 using System.Collections.Generic;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal class UniqueColumn
 {
-    private int index;
+    private int index = 1;
 
 	private static Column<string> GetNumberedColumn(int index)
 	{

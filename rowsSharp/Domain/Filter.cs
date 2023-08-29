@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text.RegularExpressions;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal class Filter
 {
@@ -14,16 +13,10 @@ internal class Filter
 
     internal IList<string> Headers { get; set; } = new List<string>();
     internal string FilterText { get; set; } = "";
-    internal ICollectionView CollectionView { get; init; }
 
     internal bool UseRegex { get; set; }
 
-    internal Filter(ICollectionView collectionView)
-    {
-        CollectionView = collectionView;
-    }
-
-    internal ICollectionView Invoke()
+    internal Predicate<object> Invoke()
     {
         try
         {
@@ -32,14 +25,11 @@ internal class Filter
             {
                 ValidateRegex();
             }
-            CollectionView.Filter = Predicate;
+            return Predicate;
         }
-        catch
-        {
-            CollectionView.Filter = (object obj) => false;
-        }
+        catch { }
 
-        return CollectionView;
+        return (object obj) => false;
     }
 
     private void SplitInput()
