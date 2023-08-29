@@ -1,4 +1,4 @@
-﻿namespace rowsSharp.Model;
+﻿namespace RowsSharp.Model;
 
 public class Preview
 {

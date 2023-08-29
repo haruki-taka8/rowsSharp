@@ -1,17 +1,18 @@
-﻿namespace rowsSharp.Model;
+﻿namespace RowsSharp.Model;
 
 /// <summary>
 /// The root of all configurations.
+/// This class is hierarchically structured in the same way as the JSON file.
 /// </summary>
 public class Preferences
 {
-    public Csv Csv { get; set; } = new();
+    public Csv Csv { get; init; } = new();
 
-    public Editor Editor { get; set; } = new();
+    public Editor Editor { get; init; } = new();
 
-    public Filter Filter { get; set; } = new();
+    public Filter Filter { get; init; } = new();
 
-    public Preview Preview { get; set; } = new();
+    public Preview Preview { get; init; } = new();
 
-    public UserInterface UserInterface { get; set; } = new();
+    public UserInterface UserInterface { get; init; } = new();
 }

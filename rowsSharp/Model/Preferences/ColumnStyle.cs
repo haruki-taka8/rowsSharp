@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace rowsSharp.Model;
+namespace RowsSharp.Model;
 
 public class ColumnStyle
 {

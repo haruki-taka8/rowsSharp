@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace rowsSharp.Model;
+namespace RowsSharp.Model;
 
 public class UserInterface
 {
@@ -24,10 +24,6 @@ public class UserInterface
     /// The file path to a XAML file containing user-defined color brushes and/or styles.
     /// </summary>
     public string ThemePath { get; init; } = "$baseDir/Configurations/Themes/Light.xaml";
-    /// <summary>
-    /// The actual ResourceDictionary stored in <see cref="ThemePath"/>.
-    /// </summary>
-    internal ResourceDictionary? Theme { get; set; }
 
     /// <summary>
     /// Whether user-friendly text is displayed upon hovering an element, especially a button.

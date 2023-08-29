@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace rowsSharp.Model;
+namespace RowsSharp.Model;
 
 public class Editor
 {
@@ -14,10 +14,6 @@ public class Editor
     /// Whether the CSV file can be edited by the user.
     /// </summary>
     public bool CanEdit { get; set; } = true;
-    /// <summary>
-    /// A negated version of <see cref="CanEdit"/> to ease binding to the DataGrid.
-    /// </summary>
-    public bool IsReadOnly => !CanEdit;
 
     /// <summary>
     /// Describes whether the user can add multiple lines to a single cell.
@@ -36,9 +32,9 @@ public class Editor
     public bool IsAutosaveEnabled { get; set; } = true;
 
     /// <summary>
-    /// The period, in seconds, when an autosave occurs.
+    /// The period, in milliseconds, when an autosave occurs.
     /// </summary>
-    public int AutosaveInterval { get; set; } = 60;
+    public int AutosaveInterval { get; set; } = 60000;
 
     /// <summary>
     /// Number of columns from the left that cannot be scrolled out of view.
@@ -48,9 +44,6 @@ public class Editor
     /// <summary>
     /// Fallback height of a row.
     /// </summary>
-    /// <remarks>
-    /// ColumnStyles can override this value on a column-to-column basis.
-    /// </remarks>
     public double DefaultRowHeight { get; set; } = 33;
 
     /// <summary>
@@ -65,7 +58,7 @@ public class Editor
     /// Whether scrolling only occurs after the scrollbar has finished moving.
     /// This saves computing resources at an expense of less responsiveness.
     /// </summary>
-    public bool DeferredScrolling { get; set; }
+    public bool IsDeferredScrollingEnabled { get; set; }
 
     /// <summary>
     /// Describes columns with user-provided definitions.
