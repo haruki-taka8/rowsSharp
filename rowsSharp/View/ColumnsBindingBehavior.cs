@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Windows.Controls;
 using System.Windows;
 
-namespace rowsSharp.View;
+namespace RowsSharp.View;
 
 /* Code:    [ColumnsBindingBehavior](https://stackoverflow.com/a/40935553)
  * Creator: [Paul Gibson](https://stackoverflow.com/users/4024800/paul-gibson)
@@ -14,7 +14,7 @@ namespace rowsSharp.View;
  *   - Removing unnecessary bits
  */
 
-public class ColumnsBindingBehaviour : Behavior<DataGrid>
+public class ColumnsBindingBehavior : Behavior<DataGrid>
 {
     public ObservableCollection<DataGridColumn> Columns
     {
@@ -23,12 +23,12 @@ public class ColumnsBindingBehaviour : Behavior<DataGrid>
     }
 
     public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register("Columns",
-        typeof(ObservableCollection<DataGridColumn>), typeof(ColumnsBindingBehaviour),
+        typeof(ObservableCollection<DataGridColumn>), typeof(ColumnsBindingBehavior),
             new(OnDataGridColumnsPropertyChanged));
 
     private static void OnDataGridColumnsPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
     {
-        var context = (ColumnsBindingBehaviour)source;
+        var context = (ColumnsBindingBehavior)source;
 
         if (e.OldValue is ObservableCollection<DataGridColumn> oldItems)
         {
@@ -41,7 +41,7 @@ public class ColumnsBindingBehaviour : Behavior<DataGrid>
         }
     }
 
-    private static void RemoveColumns(ColumnsBindingBehaviour context, ObservableCollection<DataGridColumn> columns)
+    private static void RemoveColumns(ColumnsBindingBehavior context, ObservableCollection<DataGridColumn> columns)
     {
         foreach (var column in columns)
         {
@@ -50,7 +50,7 @@ public class ColumnsBindingBehaviour : Behavior<DataGrid>
         columns.CollectionChanged -= context.CollectionChanged;
     }
 
-    private static void AddColumns(ColumnsBindingBehaviour context, ObservableCollection<DataGridColumn> columns)
+    private static void AddColumns(ColumnsBindingBehavior context, ObservableCollection<DataGridColumn> columns)
     {
         foreach (var column in columns)
         {
