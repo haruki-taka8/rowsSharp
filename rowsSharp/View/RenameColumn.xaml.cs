@@ -1,27 +1,26 @@
 ﻿using System.Windows;
 
-namespace rowsSharp.View
+namespace RowsSharp.View;
+
+// MVVM is an overkill here, hence not implemented.
+
+public partial class RenameColumn : Window
 {
-    // MVVM is an overkill here, hence not implemented.
-
-    public partial class RenameColumn : Window
+    public RenameColumn()
     {
-        public RenameColumn()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public string? NewName { get; set; }
+    public string? NewName { get; set; }
 
-        private void Rename_Click(object sender, RoutedEventArgs e)
-        {
-            NewName = ColumnName.Text;
-            DialogResult = true;
-        }
+    private void Rename_Click(object sender, RoutedEventArgs e)
+    {
+        NewName = ColumnName.Text;
+        DialogResult = true;
+    }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
+    private void Cancel_Click(object sender, RoutedEventArgs e)
+    {
+        DialogResult = false;
     }
 }
