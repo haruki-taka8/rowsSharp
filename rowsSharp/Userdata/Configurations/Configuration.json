@@ -28,12 +28,13 @@
         "IsTemplateEnabled": true,
 
         "IsAutosaveEnabled": true,
-        "AutosaveInterval": 60,
+        "AutosaveInterval": 60000,
 
         "FrozenColumn": 0,
         "DefaultRowHeight": 33,
-        "DefaultColumnWidth": 50,
+        "DefaultColumnWidth": 128,
         "Width": "2*",
+        "IsDeferredScrollingEnabled": false,
 
         "ColumnStyles": {
             "A": {
