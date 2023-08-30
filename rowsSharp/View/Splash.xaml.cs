@@ -1,14 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using RowsSharp.ViewModel;
+using System.Windows.Controls;
 
-namespace rowsSharp.View;
+namespace RowsSharp.View;
 
 /// <summary>
 /// Interaction logic for Splash.xaml
 /// </summary>
 public partial class Splash : UserControl
 {
-    public Splash()
+    public Splash(CommonViewModel commonViewModel)
     {
+        DataContext = commonViewModel;
         InitializeComponent();
     }
 }
