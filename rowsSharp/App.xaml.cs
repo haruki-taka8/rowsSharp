@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace rowsSharp;
+namespace RowsSharp;
 
 public partial class App : Application
 {

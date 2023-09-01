@@ -1,4 +1,4 @@
-﻿<Application x:Class="rowsSharp.App"
+﻿<Application x:Class="RowsSharp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="View/MainWindow.xaml">
@@ -9,17 +9,17 @@
             
             <ResourceDictionary.MergedDictionaries>
                 <!-- Fallback Theme -->
-                <ResourceDictionary Source="/rowsSharp;component/View/Light.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/Light.xaml"/>
 
                 <!-- Element Styling -->
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Button.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/DataGrid.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/OptionMark.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Scrollbar.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/Slider.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBlock.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/TextBox.xaml"/>
-                <ResourceDictionary Source="/rowsSharp;component/View/ResourceDictionary/ToggleButton.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/Button.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/DataGrid.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/OptionMark.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/Scrollbar.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/Slider.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/TextBlock.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/TextBox.xaml"/>
+                <ResourceDictionary Source="/RowsSharp;component/View/ResourceDictionary/ToggleButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
