@@ -13,4 +13,4 @@ using System.Windows;
 [assembly: AssemblyProduct("RowsSharp")]
 [assembly: AssemblyCompany("haruki-taka8")]
 [assembly: AssemblyCopyright("MIT License, see LICENSE file")]
-[assembly: AssemblyVersion("23.06.*")]
+[assembly: AssemblyVersion("23.12.*")]
