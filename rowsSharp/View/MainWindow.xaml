@@ -1,20 +1,25 @@
-﻿<Window x:Class="rowsSharp.View.MainWindow"
+﻿<Window x:Class="RowsSharp.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ViewModel="clr-namespace:rowsSharp.ViewModel"
+        xmlns:ViewModel="clr-namespace:RowsSharp.ViewModel"
+        xmlns:View="clr-namespace:RowsSharp.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
  
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=ViewModel:RootVM}"
+        d:DataContext="{d:DesignInstance Type=ViewModel:CommonViewModel}"
         d:Width="1400" d:Height="600" d:FontSize="16"
         
         Width="{Binding Preferences.UserInterface.WindowWidth}"
         Height="{Binding Preferences.UserInterface.WindowHeight}"
         FontSize="{StaticResource Rows.PrimaryFontSize}"
         Background="{StaticResource Rows.Background}"
-        Title="{Binding VersionShort, StringFormat='RowsSharp {0}'}">
+        Title="{Binding Version, StringFormat='RowsSharp {0}', Mode=OneTime}">
+
+    <Window.Resources>
+        <View:UserControlMultiConverter x:Key="UserControlMultiConverter"/>
+    </Window.Resources>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
@@ -22,5 +27,12 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <ContentControl Content="{Binding CurrentUserControl}"/>
+    <ContentControl>
+        <ContentControl.Content>
+            <MultiBinding Converter="{StaticResource UserControlMultiConverter}">
+                <Binding Path="CurrentSection"/>
+                <Binding Path="."/>
+            </MultiBinding>
+        </ContentControl.Content>
+    </ContentControl>
 </Window>

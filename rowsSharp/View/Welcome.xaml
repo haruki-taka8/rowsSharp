@@ -1,12 +1,10 @@
-﻿<UserControl x:Class="rowsSharp.View.Welcome"
+﻿<UserControl x:Class="RowsSharp.View.Welcome"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:rowsSharp.View"
-      xmlns:ViewModel="clr-namespace:rowsSharp.ViewModel"
-      d:DataContext="{d:DesignInstance Type=ViewModel:RootVM}"
+      xmlns:ViewModel="clr-namespace:RowsSharp.ViewModel"
+      d:DataContext="{d:DesignInstance Type=ViewModel:WelcomeViewModel}"
       mc:Ignorable="d"
       d:DesignWidth="1400" d:DesignHeight="600" d:Background="{StaticResource Rows.Background}" d:FontSize="14">
 
@@ -35,11 +33,11 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="1" Grid.Row="1">
             <TextBlock FontSize="24" FontWeight="Bold" Margin="0,0,0,16" Style="{StaticResource Text}"
-                       Text="{Binding VersionShort, StringFormat='RowsSharp {0}', Mode=OneTime}"/>
+                       Text="{Binding CommonViewModel.Version, StringFormat='RowsSharp {0}', Mode=OneTime}"/>
 
-            <Button Content="_Open File" Command="{Binding WelcomeVM.OpenFile, Mode=OneTime}"/>
-            <Button Content="_New File" Command="{Binding WelcomeVM.NewFile, Mode=OneTime}"/>
-            <Button Content="_Preferences" Command="{Binding WelcomeVM.OpenPreferences, Mode=OneTime}"/>
+            <Button Content="_New File" Command="{Binding NewFile, Mode=OneTime}"/>
+            <Button Content="_Open File" Command="{Binding OpenFile, Mode=OneTime}"/>
+            <Button Content="_Preferences" Command="{Binding OpenSettings, Mode=OneTime}"/>
         </StackPanel>
     </Grid>
 </UserControl>
