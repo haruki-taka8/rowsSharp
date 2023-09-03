@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace rowsSharp;
+namespace RowsSharp.ViewModel;
 
 public abstract class NotifyPropertyChanged : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
-    public void OnPropertyChanged(string propertyName)
+
+    private protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new(propertyName));
     }

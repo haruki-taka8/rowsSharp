@@ -1,19 +1,130 @@
 ﻿{
-  "CsvPath": "$baseDir/CSVData/data.csv",
-  "HasHeader": true,
+    "Csv": {
+        "Path": "$baseDir/CSVData/data.csv",
+        "HasHeader": true
+    },
 
-  "StylePath": "$baseDir/Configurations/Style.json",
-  "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
-  "PreviewPath": "$baseDir/CSVData/<A>.png",
+    "UserInterface": {
+        "WindowWidth": 1400,
+        "WindowHeight": 600,
 
-  "UseInputAlias": true,
-  "UseOutputAlias": false,
-  "UseRegexFilter": false,
-  "UseToolTip": true,
+        "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
 
-  "CanEdit": true,
-  "AllowMultiline": false,
-  "UseInsertTemplate": true,
-  "UseAutosave": false,
-  "AutosavePeriod": 60
+        "IsToolTipEnabled": true
+    },
+
+    "Filter": {
+        "IsRegexEnabled": false
+    },
+
+    "Preview": {
+        "Path": "$baseDir/CSVData/<A>.png",
+        "Width": "*"
+    },
+
+    "Editor": {
+        "CanEdit": true,
+        "CanInsertNewline": false,
+        "IsTemplateEnabled": true,
+
+        "IsAutosaveEnabled": true,
+        "AutosaveInterval": 60000,
+
+        "FrozenColumn": 0,
+        "DefaultRowHeight": 33,
+        "DefaultColumnWidth": 128,
+        "Width": "2*",
+        "IsDeferredScrollingEnabled": false,
+
+        "ColumnStyles": {
+            "A": {
+                "Width": 34
+            },
+            "B": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff0000"
+                }
+            },
+            "C": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff3700"
+                }
+            },
+            "D": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff5200"
+                }
+            },
+            "E": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff6700"
+                }
+            },
+            "F": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff7b00"
+                }
+            },
+            "G": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff8d00"
+                }
+            },
+            "H": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ff9f00"
+                }
+            },
+            "I": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ffb000"
+                }
+            },
+            "J": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ffc000"
+                }
+            },
+            "K": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ffd000"
+                }
+            },
+            "L": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ffe000"
+                }
+            },
+            "M": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80fff000"
+                }
+            },
+            "N": {
+                "Width": 34,
+                "ConditionalFormatting": {
+                    ".": "#80ffff00"
+                }
+            },
+            "O": {
+                "Width": 34
+            },
+            "P": {
+                "Width": 340,
+                "Template": "<yyyy-MM-dd dddd> <HH:mm:ss> <#> <!#>"
+            }
+        }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace rowsSharp;
+namespace RowsSharp.ViewModel;
 
 public class DelegateCommand : ICommand
 {
@@ -26,14 +26,14 @@ public class DelegateCommand : ICommand
 }
 
 /* 
- * The following constructors deliberately ALLOW the use of value type,
+ * The following constructors deliberately ALLOW the use of value types,
  * despite Microsoft.Practices.Prism.Commands doing otherwise.
  * 
  * It can be safely assumed that CanExecute(null) will not cause any
  * issues.
  */
 
-public class DelegateCommand<T> : ICommand
+public class DelegateCommand<T> : ICommand 
 {
     private readonly Func<T, bool> _canExecute;
     private readonly Action<T> _execute;
@@ -51,12 +51,22 @@ public class DelegateCommand<T> : ICommand
             && _canExecute.Invoke(type);
     }
 
+    public bool CanExecute(T parameter)
+    {
+        return _canExecute.Invoke(parameter);
+    }
+
     public void Execute(object? parameter)
     {
         if (parameter is T type)
         {
             _execute(type);
         }
+    }
+
+    public void Execute(T parameter)
+    {
+        _execute(parameter);
     }
 
     public event EventHandler? CanExecuteChanged

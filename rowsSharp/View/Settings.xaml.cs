@@ -1,14 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using RowsSharp.ViewModel;
+using System.Windows.Controls;
 
-namespace rowsSharp.View;
+namespace RowsSharp.View;
 
 /// <summary>
 /// Interaction logic for Settings.xaml
 /// </summary>
 public partial class Settings : UserControl
 {
-    public Settings()
+    public Settings(CommonViewModel commonViewModel)
     {
+        DataContext = new SettingsViewModel(commonViewModel);
         InitializeComponent();
     }
 }

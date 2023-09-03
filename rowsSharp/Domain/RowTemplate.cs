@@ -1,13 +1,14 @@
-﻿using System;
+﻿using RowsSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace rowsSharp.Domain;
+namespace RowsSharp.Domain;
 
 internal static class RowTemplate
 {
-    internal static IEnumerable<string?[]> Generate(int count, IList<string> headers, IDictionary<string, string>? template)
+    internal static IEnumerable<string?[]> Generate(int count, IList<string> headers, IDictionary<string, ColumnStyle>? template)
     {
         for (int i = 0; i < count; i++)
         {
@@ -22,14 +23,14 @@ internal static class RowTemplate
         }
     }
 
-    private static string?[] ApplyTemplate(string?[] row, int rowIndex, int count, IList<string> headers, IDictionary<string, string> template)
+    private static string?[] ApplyTemplate(string?[] row, int rowIndex, int count, IList<string> headers, IDictionary<string, ColumnStyle> template)
     {
-        foreach (var (column, value) in template)
+        foreach (var (column, style) in template)
         {
             int index = headers.IndexOf(column);
             if (index == -1) { continue; }
 
-            row[index] = Expand(value, rowIndex, count);
+            row[index] = Expand(style.Template, rowIndex, count);
         }
         return row;
     }

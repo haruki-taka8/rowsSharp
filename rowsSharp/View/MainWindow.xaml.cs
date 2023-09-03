@@ -1,7 +1,7 @@
-﻿using rowsSharp.ViewModel;
+﻿using RowsSharp.ViewModel;
 using System.Windows;
 
-namespace rowsSharp.View;
+namespace RowsSharp.View;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -10,7 +10,7 @@ public partial class MainWindow : Window
 {
     public MainWindow()
     {
-        DataContext = new RootVM();
+        DataContext = new CommonViewModel();
         InitializeComponent();
         App.Logger.Info("Okay, it's happening! Everybody stay calm!");
     }

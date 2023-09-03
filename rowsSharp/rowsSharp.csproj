@@ -60,11 +60,10 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="30.0.1" />
-	<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
-	  <TreatAsUsed>true</TreatAsUsed>
-	</PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
     <PackageReference Include="NLog" Version="5.1.4" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
   </ItemGroup>
 
   <ItemGroup>
@@ -78,9 +77,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Userdata\Configurations\Configuration.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Userdata\Configurations\Style.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Userdata\CSVData\A1.png">

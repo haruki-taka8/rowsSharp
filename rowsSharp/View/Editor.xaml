@@ -57,7 +57,7 @@
                 <!-- Save -->
                 <Button Margin="16,8,8,8" Content="&#xe161;" ToolTip="Save" Command="{Binding EditorVM.Edit.Save}"/>
                 <!-- Autosave -->
-                <ToggleButton ToolTip="Autosave" IsChecked="{Binding Preferences.UseAutosave}" IsEnabled="{Binding Preferences.CanEdit}">
+                <ToggleButton ToolTip="Autosave" IsChecked="{Binding EditorVM.Edit.IsAutosaveEnabled}" IsEnabled="{Binding Preferences.Editor.CanEdit}">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                             <Style.Triggers>
@@ -79,7 +79,7 @@
                 <Button Content="&#xe15a;" ToolTip="Redo" Command="{Binding EditorVM.Edit.Redo}"/>
                 <Rectangle/>
                 <!-- Edit -->
-                <ToggleButton IsChecked="{Binding Preferences.CanEdit}" ToolTip="Editing">
+                <ToggleButton IsChecked="{Binding Preferences.Editor.CanEdit}" ToolTip="Editing">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                             <Style.Triggers>
@@ -92,7 +92,7 @@
                     </ToggleButton.Style>
                 </ToggleButton>
                 <!-- Template -->
-                <ToggleButton Content="&#xf76f;" ToolTip="Template rows" IsChecked="{Binding Preferences.UseInsertTemplate}"/>
+                <ToggleButton Content="&#xf76f;" ToolTip="Template rows" IsChecked="{Binding Preferences.Editor.IsTemplateEnabled}"/>
                 <!-- Insert Above -->
                 <Button Content="&#xf0fb;" ToolTip="Insert row above"
                         Command="{Binding EditorVM.Edit.InsertRowAbove}"/>
@@ -131,25 +131,7 @@
                     </Button.RenderTransform>
                 </Button>
                 <Rectangle/>
-                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseRegexFilter}" Content="&#xf750;" ToolTip="Use regular expressions in filters"/>
-                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.UseInputAlias}" Content="&#xe39f;" ToolTip="Input alias"/>
-
-                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsEnabled="{Binding Preferences.IsReadOnly}" ToolTip="Output alias">
-                    <ToggleButton.Style>
-                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Preferences.CanEdit}" Value="False">
-                                        <Setter Property="IsChecked" Value="{Binding Preferences.UseOutputAlias}"/>
-                                    </DataTrigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content" Value="&#xe662;"/>
-                                    </Trigger>
-                            </Style.Triggers>
-                            <Setter Property="Content" Value="&#xe665;"/>
-                            <Setter Property="IsChecked" Value="False"/>
-                        </Style>
-                    </ToggleButton.Style>
-                </ToggleButton>
+                <ToggleButton Command="{Binding EditorVM.Filter.InvokeFilter}" IsChecked="{Binding Preferences.Filter.IsRegexEnabled}" Content="&#xf750;" ToolTip="Use regular expressions in filters"/>
             </DockPanel>
 
             <Grid VerticalAlignment="Center" Grid.Column="1">
@@ -218,7 +200,7 @@
                 <Run Text="{Binding Table.Headers.Count, Mode=OneWay}"/>
                 <Run Text="columns"/>
             </TextBlock>
-            <TextBlock Text="{Binding Preferences.CsvName, Mode=OneTime}"/>
+            <TextBlock Text="{Binding EditorVM.CsvName, Mode=OneTime}"/>
             <TextBlock HorizontalAlignment="Right">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
@@ -235,8 +217,8 @@
 
         <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource Rows.Width.DataGrid}"/>
-                <ColumnDefinition Width="{StaticResource Rows.Width.Preview}"/>
+                <ColumnDefinition Width="{Binding Preferences.Editor.Width}"/>
+                <ColumnDefinition Width="{Binding Preferences.Preview.Width}"/>
             </Grid.ColumnDefinitions>
             <DataGrid Name="Grid"
                     ItemsSource="{Binding EditorVM.CollectionView}" AutoGenerateColumns="False"
@@ -245,11 +227,13 @@
 				    Background="Transparent" BorderThickness="0"
                     VerticalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Vertical}"
                     HorizontalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Horizontal}"
-                    CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="{Binding Preferences.IsReadOnly, Mode=OneWay}"
-                    FrozenColumnCount="{StaticResource Rows.DataGrid.FrozenColumn}"
-                    RowHeaderWidth="10" MinRowHeight="{StaticResource Rows.DataGrid.MinRowHeight}" 
+                    CanUserAddRows="False" CanUserDeleteRows="False"
+                    IsReadOnly="{Binding Preferences.Editor.IsReadOnly, Mode=OneWay}"
+                    FrozenColumnCount="{Binding Preferences.Editor.FrozenColumn}"
+                    RowHeaderWidth="10" RowHeight="{Binding Preferences.Editor.DefaultRowHeight}" 
+                    ColumnWidth="{Binding Preferences.Editor.DefaultColumnWidth}"
                     SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
-                    CanUserReorderColumns="{Binding Preferences.CanEdit}"
+                    CanUserReorderColumns="{Binding Preferences.Editor.CanEdit}"
 				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
