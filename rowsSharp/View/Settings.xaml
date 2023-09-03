@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="rowsSharp.View.Settings"
+﻿<UserControl x:Class="RowsSharp.View.Settings"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:rowsSharp.View"
-      xmlns:ViewModel="clr-namespace:rowsSharp.ViewModel"
-      d:DataContext="{d:DesignInstance Type=ViewModel:RootVM}"
+      xmlns:view="clr-namespace:RowsSharp.View"
+      xmlns:ViewModel="clr-namespace:RowsSharp.ViewModel"
+      d:DataContext="{d:DesignInstance Type=ViewModel:SettingsViewModel}"
       mc:Ignorable="d" 
       d:DesignWidth="1400" d:DesignHeight="600" d:Background="{StaticResource Rows.Background}" d:FontSize="16">
 
@@ -26,6 +26,8 @@
                 <Setter Property="FontSize" Value="{StaticResource Rows.SecondaryFontSize}"/>
             </Style.Setters>
         </Style>
+
+        <view:MsecToSecConverter x:Key="MsecToSecConverter"/>
     </UserControl.Resources>
 
     <Grid Margin="24,12">
@@ -43,7 +45,7 @@
 
         <DockPanel Grid.Row="1" Grid.Column="1">
             <TextBlock FontSize="24" FontWeight="Bold" Text="Preferences"/>
-            <Button Command="{Binding SettingsVM.Return}" HorizontalAlignment="Right"
+            <Button Command="{Binding Return}" HorizontalAlignment="Right"
                     Background="Transparent"
                     Content="&#xe5c4;" FontFamily="{StaticResource Symbol}"/>
         </DockPanel>
@@ -96,7 +98,7 @@
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Preferences.Editor.CanEdit}" Value="True">
-                                            <Setter Property="IsChecked" Value="{Binding EditorVM.Edit.IsAutosaveEnabled}"/>
+                                            <Setter Property="IsChecked" Value="{Binding Preferences.Editor.IsAutosaveEnabled}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                     <Setter Property="IsChecked" Value="False"/>
@@ -116,12 +118,16 @@
                     </BulletDecorator.Bullet>
                     <StackPanel Margin="24,0">
                         <TextBlock>Autosave Interval</TextBlock>
-                        <TextBlock Style="{StaticResource Info}"
-                                   Text="{Binding EditorVM.Edit.AutosaveInterval, StringFormat='{}Changes are saved every {0:0} milliseconds automatically.'}"/>
-                        <Slider Margin="0,4,0,0" Value="{Binding EditorVM.Edit.AutosaveInterval}"
+                        <TextBlock Style="{StaticResource Info}">
+                            <Run Text="Changes are saved every"/>
+                            <Run Text="{Binding Preferences.Editor.AutosaveInterval, Converter={StaticResource MsecToSecConverter}, Mode=OneWay}"/>
+                            <Run Text="seconds."/>
+                        </TextBlock>
+                                   
+                        <Slider Margin="0,4,0,0" Value="{Binding Preferences.Editor.AutosaveInterval}"
                                 Minimum="10000" Maximum="600000"
                                 IsSnapToTickEnabled="True" TickFrequency="1000"
-                                IsEnabled="{Binding EditorVM.Edit.IsAutosaveEnabled}"/>
+                                IsEnabled="{Binding Preferences.Editor.IsAutosaveEnabled}"/>
                     </StackPanel>
                 </BulletDecorator>
 
