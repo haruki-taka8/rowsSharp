@@ -178,7 +178,7 @@ public class EditorViewModel : NotifyPropertyChanged
     );
 
     public DelegateCommand CopyPreview => new(
-        () => ClipboardHelper.SetClipboardFile(Preview),
+        () => ClipboardHelper.SetClipboardImage(Preview),
         () => File.Exists(Preview)
     );
 
