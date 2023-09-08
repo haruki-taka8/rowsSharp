@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -6,12 +6,9 @@ namespace RowsSharp.Domain;
 
 public static class ClipboardHelper
 {
-    public static void SetClipboardImage(string path)
+    public static void SetImage(BitmapImage bitmapImage)
     {
-        Uri uri = new(path);
-        BitmapImage image = new(uri);
-
-        Clipboard.SetImage(image);
+        Clipboard.SetImage(bitmapImage);
     }
 
     public static string[,] SplitTo2DArray()
