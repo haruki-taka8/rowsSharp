@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace RowsSharp.Domain;
 
 public static class ClipboardHelper
 {
-    public static void SetClipboardFile(string path)
+    public static void SetImage(BitmapImage bitmapImage)
     {
-        StringCollection list = new() { path };
-
-        Clipboard.SetFileDropList(list);
+        Clipboard.SetImage(bitmapImage);
     }
 
     public static string[,] SplitTo2DArray()

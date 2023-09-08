@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
 namespace RowsSharp.ViewModel;
 
@@ -73,10 +73,24 @@ public class EditorViewModel : NotifyPropertyChanged
         }
     }
 
-    public string Preview =>
-        selectedCells.Any()
-            ? ColumnNotation.Expand(Preferences.Preview.Path, Table.Headers, (IEnumerable<string?>)selectedCells[0].Item)
-            : "";
+    private void UpdatePreview()
+    {
+        if (!selectedCells.Any())
+        {
+            Preview = null;
+            return;
+        }
+
+        string path = ColumnNotation.Expand(Preferences.Preview.Path, Table.Headers, (IEnumerable<string?>)selectedCells[0].Item);
+        Preview = PreviewHelper.FromPath(path);
+    }
+
+    private BitmapImage? preview;
+    public BitmapImage? Preview
+    {
+        get => preview;
+        internal set => SetField(ref preview, value);
+    }
 
     private IList<DataGridCellInfo> selectedCells = new List<DataGridCellInfo>();
 
@@ -156,7 +170,7 @@ public class EditorViewModel : NotifyPropertyChanged
             selectedCells = e;
             OnPropertyChanged(nameof(SelectedRowsCount));
             OnPropertyChanged(nameof(SelectedColumnsCount));
-            OnPropertyChanged(nameof(Preview));
+            UpdatePreview();
         }
     );
 
@@ -178,8 +192,8 @@ public class EditorViewModel : NotifyPropertyChanged
     );
 
     public DelegateCommand CopyPreview => new(
-        () => ClipboardHelper.SetClipboardFile(Preview),
-        () => File.Exists(Preview)
+        () => ClipboardHelper.SetImage(Preview!),
+        () => Preview is not null
     );
 
     public DelegateCommand SortColumn => new(
