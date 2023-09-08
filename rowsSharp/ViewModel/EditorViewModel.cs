@@ -1,4 +1,4 @@
-﻿using ObservableTable.Core;
+using ObservableTable.Core;
 using RowsSharp.Domain;
 using RowsSharp.Model;
 using RowsSharp.View;
