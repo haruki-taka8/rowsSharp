@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 [assembly: ThemeInfo(
@@ -14,3 +15,4 @@ using System.Windows;
 [assembly: AssemblyCompany("haruki-taka8")]
 [assembly: AssemblyCopyright("MIT License, see LICENSE file")]
 [assembly: AssemblyVersion("23.12.*")]
+[assembly: InternalsVisibleTo("UnitTest")]

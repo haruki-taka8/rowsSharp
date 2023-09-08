@@ -64,12 +64,7 @@
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="NLog" Version="5.1.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="ObservableTable">
-      <HintPath>..\..\ObservableTable\Publish\ObservableTable.dll</HintPath>
-    </Reference>
+    <PackageReference Include="ObservableTable" Version="23.12.0" />
   </ItemGroup>
 
   <ItemGroup>
