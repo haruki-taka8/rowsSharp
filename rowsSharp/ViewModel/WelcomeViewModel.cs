@@ -16,7 +16,7 @@ public class WelcomeViewModel
         string path = FileDialogHelper.RequestReadPath();
 
         CommonViewModel.Preferences.Csv.Path = path;
-        CommonViewModel = new(CommonViewModel.Preferences);
+        CommonViewModel.InitializeAsync(CommonViewModel.Preferences);
     });
 
     public DelegateCommand NewFile => new(() => 
