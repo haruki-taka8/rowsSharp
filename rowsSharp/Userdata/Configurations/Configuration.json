@@ -8,9 +8,11 @@
         "WindowWidth": 1400,
         "WindowHeight": 600,
 
-        "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
+        "ThemePath": "$baseDir/Configurations/Themes/Bleach.xaml",
 
-        "IsToolTipEnabled": true
+        "IsToolTipEnabled": true,
+
+        "ShowWelcomeOnStartup": false
     },
 
     "Filter": {

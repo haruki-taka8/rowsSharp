@@ -71,17 +71,29 @@ public class CommonViewModel : NotifyPropertyChanged
     private const string ConfigurationPath =
         "./Userdata/Configurations/Configuration.json";
 
-    public CommonViewModel(Preferences? preferences = null)
+    public CommonViewModel()
     {
-        preferences ??= PreferencesReader.Import(ConfigurationPath);
+        var preferences = PreferencesReader.Import(ConfigurationPath);
+
         ResourceDictionary theme = PreferencesReader.GetTheme(preferences.UserInterface.ThemePath);
         Application.Current.Resources.MergedDictionaries.Add(theme);
 
-        // Don't block the UI thread
-        Task.Run(() => CreateModel(preferences));
+        if (preferences.UserInterface.ShowWelcomeOnStartup)
+        {
+            CurrentSection = Section.Welcome;
+            return;
+        }
+
+        InitializeAsync(preferences);
     }
 
-    private void CreateModel(Preferences preferences)
+    public async void InitializeAsync(Preferences preferences)
+    {
+        // Don't block the UI thread
+        await Task.Run(() => Initialize(preferences));
+    }
+
+    private void Initialize(Preferences preferences)
     {
         var table = CsvFile.Import(preferences.Csv.Path, preferences.Csv.HasHeader);
 
