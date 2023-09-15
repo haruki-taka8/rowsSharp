@@ -1,3 +1,4 @@
+﻿using RowsSharp.Domain;
 ﻿using RowsSharp.ViewModel;
 using System.Windows;
 
@@ -11,6 +12,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         DataContext = new CommonViewModel();
+        ResourceDictionary theme = PreferencesReader.GetTheme(viewModel.Preferences.UserInterface.ThemePath);
+        Application.Current.Resources.MergedDictionaries.Add(theme);
+
         InitializeComponent();
         App.Logger.Info("Okay, it's happening! Everybody stay calm!");
     }
