@@ -29,4 +29,10 @@ public class UserInterface
     /// Whether user-friendly text is displayed upon hovering an element, especially a button.
     /// </summary>
     public bool IsToolTipEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show the home screen (new file, open file, preferences) upon starting RowsSharp.
+    /// Useful for users who don't intend to open the same file every time.
+    /// </summary>
+    public bool ShowWelcomeOnStartup { get; set; }
 }

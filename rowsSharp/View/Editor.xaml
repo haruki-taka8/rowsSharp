@@ -129,6 +129,7 @@
                 </Button.RenderTransform>
             </Button>
             <Rectangle/>
+            <Button DockPanel.Dock="Right" Margin="0,0,8,0" Command="{Binding OpenHome, Mode=OneTime}" Content="&#xe88a;" ToolTip="Home"/>
             <Button DockPanel.Dock="Right" Margin="0,0,8,0" Command="{Binding OpenPreferences, Mode=OneTime}" Content="&#xe8b8;" ToolTip="Preferences"/>
             <Rectangle DockPanel.Dock="Right"/>
 
@@ -329,7 +330,7 @@
                                         <Condition Binding="{Binding Table.Headers.Count, Mode=OneWay}" Value="0"/>
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Text" Value="Empty File"/>
+                                        <Setter Property="Text" Value="Insert a row and a column using the top toolbar"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                             </Style.Triggers>

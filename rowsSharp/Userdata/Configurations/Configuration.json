@@ -10,7 +10,9 @@
 
         "ThemePath": "$baseDir/Configurations/Themes/Light.xaml",
 
-        "IsToolTipEnabled": true
+        "IsToolTipEnabled": true,
+
+        "ShowWelcomeOnStartup": false
     },
 
     "Filter": {

@@ -45,17 +45,25 @@ public class CommonViewModel : NotifyPropertyChanged
     /// <summary>
     /// Reference to the CommonModel
     /// </summary>
-    private CommonModel model = new();
+    private readonly CommonModel model = new();
 
     /// <summary>
     /// Reference to the Preferences object
     /// </summary>
-    public Preferences Preferences => model.Preferences;
+    public Preferences Preferences
+    {
+        get => model.Preferences;
+        private set => model.Preferences = value;
+    }
 
     /// <summary>
     /// Reference to the ObservableTable object
     /// </summary>
-    public ObservableTable<string> Table => model.Table;
+    public ObservableTable<string> Table
+    {
+        get => model.Table;
+        private set => model.Table = value;
+    }
 
     private bool isEditorDirty;
     /// <summary>
@@ -71,23 +79,28 @@ public class CommonViewModel : NotifyPropertyChanged
     private const string ConfigurationPath =
         "./Userdata/Configurations/Configuration.json";
 
-    public CommonViewModel(Preferences? preferences = null)
+    public CommonViewModel()
     {
-        preferences ??= PreferencesReader.Import(ConfigurationPath);
-        ResourceDictionary theme = PreferencesReader.GetTheme(preferences.UserInterface.ThemePath);
-        Application.Current.Resources.MergedDictionaries.Add(theme);
-
-        // Don't block the UI thread
-        Task.Run(() => CreateModel(preferences));
+        Preferences = PreferencesReader.Import(ConfigurationPath);
     }
 
-    private void CreateModel(Preferences preferences)
+    public async void InitializeAsync()
     {
-        var table = CsvFile.Import(preferences.Csv.Path, preferences.Csv.HasHeader);
+        // Don't block the UI thread
+        await Task.Run(() => Initialize());
+    }
 
-        model = new(preferences, table);
+    private void Initialize()
+    {
+        if (Preferences.UserInterface.ShowWelcomeOnStartup)
+        {
+            CurrentSection = Section.Welcome;
+            return;
+        }
 
-        CurrentSection = File.Exists(preferences.Csv.Path)
+        Table = CsvFile.Import(Preferences.Csv.Path, Preferences.Csv.HasHeader);
+
+        CurrentSection = File.Exists(Preferences.Csv.Path)
             ? Section.Editor
             : Section.Welcome;
     }

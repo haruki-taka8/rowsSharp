@@ -17,12 +17,12 @@ public class CommonModel
     /// <summary>
     /// User settings. Currently read from a JSON file.
     /// </summary>
-    public Preferences Preferences { get; }
+    public Preferences Preferences { get; internal set; }
 
     /// <summary>
     /// A WPF-friendly representation of the CSV file.
     /// </summary>
-    public ObservableTable<string> Table { get; }
+    public ObservableTable<string> Table { get; internal set; }
 
     // Constructors
     public CommonModel()

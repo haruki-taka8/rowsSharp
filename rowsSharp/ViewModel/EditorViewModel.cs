@@ -356,4 +356,14 @@ public class EditorViewModel : NotifyPropertyChanged
     public DelegateCommand OpenPreferences => new(() =>
         commonViewModel.CurrentSection = Section.Settings
     );
+
+    public DelegateCommand OpenHome => new(() =>
+    {
+        CancelEventArgs e = new();
+        commonViewModel.Exit.Execute(e);
+
+        if (e.Cancel) { return; }
+
+        commonViewModel.CurrentSection = Section.Welcome;
+    });
 }
