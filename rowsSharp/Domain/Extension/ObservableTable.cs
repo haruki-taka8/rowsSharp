@@ -6,7 +6,7 @@ namespace RowsSharp.Domain;
 
 internal static class ObservableTableExtensions
 {
-    internal static void FillRow<T>(this ObservableTable<T> table, T? fill, IEnumerable<int> rows)
+    internal static void FillRow<T>(this ObservableTable<T> table, T? fill, IEnumerable<int> rows) where T : notnull
     {
         List<Cell<T>> cells = new();
 
@@ -21,7 +21,7 @@ internal static class ObservableTableExtensions
         table.SetCell(cells);
     }
 
-    internal static void FillColumn<T>(this ObservableTable<T> table, T? fill, IEnumerable<int> columns)
+    internal static void FillColumn<T>(this ObservableTable<T> table, T? fill, IEnumerable<int> columns) where T : notnull
     {
         List<Cell<T>> cells = new();
 
@@ -36,7 +36,7 @@ internal static class ObservableTableExtensions
         table.SetCell(cells);
     }
 
-    internal static void FillCell<T>(this ObservableTable<T> table, T? fill, IEnumerable<(int, int)> rowColumnPairs)
+    internal static void FillCell<T>(this ObservableTable<T> table, T? fill, IEnumerable<(int, int)> rowColumnPairs) where T : notnull
     {
         List<Cell<T>> cells = new();
 
@@ -48,7 +48,7 @@ internal static class ObservableTableExtensions
         table.SetCell(cells);
     }
 
-    internal static void FillGrid<T>(this ObservableTable<T> table, T?[,] fill, int rowOffset, int columnOffset)
+    internal static void FillGrid<T>(this ObservableTable<T> table, T?[,] fill, int rowOffset, int columnOffset) where T : notnull
     {
         List<Cell<T>> cells = new();
 
