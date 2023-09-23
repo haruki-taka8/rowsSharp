@@ -60,13 +60,12 @@ public class EditorViewModel : NotifyPropertyChanged
                     Binding = new Binding("[" + i + "]"),
                     EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(Preferences.Editor.CanInsertNewline)
                 };
-    
-                bool hasStyle = Preferences.Editor.ColumnStyles.TryGetValue(thisHeader, out ColumnStyle? style);
-                if (hasStyle)
-                {
-                    column.Width = style!.Width > 0 ? style.Width : (DataGridLength)DependencyProperty.UnsetValue;
-                    column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(i, style!.ConditionalFormatting);
-                }
+
+                var style = Preferences.Editor.ColumnStyles.FirstOrDefault(x => x.Column == thisHeader);
+
+                column.Width = style!.Width > 0 ? style.Width : (DataGridLength)DependencyProperty.UnsetValue;
+                column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(i, style.ConditionalFormatting);
+
                 columns.Add(column);
             }
             return columns;

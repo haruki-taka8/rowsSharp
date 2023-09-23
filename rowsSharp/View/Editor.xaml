@@ -368,7 +368,6 @@
         <KeyBinding Gesture="CTRL+Z" Command="{Binding Undo, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+Y" Command="{Binding Redo, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+S" Command="{Binding Save, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+V" Command="{Binding Paste, Mode=OneTime}"/>
 
         <KeyBinding Gesture="CTRL+I" CommandParameter="{x:Static viewmodel:Position.Before}" Command="{Binding InsertRow, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+K" CommandParameter="{x:Static viewmodel:Position.After}" Command="{Binding InsertRow, Mode=OneTime}"/>

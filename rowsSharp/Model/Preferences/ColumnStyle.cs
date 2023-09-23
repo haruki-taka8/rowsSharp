@@ -5,6 +5,11 @@ namespace RowsSharp.Model;
 public class ColumnStyle
 {
     /// <summary>
+    /// The name of the column.
+    /// </summary>
+    public string Column { get; set; } = "";
+
+    /// <summary>
     /// The width of the column
     /// </summary>
     /// <remarks>
@@ -21,8 +26,6 @@ public class ColumnStyle
     /// <summary>
     /// A cell matching one of the keys completely and literally will have a background color of that key's value.
     /// </summary>
-    /// <remarks>
-    /// This value is convert into a <see cref="System.Windows.Media.SolidColorBrush"/> internally.
-    /// </remarks>
-    public Dictionary<string, string> ConditionalFormatting { get; init; } = new();
+    public IEnumerable<ConditionalFormatting> ConditionalFormatting { get; set; }
+        = new List<ConditionalFormatting>();
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RowsSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,30 +20,30 @@ internal static class ColumnStyleHelper
     }
 
 
-    internal static Style GetConditionalFormatting(int column, IDictionary<string, string> rules)
+    internal static Style GetConditionalFormatting(int column, IEnumerable<ConditionalFormatting> conditionalFormattings)
     {
         Style style = GetDefaultStyle(typeof(DataGridCell));
 
-        foreach (var (key, value) in rules)
+        foreach (var conditionalFormatting in conditionalFormattings)
         {
-            style.Triggers.Add(GetDataTrigger(column, key, value));
+            style.Triggers.Add(GetDataTrigger(column, conditionalFormatting));
         }
 
         return style;
     }
 
-    private static DataTrigger GetDataTrigger(int column, string match, string color)
+    private static DataTrigger GetDataTrigger(int column, ConditionalFormatting conditionalFormatting)
     {
         DataTrigger dataTrigger = new()
         {
             Binding = new Binding("[" + column + "]"),
-            Value = match
+            Value = conditionalFormatting.Match
         };
 
         dataTrigger.Setters.Add(new Setter()
         {
             Property = Control.BackgroundProperty,
-            Value = new BrushConverter().ConvertFrom(color)
+            Value = new BrushConverter().ConvertFrom(conditionalFormatting.Background)
         });
 
         return dataTrigger;

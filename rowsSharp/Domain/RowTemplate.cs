@@ -8,29 +8,26 @@ namespace RowsSharp.Domain;
 
 internal static class RowTemplate
 {
-    internal static IEnumerable<string?[]> Generate(int count, IList<string> headers, IDictionary<string, ColumnStyle>? template)
+    internal static IEnumerable<string?[]> Generate(int count, IList<string> headers, IEnumerable<ColumnStyle> columnStyles)
     {
         for (int i = 0; i < count; i++)
         {
             var row = new string?[headers.Count];
 
-            if (template is not null)
-            {
-                row = ApplyTemplate(row, i, count, headers, template);
-            }
+            row = ApplyTemplate(row, i, count, headers, columnStyles);
 
             yield return row;
         }
     }
 
-    private static string?[] ApplyTemplate(string?[] row, int rowIndex, int count, IList<string> headers, IDictionary<string, ColumnStyle> template)
+    private static string?[] ApplyTemplate(string?[] row, int rowIndex, int count, IList<string> headers, IEnumerable<ColumnStyle> columnStyles)
     {
-        foreach (var (column, style) in template)
+        foreach (var columnStyle in columnStyles)
         {
-            int index = headers.IndexOf(column);
+            int index = headers.IndexOf(columnStyle.Column);
             if (index == -1) { continue; }
 
-            row[index] = Expand(style.Template, rowIndex, count);
+            row[index] = Expand(columnStyle.Template, rowIndex, count);
         }
         return row;
     }

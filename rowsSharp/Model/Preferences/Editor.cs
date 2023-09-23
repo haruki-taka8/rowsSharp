@@ -64,7 +64,7 @@ public class Editor
     /// Describes columns with user-provided definitions.
     /// </summary>
     /// <remarks>
-    /// Each key-value pair is converted to a <see cref="System.Windows.Style"/> internally.
+    /// Each ColumnStyle is converted to a <see cref="System.Windows.Style"/> internally.
     /// </remarks>
-    public Dictionary<string, ColumnStyle> ColumnStyles { get; set; } = new();
+    public IEnumerable<ColumnStyle> ColumnStyles { get; set; } = new List<ColumnStyle>();
 }
