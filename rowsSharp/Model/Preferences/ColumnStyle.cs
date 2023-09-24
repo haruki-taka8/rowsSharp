@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace RowsSharp.Model;
 
@@ -8,6 +10,26 @@ public class ColumnStyle
     /// The name of the column.
     /// </summary>
     public string Column { get; set; } = "";
+
+    /// <summary>
+    /// Type of this column. It is the basis to decide what kind of DataGridColumn is generated.
+    /// </summary>
+    public ColumnType ColumnType { get; set; }
+
+    /// <summary>
+    /// A value considered true if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
+    /// </summary>
+    public string CheckBoxTrueValue { get; set; } = "true";
+
+    /// <summary>
+    /// A value considered false if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
+    /// </summary>
+    public string CheckBoxFalseValue { get; set; } = "false";
+
+    /// <summary>
+    /// Values that can be chosen from if <see cref="ColumnType"/> is <see cref="ColumnType.ComboBox"/>.
+    /// </summary>
+    public string[] ComboBoxOptions { get; set; } = Array.Empty<string>();
 
     /// <summary>
     /// The width of the column
