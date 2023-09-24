@@ -7,11 +7,11 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace RowsSharp.Domain;
+namespace RowsSharp.View;
 
 internal static class ColumnStyleHelper
 {
-    private static Style GetDefaultStyle(Type type)
+    internal static Style GetDefaultStyle(Type type)
     {
         return new(
             type,
@@ -19,24 +19,23 @@ internal static class ColumnStyleHelper
         );
     }
 
-
-    internal static Style GetConditionalFormatting(int column, IEnumerable<ConditionalFormatting> conditionalFormattings)
+    internal static Style GetConditionalFormatting(Binding binding, IEnumerable<ConditionalFormatting> conditionalFormattings)
     {
         Style style = GetDefaultStyle(typeof(DataGridCell));
 
         foreach (var conditionalFormatting in conditionalFormattings)
         {
-            style.Triggers.Add(GetDataTrigger(column, conditionalFormatting));
+            style.Triggers.Add(GetDataTrigger(binding, conditionalFormatting));
         }
 
         return style;
     }
 
-    private static DataTrigger GetDataTrigger(int column, ConditionalFormatting conditionalFormatting)
+    private static DataTrigger GetDataTrigger(Binding binding, ConditionalFormatting conditionalFormatting)
     {
         DataTrigger dataTrigger = new()
         {
-            Binding = new Binding("[" + column + "]"),
+            Binding = binding,
             Value = conditionalFormatting.Match
         };
 
