@@ -33,149 +33,47 @@
     "DefaultColumnWidth": 128,
     "IsDeferredScrollingEnabled": false,
     "ColumnStyles": [
-      {
-        "Column": "A",
-        "Width": 34
-      },
-      {
-        "Column": "B",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff0000"
-          }
-        ]
-      },
-      {
-        "Column": "C",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff3700"
-          }
-        ]
-      },
-      {
-        "Column": "D",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff5200"
-          }
-        ]
-      },
-      {
-        "Column": "E",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff6700"
-          }
-        ]
-      },
-      {
-        "Column": "F",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff7b00"
-          }
-        ]
-      },
-      {
-        "Column": "G",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff8d00"
-          }
-        ]
-      },
-      {
-        "Column": "H",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ff9f00"
-          }
-        ]
-      },
-      {
-        "Column": "I",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ffb000"
-          }
-        ]
-      },
-      {
-        "Column": "J",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ffc000"
-          }
-        ]
-      },
-      {
-        "Column": "K",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ffd000"
-          }
-        ]
-      },
-      {
-        "Column": "L",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ffe000"
-          }
-        ]
-      },
-      {
-        "Column": "M",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80fff000"
-          }
-        ]
-      },
-      {
-        "Column": "N",
-        "Width": 34,
-        "ConditionalFormatting": [
-          {
-            "Match": ".",
-            "Background": "#80ffff00"
-          }
-        ]
-      },
-      {
-        "Column": "O",
-        "Width": 34
-      },
-      {
-        "Column": "P",
-        "Width": 340,
-        "Template": "<yyyy-MM-dd dddd> <HH:mm:ss> <#> <!#>"
-      }
+        {
+            "Column": "Last Name",
+            "Width": 100
+        },
+        {
+            "Column": "Email",
+            "ColumnType": "Hyperlink"
+        },
+        {
+            "Column": "Register Date",
+            "Template": "<yyyy-mm-dd>"
+        },
+        {
+            "Column": "Register Time",
+            "Width": 100,
+            "Template": "<hh:MM:ss>"
+        },
+        {
+            "Column": "Plan",
+            "ConditionalFormatting": [
+                { 
+                    "Match": "Basic",
+                    "Background": "#402eb5a2"
+                },
+                { 
+                    "Match": "Plus",
+                    "Background": "#40ffb227"
+                },
+                { 
+                    "Match": "Pro",
+                    "Background": "#40f1034d"
+                }
+            ],
+            "Template": "Basic"
+        },
+        {
+            "Column": "Email Promotion",
+            "ColumnType": "CheckBox",
+            "CheckBoxTrueValue": "TRUE",
+            "CheckBoxFalseValue": "FALSE"
+        }
     ]
   }
 }
