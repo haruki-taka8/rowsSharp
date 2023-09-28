@@ -53,7 +53,7 @@ public class EditorViewModel : NotifyPropertyChanged
             {
                 var style = Preferences.Editor.ColumnStyles.FirstOrDefault(x => x.Column == Table.Headers[i], new() { Column = Table.Headers[i] });
 
-                var column = DataGridColumnFactory.CreateColumn(i, Table.Headers[i], style, Preferences.Editor.CanInsertNewline);
+                var column = DataGridColumnFactory.CreateColumn(i, style, Preferences.Editor.CanInsertNewline);
                 columns.Add(column);
             }
             return columns;
