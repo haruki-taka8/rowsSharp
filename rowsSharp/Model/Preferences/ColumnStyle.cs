@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace RowsSharp.Model;
 
@@ -19,17 +18,12 @@ public class ColumnStyle
     /// <summary>
     /// A value considered true if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
     /// </summary>
-    public string CheckBoxTrueValue { get; set; } = "true";
+    public string CheckBoxTrueValue { get; set; } = "TRUE";
 
     /// <summary>
     /// A value considered false if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
     /// </summary>
-    public string CheckBoxFalseValue { get; set; } = "false";
-
-    /// <summary>
-    /// Values that can be chosen from if <see cref="ColumnType"/> is <see cref="ColumnType.ComboBox"/>.
-    /// </summary>
-    public string[] ComboBoxOptions { get; set; } = Array.Empty<string>();
+    public string CheckBoxFalseValue { get; set; } = "FALSE";
 
     /// <summary>
     /// The width of the column
