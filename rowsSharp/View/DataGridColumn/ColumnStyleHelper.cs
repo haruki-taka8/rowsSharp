@@ -19,23 +19,30 @@ internal static class ColumnStyleHelper
         );
     }
 
-    internal static Style GetConditionalFormatting(Binding binding, IEnumerable<ConditionalFormatting> conditionalFormattings)
+    internal static Style GetConditionalFormatting(IEnumerable<ConditionalFormatting> conditionalFormattings)
     {
         Style style = GetDefaultStyle(typeof(DataGridCell));
 
         foreach (var conditionalFormatting in conditionalFormattings)
         {
-            style.Triggers.Add(GetDataTrigger(binding, conditionalFormatting));
+            style.Triggers.Add(GetDataTrigger(conditionalFormatting));
         }
 
         return style;
     }
 
-    private static DataTrigger GetDataTrigger(Binding binding, ConditionalFormatting conditionalFormatting)
+    private readonly static Binding bindToSelf = new()
+    {
+        Path = new("Content.Text"),
+        Mode = BindingMode.OneWay,
+        RelativeSource = new(RelativeSourceMode.Self)
+    };
+
+    private static DataTrigger GetDataTrigger(ConditionalFormatting conditionalFormatting)
     {
         DataTrigger dataTrigger = new()
         {
-            Binding = binding,
+            Binding = bindToSelf,
             Value = conditionalFormatting.Match
         };
 
