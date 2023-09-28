@@ -1,9 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace RowsSharp.Model;
 
 public class ColumnStyle
 {
+    /// <summary>
+    /// The name of the column.
+    /// </summary>
+    public string Column { get; set; } = "";
+
+    /// <summary>
+    /// Type of this column. It is the basis to decide what kind of DataGridColumn is generated.
+    /// </summary>
+    public ColumnType ColumnType { get; set; }
+
+    /// <summary>
+    /// A value considered true if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
+    /// </summary>
+    public string CheckBoxTrueValue { get; set; } = "TRUE";
+
+    /// <summary>
+    /// A value considered false if <see cref="ColumnType"/> is <see cref="ColumnType.CheckBox"/>.
+    /// </summary>
+    public string CheckBoxFalseValue { get; set; } = "FALSE";
+
     /// <summary>
     /// The width of the column
     /// </summary>
@@ -21,8 +42,6 @@ public class ColumnStyle
     /// <summary>
     /// A cell matching one of the keys completely and literally will have a background color of that key's value.
     /// </summary>
-    /// <remarks>
-    /// This value is convert into a <see cref="System.Windows.Media.SolidColorBrush"/> internally.
-    /// </remarks>
-    public Dictionary<string, string> ConditionalFormatting { get; init; } = new();
+    public IEnumerable<ConditionalFormatting> ConditionalFormatting { get; set; }
+        = new List<ConditionalFormatting>();
 }

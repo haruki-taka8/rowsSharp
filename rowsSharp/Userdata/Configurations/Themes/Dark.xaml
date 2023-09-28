@@ -31,19 +31,19 @@
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF606060"/>
 
-    <SolidColorBrush x:Key="OptionMark.Static.Foreground" Color="#FFD0D0D0"/>
-    <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FF242424"/>
+    <SolidColorBrush x:Key="OptionMark.Static.Foreground" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="OptionMark.Static.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FFD0D0D0"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FF242424"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#FF363636"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FFD0D0D0"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="#FF181818"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF323232"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FFD0D0D0"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#808080"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#606060"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#808080"/>
     <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FF323232"/>
     <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FF484848"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF484848"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Foreground" Color="#FF646464"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#A0A0A0"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Foreground" Color="#A0A0A0"/>
 
     <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#FF323232"/>
     <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#FF646464"/>
@@ -66,4 +66,7 @@
     <SolidColorBrush x:Key="TextBox.Border" Color="#606060"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF808080"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF808080"/>
+
+    <SolidColorBrush x:Key="Hyperlink.Foreground" Color="#FF80C0FF"/>
+    <SolidColorBrush x:Key="Hyperlink.Hover.Foreground" Color="#FF6FA6DE"/>
 </ResourceDictionary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RowsSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,11 +7,11 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace RowsSharp.Domain;
+namespace RowsSharp.View;
 
 internal static class ColumnStyleHelper
 {
-    private static Style GetDefaultStyle(Type type)
+    internal static Style GetDefaultStyle(Type type)
     {
         return new(
             type,
@@ -18,31 +19,37 @@ internal static class ColumnStyleHelper
         );
     }
 
-
-    internal static Style GetConditionalFormatting(int column, IDictionary<string, string> rules)
+    internal static Style GetConditionalFormatting(IEnumerable<ConditionalFormatting> conditionalFormattings)
     {
         Style style = GetDefaultStyle(typeof(DataGridCell));
 
-        foreach (var (key, value) in rules)
+        foreach (var conditionalFormatting in conditionalFormattings)
         {
-            style.Triggers.Add(GetDataTrigger(column, key, value));
+            style.Triggers.Add(GetDataTrigger(conditionalFormatting));
         }
 
         return style;
     }
 
-    private static DataTrigger GetDataTrigger(int column, string match, string color)
+    private readonly static Binding bindToSelf = new()
+    {
+        Path = new("Content.Text"),
+        Mode = BindingMode.OneWay,
+        RelativeSource = new(RelativeSourceMode.Self)
+    };
+
+    private static DataTrigger GetDataTrigger(ConditionalFormatting conditionalFormatting)
     {
         DataTrigger dataTrigger = new()
         {
-            Binding = new Binding("[" + column + "]"),
-            Value = match
+            Binding = bindToSelf,
+            Value = conditionalFormatting.Match
         };
 
         dataTrigger.Setters.Add(new Setter()
         {
             Property = Control.BackgroundProperty,
-            Value = new BrushConverter().ConvertFrom(color)
+            Value = new BrushConverter().ConvertFrom(conditionalFormatting.Background)
         });
 
         return dataTrigger;

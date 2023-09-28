@@ -58,6 +58,11 @@
                             <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
                             <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
                         </Trigger>
+                        
+                        <!-- DataGrid IsReadOnly -->
+                        <DataTrigger Binding="{Binding Path=Column.IsReadOnly, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridCell}}, FallbackValue=False}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

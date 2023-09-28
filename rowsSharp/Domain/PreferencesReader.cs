@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
-using RowsSharp.Model;
+﻿using RowsSharp.Model;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -22,7 +23,12 @@ internal static class PreferencesReader
         string json = File.ReadAllText(path);
         json = BaseDir.ExpandEscaped(json);
 
-        return JsonSerializer.Deserialize<Preferences>(json) ?? new();
+        JsonSerializerOptions options = new()
+        {
+            Converters = { new JsonStringEnumConverter() }
+        };
+
+       return JsonSerializer.Deserialize<Preferences>(json, options) ?? new();
     }
 
     internal static ResourceDictionary GetTheme(string path)

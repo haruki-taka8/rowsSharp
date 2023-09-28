@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -44,7 +43,7 @@ public class EditorViewModel : NotifyPropertyChanged
 
     public ICollectionView CollectionView { get; }
 
-    public IEnumerable<DataGridColumn> DataGridColumns
+    public ObservableCollection<DataGridColumn> DataGridColumns
     {
         get
         {
@@ -52,21 +51,9 @@ public class EditorViewModel : NotifyPropertyChanged
     
             for (int i = 0; i < Table.Headers.Count; i++)
             {
-                string thisHeader = Table.Headers[i];
+                var style = Preferences.Editor.ColumnStyles.FirstOrDefault(x => x.Column == Table.Headers[i], new() { Column = Table.Headers[i] });
 
-                DataGridTextColumn column = new()
-                {
-                    Header = thisHeader,
-                    Binding = new Binding("[" + i + "]"),
-                    EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(Preferences.Editor.CanInsertNewline)
-                };
-    
-                bool hasStyle = Preferences.Editor.ColumnStyles.TryGetValue(thisHeader, out ColumnStyle? style);
-                if (hasStyle)
-                {
-                    column.Width = style!.Width > 0 ? style.Width : (DataGridLength)DependencyProperty.UnsetValue;
-                    column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(i, style!.ConditionalFormatting);
-                }
+                var column = DataGridColumnFactory.CreateColumn(i, style, Preferences.Editor.CanInsertNewline);
                 columns.Add(column);
             }
             return columns;

@@ -72,4 +72,7 @@
     <SolidColorBrush x:Key="TextBox.Border" Color="#FFA0A0A0"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
+
+    <SolidColorBrush x:Key="Hyperlink.Foreground" Color="#235A99"/>
+    <SolidColorBrush x:Key="Hyperlink.Hover.Foreground" Color="#1C487A"/>
 </ResourceDictionary>

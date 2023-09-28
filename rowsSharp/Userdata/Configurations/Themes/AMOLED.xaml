@@ -13,20 +13,21 @@
     <SolidColorBrush x:Key="Rows.DataGrid.Selected" Color="#2a3c56"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected.Control" Color="#151e2b"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Selected.Text" Color="#B0B0B0"/>
-    <SolidColorBrush x:Key="Rows.DataGrid.Grid.Horizontal" Color="#121212"/>
+    <SolidColorBrush x:Key="Rows.DataGrid.Grid.Horizontal" Color="Transparent"/>
     <SolidColorBrush x:Key="Rows.DataGrid.Grid.Vertical" Color="Transparent"/>
 
     <SolidColorBrush x:Key="Button.Static.Foreground" Color="#B0B0B0"/>
     <SolidColorBrush x:Key="Button.Static.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Static.Border" Color="Transparent"/>
-    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF484848"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Foreground" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#363636"/>
     <SolidColorBrush x:Key="Button.MouseOver.Border" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Pressed.Background" Color="#301DE9B6"/>
     <SolidColorBrush x:Key="Button.Pressed.Foreground" Color="#B0B0B0"/>
     <SolidColorBrush x:Key="Button.Pressed.Border" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Disabled.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="Transparent"/>
-    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#606060"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#484848"/>
 
     <SolidColorBrush x:Key="Expander.Static.Circle.Stroke" Color="#B0B0B0"/>
     <SolidColorBrush x:Key="Expander.Static.Circle.Fill" Color="#101010"/>
@@ -52,9 +53,9 @@
     <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#363636"/>
     <SolidColorBrush x:Key="OptionMark.Disabled.Foreground" Color="#FF646464"/>
 
-    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#FF242424"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#FF484848"/>
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="#FF363636"/>
+    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#FF181818"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#FF363636"/>
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="#FF242424"/>
 
     <SolidColorBrush x:Key="SliderThumb.Static.Background" Color="#808080"/>
     <SolidColorBrush x:Key="SliderThumb.Static.Border" Color="#909090"/>
@@ -73,4 +74,7 @@
     <SolidColorBrush x:Key="TextBox.Border" Color="#606060"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#606060"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#606060"/>
+
+    <SolidColorBrush x:Key="Hyperlink.Foreground" Color="#FF6EA4DB"/>
+    <SolidColorBrush x:Key="Hyperlink.Hover.Foreground" Color="#FF679BCF"/>
 </ResourceDictionary>
