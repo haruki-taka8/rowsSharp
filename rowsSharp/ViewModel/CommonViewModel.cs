@@ -57,6 +57,11 @@ public class CommonViewModel : NotifyPropertyChanged
     }
 
     /// <summary>
+    /// Filename of the CSV in editor
+    /// </summary>
+    private string CsvName => Preferences.Csv.Path.Split('/', '\\')[^1];
+
+    /// <summary>
     /// Reference to the ObservableTable object
     /// </summary>
     public ObservableTable<string> Table
@@ -73,8 +78,22 @@ public class CommonViewModel : NotifyPropertyChanged
     public bool IsEditorDirty
     {
         get => isEditorDirty;
-        internal set => SetField(ref isEditorDirty, value);
+        internal set
+        {
+            SetField(ref isEditorDirty, value);
+            OnPropertyChanged(nameof(Title));
+        }
     }
+
+    /// <summary>
+    /// View-friendly presentation of IsEditorDirty.
+    /// </summary>
+    private string EditorSaveStatus => IsEditorDirty ? "*" : "";
+
+    /// <summary>
+    /// MainWindow title
+    /// </summary>
+    public string Title => $"{EditorSaveStatus}{CsvName} - RowsSharp";
 
     private const string ConfigurationPath =
         "./Userdata/Configurations/Configuration.json";
