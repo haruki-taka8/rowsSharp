@@ -113,8 +113,6 @@ public class EditorViewModel : NotifyPropertyChanged
         set => SetField(ref isSorted, value);
     }
 
-    public string CsvName => Preferences.Csv.Path.Split('/', '\\')[^1];
-
     public EditorViewModel(CommonViewModel commonViewModel)
     {
         this.commonViewModel = commonViewModel;
