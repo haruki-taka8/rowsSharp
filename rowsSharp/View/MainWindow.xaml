@@ -15,8 +15,7 @@
         Height="{Binding Preferences.UserInterface.WindowHeight}"
         FontSize="{StaticResource Rows.PrimaryFontSize}"
         Background="{StaticResource Rows.Background}"
-        Title="{Binding Version, StringFormat='RowsSharp {0}', Mode=OneTime}">
-
+        Title="{Binding Title, Mode=OneWay}">
     <Window.Resources>
         <View:UserControlMultiConverter x:Key="UserControlMultiConverter"/>
     </Window.Resources>
