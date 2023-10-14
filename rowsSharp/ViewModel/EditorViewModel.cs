@@ -3,13 +3,17 @@ using RowsSharp.Domain;
 using RowsSharp.Model;
 using RowsSharp.View;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace RowsSharp.ViewModel;
@@ -233,6 +237,15 @@ public class EditorViewModel : NotifyPropertyChanged
             Table.ReorderColumn(oldIndex, newIndex);
         },
         (e) => Preferences.Editor.CanEdit
+    );
+
+    public DelegateCommand<DataGrid> Cut => new(
+        (e) =>
+        {
+            ApplicationCommands.Copy.Execute(null, e);
+            Clear.Execute(Container.Cell);
+        },
+        (e) => Preferences.Editor.CanEdit && selectedCells.Any()
     );
 
     public DelegateCommand Paste => new(
