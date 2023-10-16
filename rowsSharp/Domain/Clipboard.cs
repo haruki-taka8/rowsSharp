@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -17,21 +18,22 @@ public static class ClipboardHelper
                                     .ReplaceLineEndings()
                                     .Trim();
 
-        string[] fields = clipboard.Split(new string[] { Environment.NewLine, "\t" }, StringSplitOptions.None);
+        string[] allRows = clipboard.Split(Environment.NewLine);
+        var table = allRows.Select(x => x.Split('\t')).ToList();
 
-        int rowCount = clipboard.Split(Environment.NewLine).Length;
-        int columnCount = fields.Length / rowCount;
+        int rows = table.Count;
+        int columns = table.Select(x => x.Length).Max();
 
-        string[,] result = new string[rowCount, columnCount];
+        string[,] results = new string[rows, columns];
 
-        for (int y = 0; y < rowCount; y++)
+        for (int y = 0; y < rows; y++)
         {
-            for (int x = 0; x < columnCount; x++)
+            for (int x = 0; x < table[y].Length; x++)
             {
-                result[y, x] = fields[y * columnCount + x];
+                results[y, x] = table[y][x];
             }
         }
 
-        return result;            
+        return results;            
     }
 }

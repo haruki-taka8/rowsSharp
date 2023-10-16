@@ -215,30 +215,23 @@
                     CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="{Binding Preferences.Editor.CanEdit, Converter={StaticResource InvertBooleanConverter}, Mode=OneWay}"
                     SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
                     CanUserReorderColumns="{Binding Preferences.Editor.CanEdit, Mode=OneWay}"
-				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">
+				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">                
                 <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="{Binding CopyPreview, Mode=OneTime}" Header="Copy image" InputGestureText="Ctrl+Shift+C"/>
-                        <MenuItem Header="Cut">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <i:InvokeCommandAction Command="Copy"/>
-                                    <i:InvokeCommandAction CommandParameter="{x:Static viewmodel:Container.Cell}" Command="{Binding Clear, Mode=OneTime}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </MenuItem>
+                    <ContextMenu DataContext="{Binding PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
+                        <MenuItem Command="{Binding DataContext.CopyPreview, Mode=OneTime}" Header="Copy image" InputGestureText="Ctrl+Shift+C"/>
+                        <MenuItem CommandParameter="{Binding Mode=OneWay}" Command="{Binding DataContext.Cut, Mode=OneTime}" Header="Cut" InputGestureText="Ctrl+X"/>
                         <MenuItem Command="Copy" Header="Copy"/>
-                        <MenuItem Command="{Binding Paste, Mode=OneTime}" Header="Paste" InputGestureText="Ctrl+V"/>
+                        <MenuItem Command="{Binding DataContext.Paste, Mode=OneTime}" Header="Paste" InputGestureText="Ctrl+V"/>
                         <Separator/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertRow, Mode=OneTime}" Header="Prepend rows" InputGestureText="Ctrl+8"/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertColumn, Mode=OneTime}" Header="Prepend columns" InputGestureText="Ctrl+H"/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertRow, Mode=OneTime}" Header="Append rows" InputGestureText="Ctrl+,"/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertColumn, Mode=OneTime}" Header="Append columns" InputGestureText="Ctrl+;"/>
-                        <MenuItem Command="{Binding RenameColumn, Mode=OneTime}" Header="Rename column..." InputGestureText="Ctrl+Shift+R"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding DataContext.InsertRow, Mode=OneTime}" Header="Prepend rows" InputGestureText="Ctrl+8"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding DataContext.InsertColumn, Mode=OneTime}" Header="Prepend columns" InputGestureText="Ctrl+H"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding DataContext.InsertRow, Mode=OneTime}" Header="Append rows" InputGestureText="Ctrl+,"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding DataContext.InsertColumn, Mode=OneTime}" Header="Append columns" InputGestureText="Ctrl+;"/>
+                        <MenuItem Command="{Binding DataContext.RenameColumn, Mode=OneTime}" Header="Rename column..." InputGestureText="Ctrl+Shift+R"/>
                         <Separator/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Row}" Command="{Binding Clear, Mode=OneTime}" Header="Clear rows" InputGestureText="Ctrl+Delete"/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Column}" Command="{Binding Clear, Mode=OneTime}" Header="Clear columns" InputGestureText="Ctrl+Shift+Delete"/>
-                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Cell}" Command="{Binding Clear, Mode=OneTime}" Header="Clear cells" InputGestureText="Alt+Delete"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Row}" Command="{Binding DataContext.Clear, Mode=OneTime}" Header="Clear rows" InputGestureText="Ctrl+Delete"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Column}" Command="{Binding DataContext.Clear, Mode=OneTime}" Header="Clear columns" InputGestureText="Ctrl+Shift+Delete"/>
+                        <MenuItem CommandParameter="{x:Static viewmodel:Container.Cell}" Command="{Binding DataContext.Clear, Mode=OneTime}" Header="Clear cells" InputGestureText="Alt+Delete"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <i:Interaction.Triggers>
@@ -269,6 +262,32 @@
                     </Style>
                     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="Transparent"/>
                 </DataGrid.Resources>
+                <DataGrid.InputBindings>
+                    <KeyBinding Gesture="CTRL+X" CommandParameter="{Binding ElementName=Grid, Mode=OneWay}" Command="{Binding Cut, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+V" Command="{Binding Paste, Mode=OneTime}"/>
+
+                    <KeyBinding Gesture="CTRL+Z" Command="{Binding Undo, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+Y" Command="{Binding Redo, Mode=OneTime}"/>
+
+                    <KeyBinding Gesture="CTRL+I" CommandParameter="{x:Static viewmodel:Position.Before}" Command="{Binding InsertRow, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+K" CommandParameter="{x:Static viewmodel:Position.After}" Command="{Binding InsertRow, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+J" CommandParameter="{x:Static viewmodel:Position.Before}" Command="{Binding InsertColumn, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+L" CommandParameter="{x:Static viewmodel:Position.After}" Command="{Binding InsertColumn, Mode=OneTime}"/>
+
+                    <KeyBinding Gesture="CTRL+8" CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertRow, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+OemComma" CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertRow, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+H" CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertColumn, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+OemSemicolon" CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertColumn, Mode=OneTime}"/>
+
+                    <KeyBinding Gesture="CTRL+Back" Command="{Binding RemoveSelectedRows, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+Delete" CommandParameter="{x:Static viewmodel:Container.Row}" Command="{Binding Clear, Mode=OneTime}"/>
+
+                    <KeyBinding Gesture="CTRL+SHIFT+Back" Command="{Binding RemoveSelectedColumns, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+SHIFT+Delete" CommandParameter="{x:Static viewmodel:Container.Column}" Command="{Binding Clear, Mode=OneTime}"/>
+                    <KeyBinding Gesture="CTRL+SHIFT+R" Command="{Binding RenameColumn, Mode=OneTime}"/>
+
+                    <KeyBinding Key="Delete" CommandParameter="{x:Static viewmodel:Container.Cell}" Command="{Binding Clear, Mode=OneTime}"/>
+                </DataGrid.InputBindings>
             </DataGrid>
 
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -344,33 +363,11 @@
         </Grid>
     </DockPanel>
 
-    <!-- Place KeyBinding's last so they know ElementName=Grid -->
     <UserControl.InputBindings>
         <KeyBinding Gesture="CTRL+," Command="{Binding OpenPreferences, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+F" Command="{Binding FocusFilter, Mode=OneTime}"/>
+
         <KeyBinding Gesture="CTRL+SHIFT+C" Command="{Binding CopyPreview, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="CTRL+Z" Command="{Binding Undo, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+Y" Command="{Binding Redo, Mode=OneTime}"/>
         <KeyBinding Gesture="CTRL+S" Command="{Binding Save, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="CTRL+I" CommandParameter="{x:Static viewmodel:Position.Before}" Command="{Binding InsertRow, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+K" CommandParameter="{x:Static viewmodel:Position.After}" Command="{Binding InsertRow, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+J" CommandParameter="{x:Static viewmodel:Position.Before}" Command="{Binding InsertColumn, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+L" CommandParameter="{x:Static viewmodel:Position.After}" Command="{Binding InsertColumn, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="CTRL+8" CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertRow, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+OemComma" CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertRow, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+H" CommandParameter="{x:Static viewmodel:Position.Prepend}" Command="{Binding InsertColumn, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+OemSemicolon" CommandParameter="{x:Static viewmodel:Position.Append}" Command="{Binding InsertColumn, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="CTRL+Back" Command="{Binding RemoveSelectedRows, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+Delete" CommandParameter="{x:Static viewmodel:Container.Row}" Command="{Binding Clear, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="CTRL+SHIFT+Back" Command="{Binding RemoveSelectedColumns, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+SHIFT+Delete" CommandParameter="{x:Static viewmodel:Container.Column}" Command="{Binding Clear, Mode=OneTime}"/>
-        <KeyBinding Gesture="CTRL+SHIFT+R" Command="{Binding RenameColumn, Mode=OneTime}"/>
-
-        <KeyBinding Gesture="ALT+Delete" CommandParameter="{x:Static viewmodel:Container.Cell}" Command="{Binding Clear, Mode=OneTime}"/>
     </UserControl.InputBindings>
 </UserControl>
