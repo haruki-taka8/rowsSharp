@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 
 namespace RowsSharp.Model;
 
@@ -28,10 +27,17 @@ public class ColumnStyle
     /// <summary>
     /// The width of the column
     /// </summary>
-    /// <remarks>
-    /// This value is converted to a <see cref="System.Windows.Controls.DataGridLength"/> internally.
-    /// </remarks>
     public double Width { get; set; }
+
+    /// <summary>
+    /// The minimum width of the column
+    /// </summary>
+    public double MinWidth { get; set; } = 32;
+
+    /// <summary>
+    /// The default maximum width of the column
+    /// </summary>
+    public double MaxWidth { get; set; } = double.PositiveInfinity;
 
     /// <summary>
     /// The template of the column.
