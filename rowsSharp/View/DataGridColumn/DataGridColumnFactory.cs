@@ -19,7 +19,7 @@ internal static class DataGridColumnFactory
 
                 column = new DataGridHyperlinkColumn()
                 {
-                    EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(canInsertNewline),
+                    EditingElementStyle = ColumnStyleHelper.GetEditingElementStyle(canInsertNewline)
                 };
                 break;
 
@@ -44,6 +44,8 @@ internal static class DataGridColumnFactory
         column.Binding = binding;
         column.Header = style.Column;
         column.Width = style.Width > 0 ? style.Width : column.Width;
+        column.MinWidth = style.MinWidth;
+        column.MaxWidth = style.MaxWidth;
         column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(style.ConditionalFormatting);
 
         return column;
