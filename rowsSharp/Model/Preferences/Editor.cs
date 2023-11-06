@@ -47,12 +47,33 @@ public class Editor
     public double DefaultRowHeight { get; set; } = 33;
 
     /// <summary>
+    /// Fallback minimum height of a row.
+    /// </summary>
+    public double DefaultMinRowHeight { get; set; }
+
+    /// <summary>
     /// Fallback width of a column.
     /// </summary>
     /// <remarks>
     /// ColumnStyles can override this value on a column-to-column basis.
     /// </remarks>
     public double DefaultColumnWidth { get; set; } = 50;
+
+    /// <summary>
+    /// Fallback minimum width of a column.
+    /// </summary>
+    /// <remarks>
+    /// ColumnStyles can override this value on a column-to-column basis.
+    /// </remarks>
+    public double DefaultMinColumnWidth { get; set; } = 25;
+
+    /// <summary>
+    /// Fallback maximum width of a column.
+    /// </summary>
+    /// <remarks>
+    /// ColumnStyles can override this value on a column-to-column basis.
+    /// </remarks>
+    public double DefaultMaxColumnWidth { get; set; }
 
     /// <summary>
     /// Whether scrolling only occurs after the scrollbar has finished moving.

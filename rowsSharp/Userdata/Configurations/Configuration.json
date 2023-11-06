@@ -29,7 +29,10 @@
     "IsAutosaveEnabled": true,
     "AutosaveInterval": 60000,
     "FrozenColumn": 0,
-    "DefaultRowHeight": 33,
+    "DefaultMinRowHeight": 28,
+    "DefaultRowHeight": 34,
+    "DefaultMinColumnWidth": 16,
+    "DefaultMaxColumnWidth": 256,
     "DefaultColumnWidth": 128,
     "IsDeferredScrollingEnabled": false,
     "ColumnStyles": [
