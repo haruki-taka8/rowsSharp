@@ -44,8 +44,8 @@ internal static class DataGridColumnFactory
         column.Binding = binding;
         column.Header = style.Column;
         column.Width = style.Width > 0 ? style.Width : column.Width;
-        column.MinWidth = style.MinWidth;
-        column.MaxWidth = style.MaxWidth;
+        if (style.MinWidth > 0) { column.MinWidth = style.MinWidth; }
+        if (style.MaxWidth > 0) { column.MaxWidth = style.MaxWidth; }
         column.CellStyle = ColumnStyleHelper.GetConditionalFormatting(style.ConditionalFormatting);
 
         return column;

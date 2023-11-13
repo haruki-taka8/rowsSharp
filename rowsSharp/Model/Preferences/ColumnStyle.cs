@@ -32,12 +32,12 @@ public class ColumnStyle
     /// <summary>
     /// The minimum width of the column
     /// </summary>
-    public double MinWidth { get; set; } = 32;
+    public double MinWidth { get; set; }
 
     /// <summary>
     /// The default maximum width of the column
     /// </summary>
-    public double MaxWidth { get; set; } = double.PositiveInfinity;
+    public double MaxWidth { get; set; }
 
     /// <summary>
     /// The template of the column.

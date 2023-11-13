@@ -210,12 +210,19 @@
                     VerticalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Vertical}"
                     HorizontalGridLinesBrush="{StaticResource Rows.DataGrid.Grid.Horizontal}"
                     ScrollViewer.IsDeferredScrollingEnabled="{Binding Preferences.Editor.IsDeferredScrollingEnabled, Mode=OneWay}"
+                    MinColumnWidth="{Binding Preferences.Editor.DefaultMinColumnWidth, Mode=OneTime}"
+                    MaxColumnWidth="{Binding Preferences.Editor.DefaultMaxColumnWidth, Mode=OneTime}"
+                    MinRowHeight="{Binding Preferences.Editor.DefaultMinRowHeight, Mode=OneTime}"
                     ColumnWidth="{Binding Preferences.Editor.DefaultColumnWidth, Mode=OneTime}" RowHeaderWidth="8"
                     RowHeight="{Binding Preferences.Editor.DefaultRowHeight, Mode=OneTime}"                      
                     CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="{Binding Preferences.Editor.CanEdit, Converter={StaticResource InvertBooleanConverter}, Mode=OneWay}"
                     SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                    FrozenColumnCount="{Binding Preferences.Editor.FrozenColumn, Mode=OneTime}"
                     CanUserReorderColumns="{Binding Preferences.Editor.CanEdit, Mode=OneWay}"
-				    EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.ScrollUnit="Pixel">                
+				    EnableColumnVirtualization="True" EnableRowVirtualization="True"
+                    VirtualizingPanel.VirtualizationMode="Recycling"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.ScrollUnit="Pixel">                
                 <DataGrid.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
                         <MenuItem Command="{Binding DataContext.CopyPreview, Mode=OneTime}" Header="Copy image" InputGestureText="Ctrl+Shift+C"/>
